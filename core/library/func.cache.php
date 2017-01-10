@@ -78,11 +78,10 @@ function filemaps_recache()
 function comments_recache()
 {
 	global $DB,$hostid,$host;
-	$comments = $DB->query('SELECT * from `'.DB_PREFIX."comment`  WHERE visible = 1 and hostid='$hostid' ORDER BY cid desc");
+	$comments = $DB->query('SELECT * from `'.DB_PREFIX."comment` WHERE visible = 1 and hostid='$hostid' ORDER BY cid desc limit 100");
 	$commentdb = array();
 	while ($comment= $DB->fetch_array($comments))
 	{
-	
 		$comment['url']=mkUrl('comment.php', $comment['cid']);
 		$commentdb[] = $comment;
 	}
@@ -119,7 +118,7 @@ function stick_recache()
 {
 	global $DB,$host,$hostid;
 	$arrfiles=array();
-	$files= $DB->query('SELECT * FROM `'.DB_PREFIX.'article` where stick=1 and hostid='.$hostid.' ORDER BY aid DESC limit 100');
+	$files= $DB->query('SELECT * FROM `'.DB_PREFIX.'article` where stick=1 and hostid='.$hostid.' and visible=1 ORDER BY aid DESC limit 200');
 	while ($fs = $DB->fetch_array($files)) 
 	{
 		unset($fs['content']);
@@ -137,12 +136,18 @@ function cates_recache()
 	while($cate=$DB->fetch_array($cquery))
 	{
 		$cate['curl']=mkUrl('category.php',$cate['url'],0);
+		$arrcates[$cate['cid']]=$cate;
+	}
+	
+	foreach($arrcates as $k=>$v)
+	{
 		$count='0';
 		$countarr=$DB->fetch_first('SELECT count(*) as ct FROM `'.DB_PREFIX."article` where visible=1 and cateid='{$cate['cid']}'");
 		if(is_array($countarr)) $count=$countarr['ct'];
-		$cate['count']=$count;
-		$arrcates[$cate['cid']]=$cate;
+		$arrcates[$k]['count']=$count;
+		$arrcates[$k]['child']=getChildCate($k,$arrcates);
 	}
+	
 	writeCache('cate_'.$host['host'],$arrcates);
 }
 
@@ -216,7 +221,7 @@ function redirect_recache()
 function hot_recache()
 {
 	global $DB,$host,$hostid;
-	$query=$DB->query('Select * from '.DB_PREFIX."article where hostid=$hostid and visible=1 order by views desc limit 20");
+	$query=$DB->query('Select * from '.DB_PREFIX."article where hostid=$hostid and visible=1 order by views desc limit 100");
 	$cache=array();
 	while($article=$DB->fetch_array($query))
 	{

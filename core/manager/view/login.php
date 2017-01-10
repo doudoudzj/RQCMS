@@ -18,7 +18,8 @@ print <<<EOT
         <td> <input name="rememberme" type="checkbox" value="1">记住我</td>
       </tr>
       <tr>
-        <td><input type="submit" class="formbutton" value="登陆" /><br>{$loginerr}</td>
+        <td><input type="submit" class="formbutton" value="登陆" />
+{$loginerr}</td>
       </tr>
     </form>
   </table>

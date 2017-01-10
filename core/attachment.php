@@ -39,7 +39,7 @@ $downkey=substr($downkey,0,4);
 @文件下载
 */
 
-if($host['attach_display']&&($sendkey!=$downkey||$refer_url!=$page_url))//显示下载页面后再下载
+if($host['attach_display']&&($sendkey!=$downkey||$refer_url!=$page_url)&&!$attachinfo['isimage'])//显示下载页面后再下载
 {
 	$title=$attachinfo['filename'].' 下载';
 	setcookie($downid,$downkey,$timestamp+3600);

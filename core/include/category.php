@@ -1,9 +1,9 @@
 <?php
 //获取一个栏目中有多少文章
-function getArticleNum($hostid,$cateid)
+function getArticleNum($hostid,$cateids)
 {
 	global $DB;
-	$fetch=$DB->fetch_first("Select count(*) as a from `".DB_PREFIX."article` where `hostid`='$hostid' and `cateid`='$cateid'");
+	$fetch=$DB->fetch_first("Select count(*) as a from `".DB_PREFIX."article` where `hostid`='$hostid' and `cateid` in ($cateids)");
 	return $fetch['a'];
 }
 
@@ -34,6 +34,40 @@ function removetag($item,$tagid) {
 }
 
 
+function getCateOption($cateArr,$select,$self='')
+{
+	$re='';
+	foreach($cateArr as $a=>$b)
+	{
+		if($b['pid']=='0')
+		{
+			if($self==$b['cid']) continue;
+			$add=$select==$a?' selected':'';
+			$re.='<option value="'.$a.'" '.$add.'>'.$b['name'].'</option>';
+			$re.=getoption($a,$cateArr,$select,1,$self);
+		}
+	}
+	return $re;
+}
+
+function getoption($pid,$cateArr,$select,$level,$self)
+{
+	$re='';
+	foreach($cateArr as $a=>$b)
+	{
+		if($b['pid']==$pid)
+		{
+			if($self==$b['cid']) continue;
+			$add=$select==$a?' selected':'';
+			$pad=str_pad('', $level, '+', STR_PAD_LEFT);
+			$re.='<option value="'.$a.'"'.$add.'>'.$pad.$b['name'].'</option>';
+			$re.=getoption($a,$cateArr,$select,$level+1,$self);
+		}
+	}
+	return $re;
+}
+
+/*
 function getChildArr($cid,$cateArr)
 {
 	$childidArr[]=$cid;
@@ -67,5 +101,5 @@ function getMaxCid($cateArr)
 	return $a['cid'];
 }
 
-
+*/
 	

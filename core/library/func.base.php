@@ -436,3 +436,18 @@ function getGetArr($string)
 	}
 	return $getArr;
 }
+
+//获取最下级的分类id
+function getChildCate($cateid,$cateArr)
+{
+	$has=array();
+	$has[]=$cateid;
+	foreach($cateArr as $key => $cate)
+	{
+		if($cate['pid']==$cateid)
+		{
+			$has[]=getChildCate($cate['cid'],$cateArr);
+		}
+	}
+	return implode(',',$has);
+}
