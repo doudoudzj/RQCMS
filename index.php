@@ -8,7 +8,7 @@
  */
  //版权相关设置
 define('RQ_AppName','RQCMS');
-define('RQ_VERSION','1.1');
+define('RQ_VERSION','1.11');
 define('RQ_RELEASE','20121008');
 define('RQ_AUTHOR','RQ204');
 define('RQ_WEBSITE','http://www.rqcms.com');
