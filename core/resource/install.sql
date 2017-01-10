@@ -11,6 +11,7 @@ CREATE TABLE `rqcms_article` (
   `thumb` varchar(100) NOT NULL DEFAULT '' COMMENT '缩略图地址',
   `source` varchar(20) NOT NULL DEFAULT '' COMMENT '出处',
   `excerpt` varchar(255) NOT NULL COMMENT '摘要',
+  `search` varchar(1500) NOT NULL COMMENT '相关搜索词',
   `dateline` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发布时间',
   `modified` int(10) NOT NULL COMMENT '修改时间',
   `views` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '访问量',

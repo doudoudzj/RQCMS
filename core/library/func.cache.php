@@ -138,7 +138,7 @@ function cates_recache()
 	{
 		$cate['curl']=mkUrl('category.php',$cate['url'],0);
 		$count='0';
-		$countarr=$DB->fetch_first('SELECT count(*) as ct FROM `'.DB_PREFIX."article` where cateid='{$cate['cid']}'");
+		$countarr=$DB->fetch_first('SELECT count(*) as ct FROM `'.DB_PREFIX."article` where visible=1 and cateid='{$cate['cid']}'");
 		if(is_array($countarr)) $count=$countarr['ct'];
 		$cate['count']=$count;
 		$arrcates[$cate['cid']]=$cate;

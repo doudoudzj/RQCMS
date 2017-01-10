@@ -103,6 +103,13 @@ if(!in_array('description',$varcate))//1.3的升级
 	echo '升级category字段description成功<br />';//1.3的升级
 }
 
+$vararticle=GetField('article');
+if(!in_array('search',$vararticle))//1.4的升级
+{
+	$DB->query("ALTER TABLE `".DB_PREFIX."article` ADD COLUMN `search` VARCHAR(1500) NULL DEFAULT ''");
+	echo '升级article字段search成功<br />';//1.3的升级
+}
+
 //1.3增加搜索表
 $createsearch=<<<EOT
 CREATE TABLE IF NOT EXISTS `rqcms_search` (
