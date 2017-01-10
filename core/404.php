@@ -54,6 +54,33 @@ if(file_exists($themefile)&&$fileext!='php')
 	readfile(RQ_DATA."/themes/$theme/".RQ_FILE);
 	exit();
 }
+
+//检查网址跳转
+$redirects=@include RQ_DATA.'/cache/redirect_'.$host['host'].'.php';//加载所有站点信息
+if(count($redirects)>0)
+{
+	$request_url=ltrim($_SERVER['REQUEST_URI'],'/');
+	foreach($redirects as $rds=>$ns)
+	{
+		if(preg_match("/^$rds$/i", $request_url, $matches))
+		{
+			$rurl='';
+			if(strpos($ns[0],'$')===false)
+			{
+				$rurl=$ns[0];
+			}
+			else 
+			{
+				$rurl=preg_replace("/^$rds$/i",$ns[0],$request_url);
+			}
+			if(strncasecmp($rurl,"http",4)!=0) $rurl=RQ_HTTP.$host['host'].'/'.$rurl;
+			if($ns[1]=='1') header("HTTP/1.1 301 Moved Permanently");
+			header("Location: $rurl");
+			exit();
+		}
+	}
+}
+
 header('HTTP/1.1 404 Not Found');
 if(!file_exists($tempView))
 {

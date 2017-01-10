@@ -17,24 +17,24 @@ if(RQ_POST)
 			if (!$title || !$value) {
 				redirect('请填写完整');
 			}
-			$query = $DB->query("SELECT COUNT(*) FROM ".DB_PREFIX."var WHERE title='$title' and `hostid`='$hostid' and type='style'");
+			$query = $DB->query("SELECT COUNT(*) FROM ".DB_PREFIX."var WHERE title='$title' and `hostid`='$hostid'");
 			if($DB->result($query, 0)) {
 				redirect('变量名已经存在,请返回修改');
 			} elseif(!preg_match("/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/", $title)) {
 				redirect('变量名称不合法,请返回修改');
 			}
-			$DB->query("INSERT INTO ".DB_PREFIX."var (hostid,title, value,type) VALUES ('$hostid','$title', '$value','style')");
+			$DB->query("INSERT INTO ".DB_PREFIX."var (hostid,title, value) VALUES ('$hostid','$title', '$value')");
 			vars_recache();
 			redirect('自定义变量添加成功','admin.php?file=template&action=stylevar');
 			break;
 		case 'domorestylevar':
 			//批量处理自定义模板变量
 			if($ids = implode_ids($_POST['delete'])) {
-				$DB->query("DELETE FROM	".DB_PREFIX."var WHERE vid IN ($ids) and type='style' and hostid='$hostid'");
+				$DB->query("DELETE FROM	".DB_PREFIX."var WHERE vid IN ($ids) and hostid='$hostid'");
 			}
 			if(is_array($_POST['stylevar'])) {
 				foreach($_POST['stylevar'] as $stylevarid => $value) {
-					$DB->unbuffered_query("UPDATE ".DB_PREFIX."var SET value='".addslashes(trim($_POST['stylevar'][$stylevarid]))."', visible='".intval($_POST['visible'][$stylevarid])."' WHERE vid='".intval($stylevarid)."' and type='style' and hostid='$hostid'");
+					$DB->unbuffered_query("UPDATE ".DB_PREFIX."var SET value='".addslashes(trim($_POST['stylevar'][$stylevarid]))."', visible='".intval($_POST['visible'][$stylevarid])."' WHERE vid='".intval($stylevarid)."' and hostid='$hostid'");
 				}
 			}
 			vars_recache();
@@ -70,9 +70,9 @@ else
 				$start_limit = 0;
 				$page = 1;
 			}
-			$tatol = $DB->num_rows($DB->query("SELECT vid FROM ".DB_PREFIX."var where hostid='$hostid' and type='style'"));
+			$tatol = $DB->num_rows($DB->query("SELECT vid FROM ".DB_PREFIX."var where hostid='$hostid' "));
 			$multipage = multi($tatol, 30, $page, 'admin.php?file=template&action=stylevar');
-			$query = $DB->query("SELECT * FROM ".DB_PREFIX."var where hostid='$hostid' and type='style' ORDER BY vid DESC LIMIT $start_limit, 30");
+			$query = $DB->query("SELECT * FROM ".DB_PREFIX."var where hostid='$hostid'  ORDER BY vid DESC LIMIT $start_limit, 30");
 
 			$stylevardb = array();
 			while ($stylevar = $DB->fetch_array($query)) {

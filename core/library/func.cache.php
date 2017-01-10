@@ -154,7 +154,7 @@ function vars_recache()
 {
 	global $DB,$hostid;
 	$add=$hostid?" and h.hid=$hostid and c.hostid=$hostid":'';
-	$var= $DB->query('SELECT c.*,h.host FROM `'.DB_PREFIX.'var` c,`'.DB_PREFIX."host` h where c.visible=1 and c.type='style' $add");
+	$var= $DB->query('SELECT c.*,h.host FROM `'.DB_PREFIX.'var` c,`'.DB_PREFIX."host` h where c.visible=1 $add");
 	$arrvars=array();
 	while ($fs = $DB->fetch_array($var)) 
 	{
@@ -229,12 +229,12 @@ function latest_recache()
 function redirect_recache()
 {
 	global $DB,$hostid;
-	$add=$hostid?" and h.hid=$hostid and c.hostid=$hostid":'';
-	$var= $DB->query('SELECT c.*,h.host FROM `'.DB_PREFIX.'var` c,`'.DB_PREFIX."host` h where `type`='redirect' and c.type='style' $add");
+	$add=$hostid?" where h.hid=$hostid and c.hostid=$hostid":'';
+	$var= $DB->query('SELECT c.*,h.host FROM `'.DB_PREFIX.'redirect` c,`'.DB_PREFIX."host` h $add");
 	$arrvars=array();
 	while ($fs = $DB->fetch_array($var)) 
 	{
-		$arrvars[$fs['host']][$fs['title']]=array($fs['value'],$fs['visible']);
+		$arrvars[$fs['host']][$fs['old']]=array($fs['new'],$fs['status']);
 	}
 	foreach($arrvars as $k=>$v)
 	{

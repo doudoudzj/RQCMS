@@ -7,27 +7,7 @@ $articleid = intval(isset($_GET['articleid']) ? $_GET['articleid'] : (isset($_PO
 $do = in_array($do,array('hidden','display','del')) ? $do : '';
 if(RQ_POST)
 {
-	//设置状态
-	if($action == 'cmvisible') {
-		if ($cid) {
-			$comment = $DB->fetch_first("SELECT visible,articleid FROM ".DB_PREFIX."comment WHERE cid='$cid'");
-			if ($comment['visible']) {
-				$visible = '0';
-				$query = '-';
-				$state = '隐藏';
-			} else {
-				$visible = '1';
-				$query = '+';
-				$state = '显示';
-			}
-			$DB->unbuffered_query("UPDATE ".DB_PREFIX."article SET comments=comments".$query."1 WHERE aid='".$comment['articleid']."'");
-			$DB->unbuffered_query("UPDATE ".DB_PREFIX."comment SET visible='$visible' WHERE cid='$cid'");
-			redirect('已经成功把该评论设置为 '.$state.' 状态', 'admin.php?file=comment&action=cmlist&aid='.$articleid);
-		} else {
-			redirect('缺少评论id参数', 'admin.php?file=comment&action=cmlist&articleid='.$articleid);
-		}
-	}
-	else if($action == 'domodcm') { 	// 修改评论
+	if($action == 'domodcm') { 	// 修改评论
 		if(!$cid) redirect('评论id不正确');
 		$commarr=$DB->fetch_first("select * from ".DB_PREFIX."comment where cid=$cid and hostid=$hostid");
 		if(!$commarr) redirect('不存在的评论');
@@ -86,7 +66,27 @@ if(RQ_POST)
 else
 {	
 	$pagelink='';
-	if ($action == 'cmlist') {
+	//设置状态
+	if($action == 'cmvisible') {
+		if ($cid) {
+			$comment = $DB->fetch_first("SELECT visible,articleid FROM ".DB_PREFIX."comment WHERE cid='$cid'");
+			if ($comment['visible']) {
+				$visible = '0';
+				$query = '-';
+				$state = '隐藏';
+			} else {
+				$visible = '1';
+				$query = '+';
+				$state = '显示';
+			}
+			$DB->unbuffered_query("UPDATE ".DB_PREFIX."article SET comments=comments".$query."1 WHERE aid='".$comment['articleid']."'");
+			$DB->unbuffered_query("UPDATE ".DB_PREFIX."comment SET visible='$visible' WHERE cid='$cid'");
+			redirect('已经成功把该评论设置为 '.$state.' 状态', 'admin.php?file=comment&action=cmlist&aid='.$articleid);
+		} else {
+			redirect('缺少评论id参数', 'admin.php?file=comment&action=cmlist&articleid='.$articleid);
+		}
+	}
+	else if ($action == 'cmlist') {
 		$sql_query = ' WHERE 1=1 ';
 		$subnav = '全部评论';
 		$kind =isset($_GET['kind']) &&in_array($_GET['kind'],array('display','hidden')) ? $_GET['kind'] : '';

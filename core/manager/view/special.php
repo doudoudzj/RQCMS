@@ -111,6 +111,11 @@ print <<<EOT
                   <td><input class="formfield" type="text" name="maps[captcha.php]" size="35" maxlength="50" value="{$info['captcha.php']}"></td>
 				    <td><input class="formfield" type="text" name="args[captcha.php]" size="35" maxlength="200" value="{$args['captcha.php']}"></td>
                 </tr>
+				<tr class="tablecell">
+                  <td width="200">Js页(captcha.php):</td>
+                  <td><input class="formfield" type="text" name="maps[js.php]" size="35" maxlength="50" value="{$info['js.php']}"></td>
+				    <td><input class="formfield" type="text" name="args[js.php]" size="35" maxlength="200" value="{$args['js.php']}"></td>
+                </tr>
 				 <tr class="tablecell">
                     <td colspan="3" align="center"><input type="submit" value="提交" class="formbutton">
                       <input type="reset" value="重置" class="formbutton">

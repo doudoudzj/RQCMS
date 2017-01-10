@@ -168,11 +168,6 @@ CREATE TABLE `rqcms_host` (
   `time_comment_format` varchar(50) NOT NULL,
   `closereg` tinyint(1) NOT NULL,
   `censoruser` varchar(2000) NOT NULL,
-  `wap_enable` tinyint(1) NOT NULL,
-  `wap_article_pagenum` tinyint(3) NOT NULL,
-  `wap_article_title_limit` tinyint(3) NOT NULL,
-  `wap_tags_pagenum` tinyint(3) NOT NULL,
-  `wap_comment_pagenum` tinyint(3) NOT NULL,
   `banip_enable` tinyint(1) NOT NULL,
   `ban_ip` text NOT NULL,
   `spam_enable` tinyint(1) NOT NULL,
@@ -187,7 +182,7 @@ CREATE TABLE `rqcms_host` (
   `status` tinyint(1) NOT NULL default 0,
   PRIMARY KEY (`hid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-INSERT INTO `rqcms_host` (`hid`, `name`, `host`, `gzipcompress`, `theme`, `password`, `keywords`, `description`, `icp`, `close`, `close_note`, `list_shownum`, `article_order`, `title_limit`, `tags_shownum`, `related_shownum`, `related_title_limit`, `related_order`, `audit_comment`, `comment_order`, `article_comment_num`, `comment_min_len`, `comment_max_len`, `commentlist_num`, `comment_post_space`, `allow_search_content`, `search_post_space`, `search_keywords_min_len`, `attach_save_dir`, `attach_thumbs`, `attach_display`, `attach_thumbs_size`, `attachments_remote_open`, `watermark`, `watermark_size`, `watermark_pos`, `watermark_trans`, `watermark_padding`, `server_timezone`, `time_article_format`, `time_comment_format`, `closereg`, `censoruser`, `wap_enable`, `wap_article_pagenum`, `wap_article_title_limit`, `wap_tags_pagenum`, `wap_comment_pagenum`, `banip_enable`, `ban_ip`, `spam_enable`, `spam_words`, `spam_url_num`, `js_enable`, `js_cache_life`, `js_lock_url`, `rss_enable`, `rss_num`, `rss_ttl`,`status`,`listcachenum`,`friend_url`,`guest_comment`) VALUES (1, '默认站点', 'rq.cn', 0, 'default', '', 'CMS,RQCMS', '又一个RQCMS', '1234567890', 0, '服务器检修中,稍后开放', 10, 'articleid', 0, 10, 10, 0, 'dateline', 1, 0, 10, 10, 3000, 20, 10, 1, 10, 2, 2, 0, 2, '200x200', 1, 0, 150, 4, 10, 5, '8', 'Y-m-d', 'Y-m-d', 0, 'admin', 0, 10, 0, 100, 20, 0, '', 0, '', 0, 0, 3600, '', 1, 20, 3600,1,10,'aid','0');
+INSERT INTO `rqcms_host` (`hid`, `name`, `host`, `gzipcompress`, `theme`, `password`, `keywords`, `description`, `icp`, `close`, `close_note`, `list_shownum`, `article_order`, `title_limit`, `tags_shownum`, `related_shownum`, `related_title_limit`, `related_order`, `audit_comment`, `comment_order`, `article_comment_num`, `comment_min_len`, `comment_max_len`, `commentlist_num`, `comment_post_space`, `allow_search_content`, `search_post_space`, `search_keywords_min_len`, `attach_save_dir`, `attach_thumbs`, `attach_display`, `attach_thumbs_size`, `attachments_remote_open`, `watermark`, `watermark_size`, `watermark_pos`, `watermark_trans`, `watermark_padding`, `server_timezone`, `time_article_format`, `time_comment_format`, `closereg`, `censoruser`, `banip_enable`, `ban_ip`, `spam_enable`, `spam_words`, `spam_url_num`, `js_enable`, `js_cache_life`, `js_lock_url`, `rss_enable`, `rss_num`, `rss_ttl`,`status`,`listcachenum`,`friend_url`,`guest_comment`) VALUES (1, '默认站点', 'rq.cn', 0, 'default', '', 'CMS,RQCMS', '又一个RQCMS', '1234567890', 0, '服务器检修中,稍后开放', 10, 'articleid', 0, 10, 10, 0, 'dateline', 1, 0, 10, 10, 3000, 20, 10, 1, 10, 2, 2, 0, 2, '200x200', 1, 0, 150, 4, 10, 5, '8', 'Y-m-d', 'Y-m-d', 0, 'admin', 0, '', 0, '', 0, 0, 3600, '', 1, 20, 3600,1,10,'aid','0');
 
 
 DROP TABLE IF EXISTS `rqcms_tag`;
@@ -249,13 +244,12 @@ DROP TABLE IF EXISTS `rqcms_var`;
 CREATE TABLE `rqcms_var` (
   `vid` smallint(5) NOT NULL AUTO_INCREMENT,
   `hostid` tinyint(3) NOT NULL,
-  `type` varchar(10) NOT NULL,
   `title` varchar(200) NOT NULL,
   `value` text NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`vid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-Insert Into `rqcms_var` (`hostid`,`type`,`title`,`value`,`visible`) values ('1','style','demo','这是一个测试变量','1');
+Insert Into `rqcms_var` (`hostid`,`title`,`value`,`visible`) values ('1','demo','这是一个测试变量','1');
 
 DROP TABLE IF EXISTS `rqcms_log`;
 CREATE TABLE `rqcms_log` (
@@ -269,3 +263,14 @@ CREATE TABLE `rqcms_log` (
   PRIMARY KEY (`lid`),
   KEY `user` (`user`,`type`,`ip`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `rqcms_redirect`;
+CREATE TABLE `rqcms_redirect` (
+	`rid` MEDIUMINT(4) NOT NULL AUTO_INCREMENT,
+	`hostid` TINYINT(6) NULL DEFAULT '1',
+	`old` VARCHAR(200) NULL DEFAULT NULL,
+	`new` VARCHAR(200) NULL DEFAULT NULL,
+	`status` TINYINT(4) NULL DEFAULT '1',
+	PRIMARY KEY (`rid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+Insert Into `rqcms_redirect` (`hostid`,`old`,`new`,`status`) values ('1','rqcms','http://www.rqcms.com','302');

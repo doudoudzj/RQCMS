@@ -14,8 +14,9 @@ print <<<EOT
         <div class="tableheader">日志管理</div>
         <div class="leftmenubody">
           <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=login">登陆日志</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=visit">访问日志</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=search">搜索记录</a></div>
+          <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=search">站内搜索</a></div>
+		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=spider">搜索引擎</a></div>
+		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=dberror">MySql错误</a></div>
         </div>
       </div>
 	  </td>

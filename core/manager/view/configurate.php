@@ -384,37 +384,6 @@ if(!$type || $type=='user'){print <<<EOT
                   </tr>    
 EOT;
 }
-if(!$type || $type=='wap'){print <<<EOT
-                  <tr class="tdbheader">
-                    <td colspan="2">WAP设置</td>
-                  </tr>
-                  <tr class="tablecell">
-                    <td width="60%"><b>是否开启WAP功能:</b><br />
-                      WAP是一种无线通信应用协议,开启WAP后用户可通过手机访问你的网站,实现浏览,评论等功能，你自己亦可以通过手机使用本功能发表文章.</td>
-                    <td><select name="setting[wap_enable]">
-                        <option value="1" $wap_enable_Y>是</option>
-                        <option value="0" $wap_enable_N>否</option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr class="tablecell">
-                    <td width="60%"><b>WAP文章列表每页文章数:</b></td>
-                    <td><input class="formfield" type="text" name="setting[wap_article_pagenum]" size="15" maxlength="50" value="$settings[wap_article_pagenum]"></td>
-                  </tr>
-                  <tr class="tablecell">
-                    <td width="60%"><b>WAP文章列表标题截取字符数:</b></td>
-                    <td><input class="formfield" type="text" name="setting[wap_article_title_limit]" size="15" maxlength="50" value="$settings[wap_article_title_limit]"></td>
-                  </tr>
-                  <tr class="tablecell">
-                    <td width="60%"><b>WAP每页标签Tags数:</b></td>
-                    <td><input class="formfield" type="text" name="setting[wap_tags_pagenum]" size="15" maxlength="50" value="$settings[wap_tags_pagenum]"></td>
-                  </tr>
-                  <tr class="tablecell">
-                    <td width="60%"><b>WAP每页评论数:</b></td>
-                    <td><input class="formfield" type="text" name="setting[wap_comment_pagenum]" size="15" maxlength="50" value="$settings[wap_comment_pagenum]"></td>
-                  </tr>  
-EOT;
-}
 if(!$type || $type=='ban'){print <<<EOT
                   <tr class="tdbheader">
                     <td colspan="2">限制设置</td>

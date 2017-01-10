@@ -3,9 +3,17 @@ if(!defined('RQ_ROOT')) exit('Access Denied');
 include RQ_CORE.'/include/tag.php';
 if(RQ_POST)
 {
+	if($action=='modredirect'||$action=='addredirect')
+	{
+		$old=isset($_POST['old'])?$_POST['old']:'';
+		$new=isset($_POST['new'])?$_POST['new']:'';
+		$status=isset($_POST['status'])?$_POST['status']:'1';
+		if(!$old)  redirect('原网址不得为空', 'admin.php?file=seo&action=addredirect');
+		if(!$new)  redirect('转向地址不得为空', 'admin.php?file=seo&action=addredirect');
+	}
 	switch($action)
 	{
-		case 'domodtag':
+		case 'modtag':
 			//修改Tag
 			$newitem = $_POST['tag'];
 			$olditem = $_POST['oldtag'];
@@ -16,7 +24,7 @@ if(RQ_POST)
 			modtag($olditem,$newitem);
 			redirect('修改Tags成功', 'admin.php?file=seo&action=taglist');
 			break;
-		case 'dodeltag':
+		case 'deltag':
 			//批量删除Tag
 			if (!isset($_POST['tag'])) {
 				redirect('未选择任何Tags','admin.php?file=seo&action=taglist');
@@ -28,29 +36,34 @@ if(RQ_POST)
 			}
 			redirect('成功删除所选Tags', 'admin.php?file=seo&action=taglist');
 			break;
-		case 'dodelredirect':
+		case 'delredirect':
 			//批量删除Tag
-			if (!isset($_POST['vid'])) {
+			if (!isset($_POST['rid'])) {
 				redirect('未选择任何跳转网址','admin.php?file=seo&action=taglist');
 			}
-			$vids=implode_ids($_POST['vid']);
-			$DB->query('delete from '.DB_PREFIX."var where `type`='redirect' and hostid=$hostid and vid in ($vids)");
+			$vids=implode_ids($_POST['rid']);
+			$DB->query('delete from '.DB_PREFIX."redirect where hostid=$hostid and rid in ($vids)");
+			redirect_recache();
 			redirect('成功删除所选跳转网址', 'admin.php?file=seo&action=redirect');
 			break;
-		case 'domodredirect':
-			//批量删除Tag
-			if (!isset($_POST['vid'])) {
+		case 'modredirect':
+			//修改
+			if (!isset($_POST['rid'])) {
 				redirect('未指定修改的网址','admin.php?file=seo&action=redirect');
 			}
-			$vid=intval($_POST['vid']);
-			$title=isset($_POST['title'])?$_POST['title']:'';
-			$value=isset($_POST['value'])?$_POST['value']:'';
-			if(!$title)  redirect('原网址不得为空', 'admin.php?file=seo&action=redirect');
-			if(!$value)  redirect('转向地址不得为空', 'admin.php?file=seo&action=redirect');
-			$search=$DB->fetch_first('select * from '.DB_PREFIX."var where title='$title' and vid!=$vid and `type`='redirect' and hostid=$hostid");
-			if($search) redirect('原地址不能同时转向多个地址', 'admin.php?file=seo&action=redirect');
-			$DB->query("update ".DB_PREFIX."var set title='$title',value='$value' where vid=$vid and hostid=$hostid");
+			$rid=intval($_POST['rid']);
+			$search=$DB->fetch_first('select * from '.DB_PREFIX."redirect where old='$old' and rid!=$rid and hostid=$hostid");
+			if($search) redirect('原地址不能同时转向多个地址', 'admin.php?file=seo&action=addredirect');
+			$DB->query("update ".DB_PREFIX."redirect set `old`='$old',`new`='$new',`status`='$status' where rid=$rid and hostid=$hostid");
+			redirect_recache();
+			redirect('成功修改网址跳转','admin.php?file=seo&action=redirect');
 			break;
+		case 'addredirect';
+			$search=$DB->fetch_first('select * from '.DB_PREFIX."redirect where old='$old' and hostid=$hostid");
+			if($search) redirect('该原转向地址已经存在了，请检查', 'admin.php?file=seo&action=addredirect');
+			$DB->query('insert into `'.DB_PREFIX."redirect` (`hostid`,`old`,`new`,`status`) values ('$hostid','$old','$new','$status')");
+			redirect_recache();
+			redirect('成功添加网址跳转','admin.php?file=seo&action=redirect');
 		default:
 			redirect('未定义操作', 'admin.php?file=seo');
 	}
@@ -90,11 +103,13 @@ else if($action=='redirect')
 		$page = 1;
 	}
 	$numsql = "LIMIT $start_limit, 30";
-	$rs = $DB->query("SELECT * FROM ".DB_PREFIX."var where hostid=$hostid and `type`='redirect'");
-	$tatol =count($rs);
+	$coutarr=$DB->fetch_first('select count(*) from '.DB_PREFIX."redirect where hostid=$hostid");
+	$tatol=$coutarr['count(*)'];
 	$multipage = multi($tatol, 30, $page, 'admin.php?file=tag&action=redirect');
+	$rs = $DB->query("SELECT * FROM ".DB_PREFIX."redirect where hostid=$hostid $numsql");
 	$redirectdb = array();
     while ($tag = $DB->fetch_array($rs)) {
+		$tag['status']=$tag['status']==1?301:302;
 		$redirectdb[] = $tag;
 	}
 	unset($tag);
@@ -122,7 +137,12 @@ else if($action == 'modtag') {
 		$DB->free_result($query);
 	}
 }else if($action == 'modredirect') {
-	$vid = $_GET['vid'];
-	$redirectdb=$DB->fetch_first("SELECT * FROM ".DB_PREFIX."var WHERE hostid=$hostid and vid=$vid");
+	$rid = $_GET['rid'];
+	$redirectdb=$DB->fetch_first("SELECT * FROM `".DB_PREFIX."redirect` WHERE hostid=$hostid and rid=$rid");
 	if(!$redirectdb) redirect('不存在的转向网址记录', 'admin.php?file=seo');
-}//mod
+	$selected301=$redirectdb['status']=='1'?'selected':'';
+	$selected302=empty($selected301)?'selected':'';
+}else if($action=='addredirect')
+{
+	$selected302=$selected301=$redirectdb['old']=$redirectdb['new']='';
+}

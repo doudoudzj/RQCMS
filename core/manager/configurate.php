@@ -8,7 +8,6 @@ $settingsmenu = array(
 	'watermark' => '水印设置',
 	'dateline' => '时间设置',
 	'user' => '用户设置',
-	'wap' => 'WAP设置',
 	'ban' => '限制设置',
 	'js' => 'JS调用设置',
 	'rss' => 'RSS订阅设置',

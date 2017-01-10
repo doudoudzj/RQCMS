@@ -46,8 +46,8 @@ switch($groupid)
 		'attachment' => '附件管理',
 		'category' => '分类管理',
 		'user' => '用户管理',
-		'link' => '链接管理',
 		'template' => '模板管理',
+		'link' => '友情链接',
 		'seo'=>'网站优化',
 		'maintenance' => '系统维护',
 	);
@@ -60,8 +60,8 @@ switch($groupid)
 		'attachment' => '附件管理',
 		'category' => '分类管理',
 		'user' => '用户管理',
-		'link' => '链接管理',
 		'template' => '模板管理',
+		'link' => '友情链接',
 		'seo'=>'网站优化',
 		'plugin'=>'插件管理',
 		'maintenance' => '系统维护' //这里要添加缓存更新和日志管理功能

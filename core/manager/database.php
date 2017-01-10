@@ -14,7 +14,9 @@ $tables = array(
 	DB_PREFIX.'plugin',
 	DB_PREFIX.'tag',
 	DB_PREFIX.'user',
-	DB_PREFIX.'var'
+	DB_PREFIX.'var',
+	DB_PREFIX.'log',
+	DB_PREFIX.'redirct'
 );
 
 //下载备份文件
