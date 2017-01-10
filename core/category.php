@@ -17,7 +17,7 @@ $multipage='';
 $allcount=0;
 if($total>0)
 {
-	$arr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article WHERE visible=1 and cateid in ({$cate['child']})");
+	$arr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article WHERE cateid in ({$cate['child']})");
 	if(!empty($arr)) $allcount=$arr['count(*)'];
 	$pagenums=@ceil($allcount/$host['list_shownum']);
 }

@@ -70,7 +70,7 @@ print <<<EOT
 EOT;
 if($groupid==4) echo ' [<a href="'.$admin_url.'?file=special">站点管理</a>]';
 if ($groupid) print <<<EOT
-  [<a href="./" target="_blank">站点首页</a>]
+  [<a href="/" target="_blank">站点首页</a>]
 </td>
         </tr>
       </table>

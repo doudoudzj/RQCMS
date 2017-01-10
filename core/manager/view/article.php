@@ -42,7 +42,6 @@ $(document).ready(function(){
           <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=add">添加文章</a></div>
           <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=list">编辑文章</a></div>
           <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=search">搜索文章</a></div>
-		  <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=list&view=hidden">草稿箱($hiddenCount)</a></div>
         </div>
       </div>
 	  <div class="tableborder">
@@ -142,8 +141,7 @@ EOT;
 print <<<EOT
     <tr class="tablecell">
       <td valign="top">更多选项:</td>
-      <td> <input name="article[visible]" type="checkbox" value="1" $visible_check>
-        发布本文,不选则为草稿 <input name="article[stick]" type="checkbox" value="1" $stick_check>
+      <td> <input name="article[stick]" type="checkbox" value="1" $stick_check>
         置顶本文<br />
 		<input name='edittime' type="checkbox" value="1">
 		更改发布时间 <input class="formfield" name="newyear" type="text" value="$newyear" maxlength="4" style="width:40px"> 年 <input class="formfield" name="newmonth" type="text" value="$newmonth" maxlength="2" style="width:20px"> 月 <input class="formfield" name="newday" type="text" value="$newday" maxlength="2" style="width:20px"> 日 <input class="formfield" name="newhour" type="text" value="$newhour" maxlength="2" style="width:20px"> 时 <input class="formfield" name="newmin" type="text" value="$newmin" maxlength="2" style="width:20px"> 分 <input class="formfield" name="newsec" type="text" value="$newsec" maxlength="2" style="width:20px"> 秒 <input class="formbutton" type="button" onclick="alert('有效的时间戳典型范围是从格林威治时间 1901 年 12 月 13 日 星期五 20:45:54 到 2038年 1 月 19 日 星期二 03:14:07\\n\\n该日期根据 32 位有符号整数的最小值和最大值而来\\n\\n取值说明: 日取 01 到 30 之间, 时取 0 到 24 之间, 分和秒取 0 到 60 之间!\\n\\n系统会自动检查时间有效性,如果不在有效范围内,将不会执行更改时间操作\\n\\n注意:如果系统是按照时间而不是提交次序排列文章,修改时间可以改变文章的顺序.');" value="时间说明">		
@@ -228,7 +226,6 @@ EOT;
       <p><input type="submit" name="submit" id="submit" value="确认" class="formbutton"></p>
       <input type="hidden" name="action" value="domore">
 	  	  <input type="hidden" name="do" value="dodelete">
-		  <input type="hidden" name="view" value="$view">
 	  </td>
     </tr>
 EOT;
@@ -311,7 +308,6 @@ if ($action == 'list') {print <<<EOT
         <option value="delete">删除</option>
         <option value="move">移动</option>
       </select>
-	   <input type="hidden" name="view" value="$view">
       <input type="submit" name="submit" id="submit" value="确定" class="formbutton"><input type="hidden" name="action" value="domore"></td>
   </tr>
 </table>

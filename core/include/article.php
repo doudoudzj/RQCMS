@@ -34,7 +34,7 @@ function clearCookie()
 	setcookie('cid','');
 	setcookie('title','');
 	setcookie('excerpt','');
-	//setcookie('content','');
+	@setcookie('content','');
 	setcookie('keywords','');
 }
 
@@ -46,7 +46,7 @@ function saveCookie()
 	setcookie('cid',$cid,$cookietime);
 	setcookie('title',$title,$cookietime);
 	setcookie('excerpt',$excerpt,$cookietime);
-	//setcookie('content',$content,$cookietime);//dreamhost会出错，不知道为什么,12.7.14
+	@setcookie('content',$content['content'],$cookietime);//dreamhost会出错，不知道为什么,12.7.14
 	setcookie('keywords',$keywords,$cookietime);
 }
 
@@ -109,10 +109,10 @@ function getAttach()
 		$ext=strtolower(trim(pathinfo($val['name'], PATHINFO_EXTENSION)));
 		$fnamehash = md5(uniqid(microtime()));
 		$filepath = $attach_dir.'/'.$fnamehash.'.'.$ext.'.file';
-		$attachment=RQ_DATA.'/files/'.$filepath;exit($val['tmp_name']);
+		$attachment=RQ_DATA.'/files/'.$filepath;
 		if(!move_uploaded_file($val['tmp_name'],$attachment))
 		{
-			redirect('上传附件发生意外错误!');
+			redirect('上传附件发生意外错误，错误:'.$val['tmp_name']);
 		}
 		$attachments[$id]['filepath']=$filepath;
 		$attachments[$id]['filename']=$attachments[$id]['name'];
@@ -143,14 +143,6 @@ function getAttach()
 				}
 			}
 			$attachments[$id]['isimage']=$isimage;
-
-			//水印
-			$watermark_size = explode('x', strtolower($host['watermark_size']));				
-			if($isimage && $host['watermark'] && count($watermark_size)==2&&$imginfo[0] > $watermark_size[0]*2 && $imginfo[1] > $watermark_size[1]*2 && $tmp_filesize < 2048000) 
-			{
-				$waterfile=RQ_DATA.'/watermark/'.$host['host'].'.png';
-				if(file_exists($waterfile)) coreaddwatermark($attachment,$waterfile,$host['watermark_pos'],$host['watermark_trans']);
-			}
 		}
 		if(!isset($attachments[$id]['isimage'])) $attachments[$id]['isimage']='0';
 	}

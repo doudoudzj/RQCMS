@@ -4,37 +4,28 @@ include RQ_CORE.'/include/tag.php';
 include RQ_CORE.'/library/func.convert.php';
 if(empty($action)) $action='list';
 
-$hidden=$DB->fetch_first("SELECT count(*) as ct FROM ".DB_PREFIX."article WHERE visible=0");
-$hiddenCount=$hidden['ct'];
-
 if(RQ_POST)
 {	
-	$view=isset($_POST['view'])?'hidden':'';
 	$article=isset($_POST['article'])?$_POST['article']:array();
 	$content=isset($_POST['content'])?$_POST['content']:array();
-	
 	$article['modified']=$timestamp;
-	
-    $attachments=getAttach();
-	$attcount=count($attachments);
-	$article['attachments']=$attcount;
 	
 	if(in_array($action,array('add','mod')))
 	{
 		$article['title'] = trim($article['title']);
 		$article['cateid'] = intval($article['cateid']);
 		$article['keywords'] = trim($article['keywords']);
-		$article['visible'] = isset($article['visible'])?intval($article['visible']):0;
 		$article['stick'] = isset($article['stick'])?intval($article['stick']):0;
 		$article['dateline'] = isset($article['edittime'])?getDateLine():$timestamp;
-		$visible=$article['visible'];
 		$tags        = getTagArr(trim($article['tag']));
-		$attachments = '';//一个序列化的结果,附件名,Id,大小
+		$attachments=getAttach();//一个序列化的结果,附件名,Id,大小
+		$attcount=count($attachments);
+		$article['attachments']=$attcount;
 		$attachInfo=array();//
 		$article['tag']=!empty($tags)?implode(',',$tags):'';
 		saveCookie();
 	}
-	$attachments=array();
+
 	switch($action)
 	{
 		case 'add':
@@ -46,6 +37,7 @@ if(RQ_POST)
 			$DB->query($addsql);
 			$articleid = $DB->insert_id();
 			if(!$article['url']) $DB->query('update '.DB_PREFIX."article set url='$articleid' where aid=$articleid");
+
 			if($attachments&&is_array($attachments))
 			{
 				$fileidarr=array();
@@ -63,13 +55,20 @@ if(RQ_POST)
 			$content['articleid']=$articleid;
 			$cindex=ceil($articleid/500000);
 			$tablename=DB_PREFIX."content{$cindex}";
-			if($cindex>1&&$articleid%500000<5) $DB->query("CREATE table IF NOT EXISTS {$tablename} select * from `".DB_PREFIX."content1` where 1>2");
+			if($cindex>1&&$articleid%500000<5)
+			{			
+				$tables=GetTables();
+				if(!in_array($tablename,$tables))
+				{
+					$DB->query("CREATE table {$tablename} select * from `rqcms_1_content1` where 1>2;ALTER TABLE `{$tablename}` ADD UNIQUE (`articleid`)");
+				}
+			}
 			
 			$DB->query("Insert into ".DB_PREFIX."content{$cindex} set ".getJoinSql($content));
 			//添加tags
 			modtag('',$article['tag'],$articleid);
 			clearCookie();
-			redirect('添加文章成功', $admin_url.'?file=article&action=add'.($visible?'':'&view=hidden'));
+			redirect('添加文章成功', $admin_url.'?file=article&action=add');
 			break;
 		case 'mod'://修改文章
 			$aid=intval($_POST['aid']);
@@ -156,22 +155,14 @@ if(RQ_POST)
 			$DB->query("Update ".DB_PREFIX."content{$cindx} set ".getJoinSql($content)." where `articleid`='$aid'");
 			//添加tags
 			modtag($oldtag,$article['tag'],$aid);
-			//处理成草稿后评论也不要显示了的
-			if(!$visible)
-			{
-				$DB->query("update `".DB_PREFIX."comment` set visible=0 where articleid=$aid");
-				
-			}
 			clearCookie();
 			stick_recache();
-			
 			latest_recache();
-			redirect('修改文章成功', $admin_url.'?file=article&action=list'.($visible?'':'&view=hidden'));
+			redirect('修改文章成功', $admin_url.'?file=article&action=list');
 		break;
 		case 'domore':
 			if(isset($_POST['aids'])&&is_array($_POST['aids']))
 			{
-				$view=isset($_POST['view'])?'hidden':'';
 				$aids=implode_ids($_POST['aids']);
 				$aquery=$DB->query('Select aid from '.DB_PREFIX."article where aid in ($aids)");
 				$aidarr=array();
@@ -326,7 +317,6 @@ else
 			$article=array_merge($article, $content);
 
 			$tdtitle='编辑内容';
-			$visible_check=$article['visible']?'checked':'';
 			$stick_check=$article['stick']?'checked':'';
 			$aquery=$DB->query("Select * from ".DB_PREFIX."attachment where articleid=$aid");
 			while($ath=$DB->fetch_array($aquery))
@@ -347,17 +337,14 @@ else
 		$tag=isset($_GET['tag'])?$_GET['tag']:'';
 		$cid=isset($_GET['cid'])?intval($_GET['cid']):'';
 		if ($view == 'stick') {
-			$addquery = " AND a.stick='1' and a.visible=1";
+			$addquery = " AND a.stick='1'";
 			$pagelink = '&view=stick';
-		} elseif ($view == 'hidden') {
-			$addquery = " AND a.visible='0'";
-			$pagelink = '&view=hidden';
 		} elseif ($cid) {
 			$cate = $DB->fetch_first("SELECT name FROM ".DB_PREFIX."category WHERE cid='$cid'");
-			$addquery = " AND a.cateid='$cid' and a.visible=1";
+			$addquery = " AND a.cateid='$cid'";
 			$pagelink = '&cid='.$cid;
 		} 
-		else $addquery = " and a.visible=1";	
+		else $addquery = "";	
 
 		if($page) {
 		$start_limit = ($page - 1) * 30;

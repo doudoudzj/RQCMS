@@ -34,10 +34,35 @@ CREATE TABLE `rqcms_host` (
   `url_ext` varchar(6) NOT NULL,
   `time_format` varchar(20) NOT NULL default 'Y-m-d H:i',
   PRIMARY KEY (`hid`),
-  KEY `host` (`host`)
+  Index `host` (`host`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 INSERT INTO `rqcms_host` (`hid`, `name`, `host`, `gzipcompress`, `theme`, `keywords`, `description`, `icp`, `list_shownum`, `tags_shownum`, `related_shownum`,`allow_search_content`, `search_post_space`, `search_keywords_min_len`,   `attach_save_dir`, `attach_thumbs`, `attach_display`, `attach_thumbs_size`, `attachments_remote_open`, `rss_enable`, `rss_num`,`status`,`url_ext`,`search_field_allow`) VALUES 
 (1, '默认站点', 'rq.cn', 0, 'default','CMS,RQCMS', '又一个RQCMS', '1234567890', 10, 10, 10, 0, 1, 2,    2, 0, 2, '200x200', 1, 'admin', 20,1,'php','tag,keywords,title,excerpt');
+
+DROP TABLE IF EXISTS `rqcms_admin`;
+CREATE TABLE `rqcms_admin` (
+  `uid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(20) NOT NULL DEFAULT '',
+  `password` varchar(32) NOT NULL DEFAULT '',
+  `groupid` smallint(5) NOT NULL,
+  `email` varchar(100) NOT NULL DEFAULT '',
+  `qq` bigint(13) NOT NULL DEFAULT '0',
+  `msn` varchar(50) NOT NULL DEFAULT '',
+  `face` varchar(100) NOT NULL DEFAULT '',
+  `url` varchar(255) NOT NULL,
+  `articles` mediumint(8) NOT NULL DEFAULT '0',
+  `regdateline` int(10) NOT NULL,
+  `regip` varchar(16) NOT NULL,
+  `logincount` mediumint(9) NOT NULL,
+  `loginip` varchar(15) NOT NULL,
+  `logintime` int(11) NOT NULL,
+  `useragent` varchar(200) NOT NULL,
+  `lastpost` int(10) NOT NULL,
+  `sessionid` varchar(30) DEFAULT NULL,
+  `disabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+   PRIMARY KEY (`uid`),
+   Index `sessionid` (`sessionid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 Insert Into `prefix_filemap` (`original`,`filename`) values ('index','index');
 Insert Into `prefix_filemap` (`original`,`filename`) values ('admin','admin');

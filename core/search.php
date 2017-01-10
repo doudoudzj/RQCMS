@@ -58,9 +58,9 @@ if($searchkey)
 	$sortby = 'dateline';
 	$orderby = 'desc';
 	$start=($page-1)*$host['list_shownum'];
-	$allarr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article WHERE visible='1' AND ($sqltxtsrch)");
+	$allarr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article WHERE 1 AND ($sqltxtsrch)");
 	$allcount=$allarr['count(*)'];
-	$query_sql = "SELECT * FROM ".DB_PREFIX."article WHERE visible='1' AND ($sqltxtsrch) ORDER BY dateline desc limit $start,{$host['list_shownum']}";
+	$query_sql = "SELECT * FROM ".DB_PREFIX."article WHERE 1 AND ($sqltxtsrch) ORDER BY dateline desc limit $start,{$host['list_shownum']}";
 	$query = $DB->query($query_sql);
 	while($article = $DB->fetch_array($query)) 
 	{

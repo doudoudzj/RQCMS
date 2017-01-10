@@ -6,7 +6,7 @@ define('DB_USER','rq204');//数据库用户名
 define('DB_PASSWORD','rq204');//数据库密码
 
 //参数开关
-define('RQ_DEBUG',True);//是否开启调试模式
+define('RQ_DEBUG',False);//是否开启调试模式
 define('RQ_CACHE',True);//对内容页是否启用自动缓存。
 
 //时区的设置

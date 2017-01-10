@@ -7,6 +7,7 @@ $rqcms_coredir=basename(RQ_CORE);
 $rqcms_datadir= basename(RQ_DATA);
 $rqcms_version=RQ_VERSION;
 $dbcharset='Utf-8';
+include RQ_CORE.'/library/func.convert.php';
 header('Content-Type: text/html; charset=UTF-8');
 echo <<<EOT
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -70,10 +71,10 @@ else
 			runquery($sql,'rqcms_1_');
 			echo "成功创建{$tablenum}个表<br />";
 			define('DB_PREFIX','rqcms_1_');
-			$DB->query("Insert into ".DB_PREFIX."user (`username`,`password`,`groupid`,`regdateline`,`regip`,`qq`) values ('$username','$password','4','$timestamp','$onlineip','285576545')");
+			$DB->query("Insert into rqcms_admin (`username`,`password`,`groupid`,`regdateline`,`regip`,`qq`) values ('$username','$password','4','$timestamp','$onlineip','285576545')");
 			echo "成功添加管理员帐号{$username}<br />";
 			$DB->query("update `rqcms_host` set `host`='".RQ_HOST."'");
-			$DB->query("INSERT INTO `".DB_PREFIX."article` (`aid`,  `cateid`, `title`, `keywords`, `tag`, `url`, `excerpt`, `dateline`, `modified`, `views`, `comments`, `attachments`,`visible`, `stick`) VALUES (NULL,'1', '感谢您使用RQCMS', '', 'rqcms', 'welcome', '','$timestamp', '$timestamp', '1', '0', '0',  '1', '1')");
+			$DB->query("INSERT INTO `".DB_PREFIX."article` (`aid`,  `cateid`, `title`, `keywords`, `tag`, `url`, `excerpt`, `dateline`, `modified`, `views`, `comments`, `attachments`, `stick`) VALUES (NULL,'1', '感谢您使用RQCMS', '', 'rqcms', 'welcome', '','$timestamp', '$timestamp', '1', '0', '0','1')");
 			$DB->query("INSERT INTO `".DB_PREFIX."comment` (`cid`,  `articleid`, `userid`, `username`, `dateline`, `content`, `ipaddress`, `score`, `visible`, `ban`) VALUES (1, 1, 1, '$username', '$timestamp', '测试评论', '$onlineip', 0, 1, 0)");
 			$DB->query('Insert into `'.DB_PREFIX."content1` (`articleid`,`content`) values ('1','感谢您使用RQCMS')");
 			host_recache();
@@ -102,12 +103,7 @@ else
 				//preg_match_all("/CREATE TABLE `([a-z0-9_]+)`/",$sql,$dataarr);
 				//$dbarrs=$dataarr[1];
 				$tables=$DB->query("show tables");
-				$dbtables=array();
-				while($dbs=$DB->fetch_array($tables))
-				{
-					$temp=array_values($dbs);
-					$dbtables[]=$temp[0];
-				}
+				$dbtables=GetTables();
 				$info='';
 				if(in_array('rqcms_host',$dbtables)) $info='<font color=\'red\'>程序检测到数据库中已经安装过RQCMS,如果继续,原来的数据将会被全部清空,请慎重操作!</font>';
 				//$same=array_intersect($dbarrs,$dbtables);

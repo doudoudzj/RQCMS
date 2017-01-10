@@ -58,6 +58,11 @@ if(RQ_POST)
 			
 			host_recache();
 			setting_recache($insertid);
+			stick_recache($insertid);
+			category_recache($insertid);
+			latest_recache($insertid);
+			hot_recache($insertid);
+			search_recache($insertid);
 			redirect('新站点添加成功',$admin_url.'?file=special');
 		break;
 		case 'edit':
@@ -143,7 +148,7 @@ else
 			$admin_url=mkUrl('admin','');
 			if($host)
 			{
-				redirect('正在转向转站点'.$host['name'],RQ_HTTP."{$rhost}/{$admin_url}?sessionid={$nsessionid}");
+				redirect('正在转向转站点'.$host['name'],RQ_HTTP."{$rhost}{$admin_url}?sessionid={$nsessionid}");
 				break;
 			}
 	}

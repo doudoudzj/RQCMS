@@ -31,7 +31,7 @@ function setting_recache($hostid=1)
 		$setting['plugin'][$ps['file']]=$ps['config'];
 	}
 	
-	$links = $DB->query('SELECT * FROM `rqcms_'.$hostid.'_link`  WHERE visible = 1 ORDER BY displayorder ASC, name ASC');
+	$links = $DB->query('SELECT * FROM `rqcms_'.$hostid.'_link` WHERE visible = 1 ORDER BY displayorder ASC, name ASC');
 	while ($link = $DB->fetch_array($links))
 	{
 		$setting['link'][] = $link;
@@ -67,7 +67,7 @@ function category_recache($hostid=1)
 	foreach($arrcates as $k=>$v)
 	{
 		$count='0';
-		$countarr=$DB->fetch_first('SELECT count(*) as ct FROM `rqcms_'.$hostid."_article` where visible=1 and cateid='{$cate['cid']}'");
+		$countarr=$DB->fetch_first('SELECT count(*) as ct FROM `rqcms_'.$hostid."_article` where cateid='{$cate['cid']}'");
 		if(is_array($countarr)) $count=$countarr['ct'];
 		$arrcates[$k]['count']=$count;
 		$arrcates[$k]['child']=getChildCate($k,$arrcates);
@@ -81,7 +81,7 @@ function latest_recache($hostid=1)
 {
 	global $DB,$category;
 	$dataArr=array();
-	$query= $DB->query('SELECT * FROM `rqcms_'.$hostid.'_article` where visible=1 ORDER BY aid DESC limit 20');
+	$query= $DB->query('SELECT * FROM `rqcms_'.$hostid.'_article` ORDER BY aid DESC limit 20');
 	while ($fs = $DB->fetch_array($query)) 
 	{
 		$dataArr['data'][$fs['aid']]=showArticle($fs);
@@ -89,7 +89,7 @@ function latest_recache($hostid=1)
 	}
 	foreach($category as $cateid=>$cname)
 	{
-		$query= $DB->query('SELECT * FROM `rqcms_'.$hostid."_article` where visible=1 and cateid={$cateid} ORDER BY aid DESC limit 20");
+		$query= $DB->query('SELECT * FROM `rqcms_'.$hostid."_article` where cateid={$cateid} ORDER BY aid DESC limit 20");
 		while ($fs = $DB->fetch_array($query)) 
 		{
 			$dataArr['data'][$fs['aid']]=showArticle($fs);
@@ -104,7 +104,7 @@ function stick_recache($hostid=1)
 {
 	global $DB,$category;
 	$dataArr=array();
-	$files= $DB->query('SELECT * FROM `rqcms_'.$hostid.'_article` where stick=1 and visible=1 ORDER BY aid DESC limit 20');
+	$files= $DB->query('SELECT * FROM `rqcms_'.$hostid.'_article` where stick=1 ORDER BY aid DESC limit 20');
 	while ($fs = $DB->fetch_array($files)) 
 	{
 		$dataArr['data'][$fs['aid']]=showArticle($fs);
@@ -112,7 +112,7 @@ function stick_recache($hostid=1)
 	}
 	foreach($category as $cateid=>$cname)
 	{
-		$query= $DB->query('SELECT * FROM `rqcms_'.$hostid."_article` where stick=1 and visible=1 and cateid={$cateid} ORDER BY aid DESC limit 20");
+		$query= $DB->query('SELECT * FROM `rqcms_'.$hostid."_article` where stick=1 and cateid={$cateid} ORDER BY aid DESC limit 20");
 		while ($fs = $DB->fetch_array($query)) 
 		{
 			$dataArr['data'][$fs['aid']]=showArticle($fs);
@@ -126,7 +126,7 @@ function stick_recache($hostid=1)
 function hot_recache($hostid=1)
 {
 	global $DB,$category;
-	$query=$DB->query('Select * from rqcms_'.$hostid."_article where visible=1 order by views desc limit 20");
+	$query=$DB->query('Select * from rqcms_'.$hostid."_article order by views desc limit 20");
 	$cache=array();
 	while($article=$DB->fetch_array($query))
 	{
@@ -135,7 +135,7 @@ function hot_recache($hostid=1)
 	}
 	foreach($category as $cateid=>$cname)
 	{
-		$query= $DB->query("SELECT * FROM `rqcms_".$hostid."_article` where visible=1 and cateid={$cateid} order by views desc limit 20");
+		$query= $DB->query("SELECT * FROM `rqcms_".$hostid."_article` where cateid={$cateid} order by views desc limit 20");
 		while ($fs = $DB->fetch_array($query)) 
 		{
 			$cache['data'][$fs['aid']]=showArticle($fs);
@@ -150,7 +150,7 @@ function hot_recache($hostid=1)
 function search_recache($hostid=1)
 {
 	global $DB;
-	$query=$DB->query('Select distinct keywords from rqcms_'.$hostid."_search  order by dateline desc limit 20");
+	$query=$DB->query('Select distinct keywords from rqcms_'.$hostid."_search order by dateline desc limit 20");
 	$cache=array();
 	while($data=$DB->fetch_array($query))
 	{

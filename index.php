@@ -8,8 +8,8 @@
  */
  //版权相关设置
 define('RQ_AppName','RQCMS');
-define('RQ_VERSION','2.1');
-define('RQ_RELEASE','20141110');
+define('RQ_VERSION','2.4');
+define('RQ_RELEASE','20160327');
 define('RQ_AUTHOR','RQ204');
 define('RQ_WEBSITE','http://www.rqcms.com');
 define('RQ_EMAIL','rq204@qq.com');
@@ -60,8 +60,8 @@ if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'IIS')
 	if(empty($_GET)&&strpos($HTTP_X_REWRITE_URL,'?'))
 	{
 		$_GET=getGetArr($HTTP_X_REWRITE_URL);
-		$QUERY_URL=$HTTP_X_REWRITE_URL;
 	}
+	$QUERY_URL=$HTTP_X_REWRITE_URL;
 }
 else if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'nginx')!==false)//nginx
 {

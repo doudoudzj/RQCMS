@@ -57,7 +57,7 @@ else
 				if($_GET['type']=='mobile') $themetype='thememobile';
 				if($_GET['type']=='weixin') $themetype='themeweixin';
 				$themename=$themearr[$themetype];
-				$DB->query("update rqcms_host set $themetype='$name'");
+				$DB->query("update rqcms_host set $themetype='$name' where hid=$hostid");
 				host_recache();
 				redirect("{$themename}模板已经更新", $refile);
 			} 
@@ -131,30 +131,4 @@ else
 			unset($file1);
 			$subnav = '选择模板';
 	}
-
-
-	
-
-			
-	
-	// $path = isset($_GET['path']) ? $_GET['path'] : (isset($_POST['path'])?$_POST['path']:'');
-	// $file = isset($_GET['file']) ? $_GET['file'] : (isset($_POST['file'])?$_POST['file']:'');
-	// $ext = isset($_GET['ext']) ? $_GET['ext'] : (isset($_POST['ext'])?$_POST['ext']:'');
-
-	// $opened = @opendir($template_dir);
-	// $dirdb = array();
-	// while($dir = @readdir($opened)){
-		// if(($dir != '.') && ($dir != '..')) {
-			// if (@is_dir($template_dir.$dir)){
-				// $dirdb[] = $dir;
-			// }
-		// }
-	// }
-	// asort($dirdb);
-	// unset($dir);
-	// @closedir($opened);
-	// $path = in_array($path,$dirdb) ? $path : 'default';
-	// if (strstr($file,'.') || strstr($path,'.')) {
-		// redirect('模板无效', $admin_url.'?file=template&action=filelist');
-	// }
 }

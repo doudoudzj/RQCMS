@@ -95,3 +95,17 @@ function GetTableField($table)
 	}
 	return $arrlist;
 }
+
+///获取所有表名
+function GetTables()
+{
+	global $DB;
+	$dbtables=array();
+	$tables=$DB->query("show tables");
+	while($dbs=$DB->fetch_array($tables))
+	{
+		$temp=array_values($dbs);
+		$dbtables[]=$temp[0];
+	}
+	return $dbtables;
+}

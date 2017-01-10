@@ -21,7 +21,7 @@ if ($item)
         $start = ($page - 1) * $shownum;
         $listaids=array_slice($aidsarr,$start,$shownum);
         $aidstr=implode_ids($listaids);
-        $query_sql = "SELECT * FROM ".DB_PREFIX."article WHERE aid in ($aidstr) and visible='1' ORDER BY dateline desc";
+        $query_sql = "SELECT * FROM ".DB_PREFIX."article WHERE aid in ($aidstr) ORDER BY dateline desc";
         $query=$DB->query($query_sql);
         $articledb=array();
         while($adb=$DB->fetch_array($query))

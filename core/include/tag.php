@@ -59,12 +59,12 @@ function modtag($oldtag,$newtag,$aid)
 					$aidsarr[]=$aid;
 				}
 				$aidsnew=implode(',',$aidsarr);
-				$DB->query("update ".DB_PREFIX."tag set aids='$aidsnew' where tag='$tag'  ");
+				$DB->query("update ".DB_PREFIX."tag set aids='$aidsnew' where tag='$tag'");
 			}
 		}
 	}
 
-	$DB->query("delete from ".DB_PREFIX."tag where aids=''");
+	//注释 20150711 ，$DB->query("delete from ".DB_PREFIX."tag where aids=''");
 	
 }
 

@@ -16,19 +16,13 @@ CREATE TABLE `prefix_article` (
   `views` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '访问量',
   `comments` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '评论的个数',
   `attachments` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '附件个数',
-  `visible` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否可见',
   `stick` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否置顶',
   PRIMARY KEY (`aid`),
-  KEY `article` (`cateid`,`url`,`dateline`,`visible`,`views`,`modified`)
+  Index `cateid` (`cateid`),
+  Index `views` (`views`),
+  Index `stick` (`stick`),
+  Index `dateline` (`dateline`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `prefix_content1`;
-CREATE TABLE `prefix_content1` (
-	`articleid` MEDIUMINT(8) NULL DEFAULT NULL,
-	`content` MEDIUMTEXT NULL,
-	UNIQUE INDEX `articleid` (`articleid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-
 
 DROP TABLE IF EXISTS `prefix_attachment`;
 CREATE TABLE `prefix_attachment` (
@@ -45,7 +39,8 @@ CREATE TABLE `prefix_attachment` (
   `modified` int(10) NOT NULL COMMENT '最后修改时间',
   `tag` smallint(5) NOT NULL DEFAULT '0' COMMENT '缩略图高',
   PRIMARY KEY (`aid`),
-  KEY `attachment` (`articleid`,`isimage`,`dateline`,`modified`)
+  INDEX `articleid` (`articleid`),
+  INDEX `isimage` (`isimage`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `prefix_category`;
@@ -60,7 +55,7 @@ CREATE TABLE `prefix_category` (
   `visible` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否可见',
   `displayorder` smallint(5) NOT NULL DEFAULT '0' COMMENT '显示次序',
   PRIMARY KEY (`cid`),
-  KEY `category` (`url`,`visible`)
+  INDEX `displayorder` (`displayorder`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO `prefix_category` (`cid`,`name`, `pid`, `style`, `keywords`, `description`, `displayorder`,`url`) VALUES (NULL,'默认栏目', '0', '', '', '', '0','hello');
 
@@ -79,7 +74,9 @@ CREATE TABLE `prefix_comment` (
   `visible` tinyint(1) NOT NULL DEFAULT '1',
   `ban` tinyint(1) NOT NULL,
   PRIMARY KEY (`cid`),
-  KEY `comment` (`articleid`,`dateline`,`ipaddress`)
+  INDEX `articleid` (`articleid`),
+  INDEX `dateline` (dateline),
+  INDEX `ipaddress` (ipaddress)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `prefix_filemap`;
@@ -98,7 +95,8 @@ CREATE TABLE `prefix_link` (
   `bak` varchar(200) NOT NULL DEFAULT '',
   `visible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`lid`),
-  KEY `link` (`displayorder`)
+  INDEX `displayorder` (`displayorder`),
+  INDEX `visible` (`visible`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO `prefix_link` (`lid`, `displayorder`, `name`, `url`, `note`, `visible`) VALUES (NULL, '0', 'RQCMS', 'http://wwww.rqcms.com', 'RQCMS官方站点', '1');
 
@@ -133,7 +131,7 @@ CREATE TABLE `prefix_user` (
   `sessionid` varchar(30) DEFAULT NULL,
   `disabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
    PRIMARY KEY (`uid`),
-   KEY `user`(`username`,`sessionid`)
+   Index `sessionid` (`sessionid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `prefix_plugin`;
@@ -148,7 +146,7 @@ CREATE TABLE `prefix_plugin` (
 	`active` TINYINT(1) NOT NULL,
 	`config` TEXT NOT NULL,
 	PRIMARY KEY (`pid`),
-	KEY `plugin`(`file`)
+	Index `file` (`file`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `prefix_var`;
@@ -158,7 +156,7 @@ CREATE TABLE `prefix_var` (
   `value` text NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`vid`),
-  KEY `var` (`visible`)
+  Index `visible` (`visible`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 Insert Into `prefix_var` (`title`,`value`,`visible`) values ('demo','这是一个测试变量','1');
 
@@ -171,7 +169,7 @@ CREATE TABLE `prefix_login` (
   `ip` varchar(16) NOT NULL,
   `content` text NOT NULL,
   PRIMARY KEY (`lid`),
-  KEY `log` (`user`,`ip`)
+  Index `user` (`user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `prefix_redirect`;
@@ -191,5 +189,14 @@ CREATE TABLE `prefix_search` (
 	`ip` VARCHAR(15) NULL DEFAULT '',
 	`dateline` INT(10) NULL DEFAULT '0',
 	PRIMARY KEY (`sid`),
-	Key `search` (`ip`,`dateline`)
+	Index `keywords` (`keywords`),
+	Index `ip` (`ip`),
+	Index `dateline` (`dateline`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `prefix_content1`;
+CREATE TABLE `prefix_content1` (
+	`articleid` MEDIUMINT(8) NULL DEFAULT NULL,
+	`content` MEDIUMTEXT NULL,
+	UNIQUE INDEX `articleid` (`articleid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

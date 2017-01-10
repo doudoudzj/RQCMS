@@ -68,6 +68,7 @@ foreach($likedata as $key => $title){
 <hr>阅读排行 $hotdata=getHotArticle(10,$article['cateid']); <br>
 <ul>
 <?php
+$hotdata=getHotArticle(10,$article['cateid']);
 foreach($hotdata AS $data){
 ?>
         <li><a href="<?php echo $data['aurl'];?>" title="<?php echo $data['title'];?>,浏览<?php echo $data['views'];?>"><?php echo $data['title'];?></a></li>

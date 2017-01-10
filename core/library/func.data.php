@@ -4,8 +4,8 @@ function getLatestArticle($num,$cateid=0)
 {
 	global $host;
 	$cache=@include RQ_DATA.'/cache/latest_'.$host['hid'].'.php';
-	$cateadd=$cateid?" and cateid in ({$cateid})":'';
-	$sql='SELECT * FROM `'.DB_PREFIX."article` where visible=1 $cateadd ORDER BY aid DESC limit $num";
+	$cateadd=$cateid?" where cateid in ({$cateid})":'';
+	$sql='SELECT * FROM `'.DB_PREFIX."article` $cateadd ORDER BY aid DESC limit $num";
 	$arr=getCacheDB($cache,$num,$cateid,$sql);
 	rsort($arr);
 	return $arr;
@@ -17,7 +17,7 @@ function getStickArticle($num,$cateid=0)
 	global $host;
 	$cache=@include RQ_DATA.'/cache/stick_'.$host['hid'].'.php';
 	$cateadd=$cateid?" and cateid in ({$cateid})":'';
-	$sql='SELECT * FROM `'.DB_PREFIX."article` where stick=1 and cateid={$cateid} and visible=1 ORDER BY aid DESC limit $num";
+	$sql='SELECT * FROM `'.DB_PREFIX."article` where stick=1 $cateadd ORDER BY aid DESC limit $num";
 	return getCacheDB($cache,$num,$cateid,$sql);
 }
 
@@ -26,19 +26,18 @@ function getHotArticle($num,$cateid=0)
 {
 	global $host,$DB;
 	$cache=@include RQ_DATA.'/cache/hot_'.$host['hid'].'.php';
-	$cateadd=$cateid?" and cateid in ({$cateid})":'';
-	$sql='SELECT * FROM `'.DB_PREFIX."article` where visible=1 $cateadd ORDER BY views DESC limit $num";
+	$cateadd=$cateid?" where cateid in ({$cateid})":'';
+	$sql='SELECT * FROM `'.DB_PREFIX."article` $cateadd ORDER BY views DESC limit $num";
 	return getCacheDB($cache,$num,$cateid,$sql);
 }
 
-//得到相关文章
-function getRelatedArticle($aid,$tagarr,$num,$cateid='')
+//得到相关文章,是从本站查询的
+function getRelatedArticle($aid,$tagarr,$num)
 {
 	global $DB,$host;
 	$articledb=array();
 	$tag="'".implode("','",$tagarr)."'";
-	$cateadd=$cateid?" and cateid in ($cateid)":'';
-	$query=$DB->query('Select * from '.DB_PREFIX."tag where tag in ($tag) $cateadd");
+	$query=$DB->query('Select * from '.DB_PREFIX."tag where tag in ($tag)");
 	
 	$aidarr=array();
 	while($aq=$DB->fetch_array($query))
@@ -50,8 +49,11 @@ function getRelatedArticle($aid,$tagarr,$num,$cateid='')
 	if(!empty($aidarr))
 	{
 		$aidarr=array_unique($aidarr);
+		unset($aidarr[$aid]);
+		shuffle($aidarr);
+		if(count($aidarr)>$num) $aidarr=array_slice($aidarr,0,$num);
 		$aids=implode_ids($aidarr);
-		$query=$DB->query('Select * from '.DB_PREFIX."article where  aid in ($aids) and visible=1 and aid!=$aid order by aid limit $num");
+		$query=$DB->query('Select * from '.DB_PREFIX."article where aid in ($aids) order by aid");
 		while($article=$DB->fetch_array($query))
 		{
 			$articledb[]=showArticle($article);
@@ -67,8 +69,8 @@ function getCateArticle($cateids,$page)
 	global $DB,$hostid,$host,$category;
 	$pagenum = intval($host['list_shownum']);
 	$start_limit = ($page - 1) * $pagenum;
-	$catesql=$cateids==0?'':" `cateid` in ($cateids)";
-	$sql = "SELECT * FROM ".DB_PREFIX."article WHERE $catesql and visible=1 ORDER BY aid DESC LIMIT $start_limit, ".$pagenum;//exit($sql);
+	$catesql=$cateids==0?'':"WHERE `cateid` in ($cateids)";
+	$sql = "SELECT * FROM ".DB_PREFIX."article $catesql ORDER BY aid DESC LIMIT $start_limit, ".$pagenum;//exit($sql);
 	$articledb=array();
 	$query=$DB->query($sql);
 	while($article=$DB->fetch_array($query))
@@ -82,7 +84,7 @@ function getCateArticle($cateids,$page)
 function getArticle($url)
 {
 	global $DB,$hostid,$host;
-	$sql = "SELECT * FROM ".DB_PREFIX."article WHERE url='$url' and visible=1 limit 1";
+	$sql = "SELECT * FROM ".DB_PREFIX."article WHERE url='$url' limit 1";
 	$article=$DB->fetch_first($sql);
 	if(!empty($article))
 	{

@@ -7,7 +7,7 @@ $sessionid=isset($_COOKIE['sessionid'])?$_COOKIE['sessionid']:'';
 if(isset($_GET['sessionid'])) $sessionid=$_GET['sessionid'];//在多站点切换时,使用这个来保持登陆状态
 if(!empty($sessionid)&&strlen($sessionid)==30)
 {
-	$userinfo=$DB->fetch_first('Select * from '.DB_PREFIX."user where `sessionid`='$sessionid'");//创始人可以登陆站点,其他人受限
+	$userinfo=$DB->fetch_first("Select * from rqcms_admin where `sessionid`='$sessionid'");//创始人可以登陆站点,其他人受限
 	if($userinfo)
 	{
 		$nowips=explode('.',$onlineip);
@@ -24,8 +24,6 @@ if(!empty($sessionid)&&strlen($sessionid)==30)
 			if(isset($_COOKIE['sessionid'])&&$_COOKIE['sessionid']!=$sessionid) 
 			{
 				setcookie('sessionid','');
-				if(!RQ_ISIE) setcookie('sessionid','',-1,'/','.'.$host['host']);//使用泛域名解析后，需要删除.rq.cn这样的cookie的域
-				message('站点切换成功',$admin_url.'?sessionid='.$sessionid);
 			}
 			else 
 				setcookie('sessionid',$sessionid);
