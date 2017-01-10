@@ -47,5 +47,4 @@ EOT;
 </ul></div>
 </div></div>
 EOT;
-include RQ_DATA."/themes/$theme/footer.php";
 ?>

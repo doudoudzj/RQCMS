@@ -35,6 +35,8 @@ $filepath=str_replace('//','/',$filepath);
 $attachment = $isimage ? 'inline' : 'attachment';
 $attachinfo['filetype'] = $attachinfo['filetype'] ? $attachinfo['filetype'] : 'unknown/unknown';
 
+doAction('attachment_before_download');
+
 if(is_readable($filepath)) 
 {
 	ob_end_clean();

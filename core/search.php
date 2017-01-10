@@ -6,7 +6,7 @@ $searchurl='search.php';
 if(RQ_POST)
 {
 	if(empty($keywords)) message('搜索内容为空', $searchurl);
-
+	
 	//过滤及检测
 	if(strlen($keywords) < $host['search_keywords_min_len']) 
 	{
@@ -23,6 +23,9 @@ if(RQ_POST)
 
 	$keywords = str_replace("_","\_",$keywords);
 	$keywords = str_replace("%","\%",$keywords);
+	
+	doAction('search_before_featch');
+	
 	if(preg_match("(AND|\+|&|\s)", $keywords) && !preg_match("(OR|\|)", $keywords)) {
 		$andor = ' AND ';
 		$sqltxtsrch = '1';
@@ -63,3 +66,5 @@ else
 	$articledb=array();
 	$title='搜索文章';
 }
+
+doAction('search_before_view');

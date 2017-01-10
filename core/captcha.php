@@ -5,6 +5,9 @@
  * @version emlog-3.5.0
  * $Id: checkcode.php 1698 2010-05-03 03:57:40Z emloog@gmail.com $
  */
+if(!defined('RQ_ROOT')) exit('Access Denied');
+
+doAction('captcha_create_myself');
 
 session_start();
 

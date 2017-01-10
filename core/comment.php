@@ -8,6 +8,7 @@ if(RQ_POST)
 	$expr="$artarg='{$_POST[$artarg]}'";
 	$article=getArticle($expr);
 	if(empty($article)) message('不存在的文章', './');
+	doAction('comment_post_check');
 	$redirct="article.php?$artarg={$_POST[$artarg]}";
 	if($article['closed'])  message('该文章禁止评论', $redirct);
 	$content=$_POST['content'];
@@ -26,6 +27,7 @@ else
 	$page=1;
 	if(isset($_GET['page'])) $page=(int)$_GET['page'];
 	$commentdb =getAllComment($page);//print_r($commentdb);exit;
+	doAction('comment_data_view',$commentdb);
 	$tatol=count($commentdb);
 	$multipage='';
 	$title='评论';

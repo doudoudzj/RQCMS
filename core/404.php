@@ -27,6 +27,7 @@ if(!$themefiles&&!file_exists($cachefile)) writeCache('file_'.$host['host'],arra
 
 if(!is_array($themefiles)) $themefiles=array();
 $themefile=RQ_DATA."/themes/$theme/".RQ_FILE;
+doAction('404_before_output');
 if(file_exists($themefile)&&$fileext!='php')
 {
 	if(!array_key_exists(RQ_FILE,$themefiles))

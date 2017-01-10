@@ -32,8 +32,8 @@ if($tatol>0)
 	$multpage=pagination($allcount,$host['list_shownum'],$page,'category.php?'.$catekey.'='.$_GET[$catearg].'&page');
 }
 
-
-
 $title=$cate['name'];
 $keywords=$cate['keywords'];
 $description=$cate['description'];
+
+doAction('category_before_view');

@@ -48,7 +48,8 @@ function plugins_recache() {
 	$plugins=array();
 	while ($ps = $DB->fetch_array($query)) 
 	{
-		$plugins[$ps['host']][]=$ps['name'];
+		$plugins[$ps['host']][]=$ps['file'];
+		$plugins['data'][$ps['host']][$ps['file']]=$ps['config'];
 	}
 	writeCache('plugins',$plugins);
 }

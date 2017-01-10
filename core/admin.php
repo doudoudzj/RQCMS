@@ -227,3 +227,40 @@ function sizecount($filesize) {
 	}
 	return $filesize;
 }
+
+/**
+ * 解压zip
+ */
+function rqUnZip ($zipfile, $path, $type = 'tpl') {
+	if(class_exists('ZipArchive', FALSE)) {
+		$zip = new ZipArchive();
+		if (@$zip->open($zipfile) === TRUE) {
+			$r = explode('/', $zip->getNameIndex(0), 2);
+			$dir = isset($r[0]) ? $r[0].'/' : '';
+			switch ($type) {
+				case 'tpl':
+					$re = $zip->getFromName($dir.'header.php');
+					if (false === $re)
+					return -2;
+					break;
+				case 'plugin':
+					$plugin_name = substr($dir, 0, -1);
+					$re = $zip->getFromName($dir.$plugin_name.'.php');
+					if (false === $re)
+						return '安装失败，插件安装包不符合标准';
+					break;
+			}
+
+			if (true === $zip->extractTo($path)) {
+				$zip->close();
+				return true;
+			} else {
+				return '只支持zip压缩格式的插件包';
+			}
+		} else {
+			return '只支持zip压缩格式的插件包';
+		}
+	} else {
+		return "空间不支持zip模块，请按照提示手动安装插件";
+	}
+}

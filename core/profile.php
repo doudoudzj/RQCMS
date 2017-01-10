@@ -21,6 +21,7 @@ if(RQ_POST)
 		}
 		if ($doreg) 
 		{
+			doAction('profile_reg_check');
 			//注册
 			if ($options['seccode_enable']) 
 			{

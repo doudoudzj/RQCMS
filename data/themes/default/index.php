@@ -31,7 +31,7 @@ EOT;
 <dd>
 EOT;
 foreach($picscache as $k=>$v){print <<<EOT
-<img src="attachment.php?{$v['arg']}" id="pic{$v['aid']}" />
+<img src="attachment.php?aid={$v['did']}" id="pic{$v['aid']}" />
 EOT;
 }print <<<EOT
 </dd></dl></div>
@@ -118,5 +118,4 @@ EOT;
     </ul>
   </div>
 EOT;
-include RQ_DATA."/themes/$theme/footer.php";
 ?>

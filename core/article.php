@@ -9,8 +9,11 @@ $comment_username=isset($_COOKIE['comment_username'])?$_COOKIE['comment_username
 $comment_url=isset($_COOKIE['comment_url'])?$_COOKIE['comment_url']:'';
 
 $article=getArticle($expr);
-if(empty($article)) message('该文章不存在或已被删除',RQ_HTTP.$host['host']);
-
+if(empty($article))
+{
+	doAction('article_not_find');
+	message('该文章不存在或已被删除',RQ_HTTP.$host['host']);
+}
 //如果启用了自动缓存，先判断是否超时的
 if(RQ_CACHE) cacheControl($article['lastmodified']);
 
@@ -53,3 +56,5 @@ else
 
 $cmcontent=isset($_COOKIE['cmcontent'])?$_COOKIE['cmcontent']:'';
 $multipage ='';
+
+doAction('article_before_view');

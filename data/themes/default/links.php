@@ -17,5 +17,4 @@ EOT;
 <p><strong>没有任何友情链接</strong></p>
 EOT;
 }
-include RQ_DATA."/themes/$theme/footer.php";
 ?>

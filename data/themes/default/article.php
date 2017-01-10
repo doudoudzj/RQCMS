@@ -29,7 +29,7 @@ if($article['attachments'])
 		if($image['isimage'])
 		{
 			print <<<EOT
-			<p class="attach">{$image['filename']}<br /><a href="attachment.php?{$image['arg']}" target="_blank"><img src="attachment.php?{$image['arg']}" border="0" alt="大小: {$image['filesize']}KB&#13;尺寸: {$image['thumb_width']} x {$image['thumb_height']}&#13;浏览: {$image['downloads']} 次&#13;点击打开新窗口浏览全图" /></a></p>
+			<p class="attach">{$image['filename']}<br /><a href="attachment.php?id={$image['aid']}" target="_blank"><img src="attachment.php?id={$image['aid']}" border="0" alt="大小: {$image['size']}KB&#13;尺寸: {$image['thumb_width']} x {$image['thumb_height']}&#13;浏览: {$image['downloads']} 次&#13;点击打开新窗口浏览全图" width="{$image['thumb_width']}" height="{$image['thumb_height']}" /></a></p>
 EOT;
 		}
 	}
@@ -38,7 +38,7 @@ EOT;
 		if(!$attach['isimage']) 
 		{
 			print <<<EOT
-			<p class="attach"><strong>附件: </strong><a href="attachment.php?{$attach['arg']}" target="_blank">{$attach['filename']}</a> ({$attach['filesize']}KB, 下载次数:{$attach['downloads']})</p>
+			<p class="attach"><strong>附件: </strong><a href="attachment.php?id={$attach['aid']}" target="_blank">{$attach['filename']}</a> ({$attach['size']}KB, 下载次数:{$attach['downloads']})</p>
 EOT;
 		}
 	}
@@ -70,7 +70,7 @@ print <<<EOT
       <div id=comments>
 EOT;
 }
-if ($article['comments']) {print <<<EOT
+if ($article['comment']) {print <<<EOT
 <span style="FLOAT:right;padding-bottom: 2px;font-size: 12px;">{$article['comment']}条记录</span>访客评论
 EOT;
 foreach($commentdb as $key => $comment){print <<<EOT
@@ -86,7 +86,7 @@ if (!$article['closed']) {
 print <<<EOT
   <a name="addcomment"></a>
   <form method="post" name="form" id="form" action="comment.php" onsubmit="return checkform();">
-    <input type="hidden" name="$artarg" value="{$_GET[$artarg]}" />
+    <input type="hidden" name="aid" value="{$article['aid']}" />
     <div class="formbox">
 EOT;
 if ($uid) {
@@ -101,6 +101,10 @@ EOT;
   <p>
     <label for="password">
     密码 (游客不需要密码):<br /><input name="password" id="password" type="password" value="" tabindex="2" class="formfield" style="width: 210px;" /></label>
+  </p>
+  <p>
+    <label for="url">
+    网址或电子邮件 (选填):<br /><input type="text" name="url" id="url" value="$comment_url" tabindex="3" class="formfield" style="width: 210px;" /></label>
   </p>
 EOT;
 }print <<<EOT
@@ -132,11 +136,9 @@ EOT;
         <h3>相关文章</h3>
         <ul>
 EOT;
-if(!empty($likedata)){
 foreach($likedata as $key => $title){print <<<EOT
           <li><a href="article.php?{$title['arg']}" title="$title[title],浏览$title[views]">$title[title]</a></li>
 EOT;
-}
 }print <<<EOT
         </ul>
       </div>
@@ -164,5 +166,4 @@ EOT;
     </div>
   </div>
 EOT;
-include RQ_DATA."/themes/$theme/footer.php";
 ?>

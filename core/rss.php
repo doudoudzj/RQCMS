@@ -3,6 +3,7 @@ $tempView=$coreView;
 $rssfile = RQ_DATA.'/cache/rss_'.$host['host'].'.php';
 $rssdb=@include($rssfile);
 if(!$rssdb) $rssdb=array();//rss数据
+doAction('rss_before_output',$rssdb);
 $ContentType="Content-Type: application/xml";
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 echo "<rss version=\"2.0\">\n";

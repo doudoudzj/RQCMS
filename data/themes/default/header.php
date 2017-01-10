@@ -13,10 +13,10 @@ print <<<EOT
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
 <html>
 <head>
-<title>{$title}</title>
-<meta name="author" content="rq204">
-<meta name="keywords" content="{$keywords}">
-<meta name="description" content="{$description}">
+<title>{$host['name']}</title>
+<meta name=author content="rq204">
+<meta name=keywords content="{$keywords}">
+<meta name=description content="{$description}">
 <meta content="text/html; charset=utf-8" http-equiv=Content-Type>
 <link title="{$host['name']}" rel=alternate type=application/rss+xml href="rss.php$rssinfo">
 <link rel=stylesheet type=text/css href="images/common.css">

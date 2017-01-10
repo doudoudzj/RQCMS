@@ -166,9 +166,9 @@ function pagination($count,$perlogs,$page,$url){
  */
 function addAction($hook, $actionFunc){
 	global $wdHooks;
-	if (!@in_array($actionFunc, $wdHooks[$hook])){
+	if (!isset($wdHooks[$hook])||!in_array($actionFunc, $wdHooks[$hook])){
 		$wdHooks[$hook][] = $actionFunc;
-	}
+}
 	return true;
 }
 
@@ -575,4 +575,12 @@ function cacheControl($lastmodified)
 		header("Cache-Control: max-age=259200");
 		header("Last-Modified: ".$lastmodified); //Fri, 31 Oct 2008 02:14:04 GMT
 	}
+}
+
+/**
+ * 获取文件后缀
+ * @param string $fileName
+ */
+function getFileSuffix($fileName) { 
+	return strtolower(substr(strrchr($fileName, "."),1));
 }

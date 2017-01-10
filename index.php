@@ -7,8 +7,8 @@
  */
  //版权相关设置
 define('RQ_AppName','RQCMS');
-define('RQ_VERSION','0.91');
-define('RQ_RELEASE','20120416');
+define('RQ_VERSION','0.92');
+define('RQ_RELEASE','20120510');
 define('RQ_AUTHOR','RQ204');
 define('RQ_WEBSITE','http://www.rqcms.com');
 define('RQ_EMAIL','rq204@qq.com');
@@ -65,6 +65,7 @@ $DB->connect(DB_HOST,DB_USER,DB_PASSWORD,DB_DATABASE,0);
 $Hosts = array();//站点数据,如果为多个,则需要判断是否存在的站点
 $Files = array();//文件数组,需要寻找对应的文件并包含
 $Plugins = array();//插件文件数组
+$PluginsConfig=array();//插件的配置数据
 $wdHooks = array();//插件函数数据
 $Hosts = @include RQ_DATA.'/cache/hosts.php';//加载所有站点信息
 $cates=array();//当前站点的分类数据
@@ -100,7 +101,11 @@ if(isset($host))
 	$var=@include RQ_DATA.'/cache/var_'.$host['host'].'.php';
 	$Plugins = @include RQ_DATA.'/cache/plugins.php';
 	if(!$cates) $cates=array();
-	if($Plugins&&is_array($Plugins)) $Plugins=$Plugins[$host['host']];
+	if($Plugins&&is_array($Plugins))
+	{
+		$PluginsConfig=$Plugins['data'][$host['host']];
+		$Plugins=$Plugins[$host['host']];
+	}
 }
 
 //时区的设置
@@ -168,7 +173,7 @@ if(RQ_ALIAS&&isset($aliasname)&&$views=="index.php")//只对文章页面进行�
 $coreView=RQ_CORE.'/'.$views;//核心模板文件
 $tempView=RQ_DATA.'/themes/'.$theme.'/'.$views;//风格模板文件
 $ContentType='Content-Type: text/html; charset=UTF-8';
-//print_r($Files);exit;
+
 //加载插件，插件目录和插件文件名应保持一致
 if ($Plugins && is_array($Plugins))
 {
@@ -180,16 +185,16 @@ if ($Plugins && is_array($Plugins))
 		}
 	}
 }
+
 doAction('before_router');
 include_once $coreView;
 include_once $tempView;
-
 //输出前处理,输出ContentType,网址重写，插件处理，网页压缩
 header($ContentType);
 $output=ob_get_contents();
 ob_end_clean();
 $output=urlRewrite($output);
-doAction('before_flush');
+doAction('before_output',$output);
 if($host['gzipcompress']&& function_exists('ob_gzhandler'))
 {
 	ob_start('ob_gzhandler');

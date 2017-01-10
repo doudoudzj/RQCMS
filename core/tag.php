@@ -55,3 +55,5 @@ else
 	unset($tag);
 	$DB->free_result($query);
 }
+
+doAction('tag_before_view');

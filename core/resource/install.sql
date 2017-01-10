@@ -229,16 +229,19 @@ CREATE TABLE `rqcms_user` (
 
 DROP TABLE IF EXISTS `rqcms_plugin`;
 CREATE TABLE `rqcms_plugin` (
-  `pid` smallint(5) NOT NULL AUTO_INCREMENT,
-  `hostid` tinyint(3) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `author` varchar(50) NOT NULL,
-  `version` varchar(50) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `active` tinyint(1) NOT NULL,
-  `config` text NOT NULL,
-  PRIMARY KEY (`pid`),
-  KEY `hostid` (`hostid`)
+	`pid` SMALLINT(5) NOT NULL AUTO_INCREMENT,
+	`hostid` TINYINT(3) NOT NULL,
+	`file` VARCHAR(50) NULL DEFAULT NULL,
+	`name` VARCHAR(50) NOT NULL,
+	`author` VARCHAR(50) NOT NULL,
+	`version` VARCHAR(50) NOT NULL,
+	`description` VARCHAR(255) NOT NULL,
+	`url` VARCHAR(50) NULL,
+	`active` TINYINT(1) NOT NULL,
+	`config` TEXT NOT NULL,
+	PRIMARY KEY (`pid`),
+	INDEX `hostid` (`hostid`),
+	INDEX `file` (`file`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
