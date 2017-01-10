@@ -10,6 +10,7 @@ $do=isset($_POST['do'])?$_POST['do']:'';
 if(!$do) $do=isset($_GET['do'])?$_GET['do']:'';
 $action=!empty($_GET['action'])?$_GET['action']:(!empty($_POST['action'])?$_POST['action']:'');
 $cssdir='/'.$coredir.'/manager/view/images/';
+$editordir='/'.$coredir.'/manager/editor/';
 $page=isset($_GET['page'])?intval($_GET['page']):'';
 if($incfile!='css'&&$groupid<2)  $incfile='login';
 

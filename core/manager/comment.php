@@ -144,7 +144,7 @@ else
 	
 		
 	if ($action == 'modcm') {
-		$comment = $DB->fetch_first("SELECT c.articleid,c.cid,c.username,c.userid,c.email,c.url,c.dateline,c.content, a.title FROM ".DB_PREFIX."comment c LEFT JOIN ".DB_PREFIX."article a ON (a.aid=c.articleid) WHERE cid='$cid' and hostid=$hostid");
+		$comment = $DB->fetch_first("SELECT c.*, a.title FROM ".DB_PREFIX."comment c LEFT JOIN ".DB_PREFIX."article a ON (a.aid=c.articleid) WHERE c.cid='$cid' and c.hostid=$hostid");
 		$comment['content'] = htmlspecialchars($comment['content']);
 		$subnav = '修改评论';
 	}//end mod

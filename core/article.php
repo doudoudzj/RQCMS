@@ -1,7 +1,8 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
 if(!isset($_GET['url'])) message('未定义参数');
-$page=isset($_GET['page'])?intval($_GET['page']):1;//这个是评论的页数
+$page=isset($_GET['page'])?intval($_GET['page']):1;//这个是文章的页数
+$catepage=isset($_GET['catepage'])?intval($_GET['catepage']):1;//这个是评论的页数
 
 $comment_username=isset($_COOKIE['comment_username'])?$_COOKIE['comment_username']:'';
 $comment_url=isset($_COOKIE['comment_url'])?$_COOKIE['comment_url']:'';
@@ -21,6 +22,14 @@ $keywords=$article['keywords'];
 $description=str_replace("<p>","",$article['excerpt']);
 $description=str_replace("</p>","",$description);
 $aid=$article['aid'];
+
+//内容分页的处理
+if(strpos($article['content'],'[page]'))
+{
+	$articleArr=explode('[page]',$article['content']);
+	if(count($articleArr)>=$page&&$page>0) $article['content']=$articleArr[$page-1];
+	else $article['content']=$articleArr[0];
+}
 
 //隐藏变量,方便那些做模板可以单独显示月份和号数的的朋友.
 
@@ -47,7 +56,7 @@ else
 	$commentdb=array();
 	if ($article['comments'])
 	{
-		$commentdb=getComment($aid,$page,$host['article_comment_num']);
+		$commentdb=getComment($aid,$catepage,$host['article_comment_num']);
 	}
 }
 

@@ -61,6 +61,7 @@ function argRewrite()
 function mkUrl($file,$url,$page=0)
 {
 	global $mapArr,$host;
+	$url=urlencode($url);
 	if(is_array($mapArr)&&!empty($mapArr))
 	{	
 		foreach($mapArr['file'] as $nfile=>$ofile)

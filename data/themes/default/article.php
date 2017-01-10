@@ -55,9 +55,9 @@ print <<<EOT
 EOT;
 if($article['tag'])
 {foreach($article['tag'] as $tag){
-$tagurl=urlencode($tag);
+$tagurl=mkUrl('tag.php',$tag);
 print <<<EOT
-<a href='tag.php?item=$tagurl'>$tag</a>&nbsp;
+<a href='{$tagurl}'>$tag</a>&nbsp;
 EOT;
 }
 print <<<EOT

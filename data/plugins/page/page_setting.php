@@ -17,21 +17,6 @@ function page_html_view()
 			if(empty($article))  redirect('找不到文章',$urllink);
 		}
 		
-		//调用编辑器主体
-		include RQ_CORE.'/manager/editor/fckeditor.php';
-		//设置描述区域
-		$oFCKeditor = new FCKeditor('excerpt');
-		$oFCKeditor->Value = $article['excerpt'];
-		$oFCKeditor->Height = '100';
-		$oFCKeditor->ToolbarSet = 'Basic';
-		//描述区域的模板变量
-		$descriptionarea = $oFCKeditor->CreateHtml();
-
-		//设置内容区域
-		$oFCKeditor = new FCKeditor('content');
-		$oFCKeditor->Value = $article['content'];
-		//内容区域的模板变量
-		$contentarea = $oFCKeditor->CreateHtml();
 		$tdtitle='添加单页';
 		$visible_check='checked';
 
@@ -51,12 +36,12 @@ function page_html_view()
     </tr>
     <tr class="tablecell">
       <td valign="top">文章描述:</td>
-      <td>$descriptionarea</td>
+      <td><textarea name="excerpt" style="width:100%; height:100px;">{$article['excerpt']}</textarea></td>
     </tr>
     <tr class="tablecell">
       <td valign="top">文章内容:
 </td>
-      <td>$contentarea</td>
+      <td><textarea name="content" id="content" style="width:100%; height:400px;">{$article['content']}</textarea></td>
     </tr>
 	 <tr class="tablecell">
       <td>友好网址:</td>

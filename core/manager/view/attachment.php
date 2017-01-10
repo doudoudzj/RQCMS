@@ -85,9 +85,11 @@ print <<<EOT
             <td width="2%" nowrap><input name="chkall" value="on" type="checkbox" onclick="checkall(this.form)" /></td>
           </tr>       
 EOT;
-foreach($attachdb as $key => $attach){print <<<EOT
+foreach($attachdb as $key => $attach){
+$atturl=mkUrl('attachment.php',$attach['aid']);
+print <<<EOT
           <tr class="tablecell">
-            <td><a href="attachment.php?aid=$attach[aid]" target="_blank" title="$attach[filepath]">$attach[filename]</a></td>
+            <td><a href="{$atturl}" target="_blank" title="$attach[filepath]">$attach[filename]</a></td>
             <td>大小:$attach[filesize]<br />
               类型:$attach[filetype]</td>
             <td>$attach[subdir]</td>

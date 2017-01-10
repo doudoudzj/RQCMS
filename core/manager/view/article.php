@@ -25,11 +25,16 @@ function checkform() {
 	$('submit').disabled = true;
 	return true;
 }
+
+
+
+
 //插入上传附件
 function addattach(attachid){
 	addhtml('[attach=' + attachid + ']');
 }
 </script>
+
 <div class="mainbody">
   <table border="0"  cellspacing="0" cellpadding="0" style="width:100%;">
     <tr>
@@ -121,12 +126,11 @@ EOT;
     </tr>
     <tr class="tablecell">
       <td valign="top">文章描述:</td>
-      <td>$descriptionarea</td>
+      <td><textarea name="excerpt" style="width:100%; height:100px;">{$article['excerpt']}</textarea></td>
     </tr>
     <tr class="tablecell">
-      <td valign="top">文章内容:
-</td>
-      <td>$contentarea</td>
+      <td valign="top">文章内容:<br /><br />手动分页符<br />[page]</td>
+      <td><textarea name="content" id="content" style="width:100%; height:400px;">{$article['content']}</textarea></td>
     </tr>
     <tr class="tablecell">
       <td>阅读密码:</td>

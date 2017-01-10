@@ -1,9 +1,11 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
-
+$rqhost=RQ_HOST;
+	
 //没有找到站点信息的话就禁止访问
 if(empty($host))
 {
+
 	header("http/1.1 403 Forbidden");
 print <<<EOT
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
@@ -13,7 +15,7 @@ print <<<EOT
 <H1>Forbidden</H1>
 You are forbidden to visit on this server.<P>
 <HR>
-<ADDRESS>Web Server at {$constant['RQ_HOST']} Port {$_SERVER["SERVER_PORT"]}</ADDRESS>
+<ADDRESS>Web Server at {$rqhost} Port {$_SERVER["SERVER_PORT"]}</ADDRESS>
 </BODY></HTML>
 EOT;
 	exit();

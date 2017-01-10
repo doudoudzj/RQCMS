@@ -21,27 +21,27 @@ print <<<EOT
 EOT;
 if($action == 'cmlist'){print <<<EOT
                 <tr class="tdbheader">
-                  <td nowrap width="6%">状态</td>
-                  <td nowrap>作者</td>
-                  <td nowrap>网站地址</td>
-				  <td nowrap>电子邮件</td>
-                  <td nowrap>IP</td>
-                  <td nowrap>时间</td>
-                  <td nowrap>内容</td>
-                  <td nowrap width="2%"><input name="chkall" value="on" type="checkbox" onClick="checkall(this.form)"></td>
+                  <td  width="6%">状态</td>
+                  <td >作者</td>
+                  <td >网站地址</td>
+				  <td >电子邮件</td>
+                  <td >IP</td>
+                  <td >时间</td>
+                  <td >内容</td>
+                  <td  width="2%"><input name="chkall" value="on" type="checkbox" onClick="checkall(this.form)"></td>
                 </tr>
 EOT;
 foreach($commentdb as $key => $comment){print <<<EOT
 
                 <tr class="tablecell">
-                  <td nowrap><a href="admin.php?file=comment&action=cmvisible&cid=$comment[cid]">$comment[visible]</a></td>
-                  <td nowrap>$comment[author]</td>
-                  <td nowrap>$comment[url]</td>
-				  <td nowrap>$comment[email]</td>
-                  <td nowrap><a href="admin.php?file=comment&action=cmlist&ip=$comment[ipaddress]" title="查看此IP同一C段发表的评论">$comment[ipaddress]</a></a></td>
-                  <td nowrap>$comment[dateline]</td>
+                  <td ><a href="admin.php?file=comment&action=cmvisible&cid=$comment[cid]">$comment[visible]</a></td>
+                  <td >$comment[author]</td>
+                  <td >$comment[url]</td>
+				  <td >$comment[email]</td>
+                  <td ><a href="admin.php?file=comment&action=cmlist&ip=$comment[ipaddress]" title="查看此IP同一C段发表的评论">$comment[ipaddress]</a></a></td>
+                  <td >$comment[dateline]</td>
                   <td><a href="admin.php?file=comment&action=modcm&cid=$comment[cid]">$comment[content]</a></td>
-                  <td nowrap><input type="checkbox" name="comment[]" value="$comment[cid]"></td>
+                  <td ><input type="checkbox" name="comment[]" value="$comment[cid]"></td>
                 </tr>
 EOT;
 }print <<<EOT

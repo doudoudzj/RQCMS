@@ -164,7 +164,7 @@ else
 			$info=$args=array();
 			if(!$hid) redirct('缺少站点Id参数');
 			$setting=$DB->fetch_first('Select * from '.DB_PREFIX.'host where hid='.$hid);
-			${'url_html'.$host['url_html']}='selected';
+			${'url_html'.$setting['url_html']}='selected';
 			if(empty($setting)) redirct('不存在的站点id');
 			$query=$DB->query('Select * from '.DB_PREFIX.'filemap where hostid='.$hid);
 			while($fname=$DB->fetch_array($query))
@@ -174,6 +174,9 @@ else
 			}
 			break;
 		case 'bakup':
+			break;
+		case 'add':
+			foreach($files as $f) $info[$f]=substr($f,0,-4);
 			break;
 		case 'go':
 			if(!$hid) redirct('缺少站点Id参数');
