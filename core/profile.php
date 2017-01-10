@@ -1,6 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
-
 function CheckEmail($email)
 {
 	if (!empty($email))
@@ -100,7 +98,7 @@ if(RQ_POST)
 			$expire=isset($_POST['rememberme'])?$timestamp+31536000:0;//过期时间设置，记住我为最长时间，否则为浏览器关闭则无效
 			setcookie('sessionid',$sessionid,$expire,'',RQ_HOST);
 			$DB->query('update '.DB_PREFIX."user set `logincount`=`logincount`+1,`loginip`='$onlineip',`logintime`='$timestamp',`sessionid`='$sessionid',`useragent`='$useragent' where uid='$uid'");
-			$DB->query('insert into '.DB_PREFIX."log (`user`,`dateline`,`useragent`,`ip`,`content`) values ('$username','$timestamp','$useragent','$onlineip','注册并登录成功')");
+			$DB->query('insert into '.DB_PREFIX."login (`user`,`dateline`,`useragent`,`ip`,`content`) values ('$username','$timestamp','$useragent','$onlineip','注册并登录成功')");
 				
 			//自动登录
 			message('注册成功.', $profile_url);
@@ -170,7 +168,7 @@ if(RQ_POST)
 					$expire=$timestamp+31536000;//过期时间设置，记住我为最长时间，否则为浏览器关闭则无效
 					setcookie('sessionid',$sessionid,$expire,'',RQ_HOST);
 					$DB->query('update '.DB_PREFIX."user set `logincount`=`logincount`+1,`loginip`='$onlineip',`logintime`='$timestamp',`sessionid`='$sessionid',`useragent`='$useragent' where uid='$uid'");
-					$DB->query('insert into '.DB_PREFIX."log (`user`,`dateline`,`useragent`,`ip`,`content`) values ('$username','$timestamp','$useragent','$onlineip','前台登录成功')");
+					$DB->query('insert into '.DB_PREFIX."login (`user`,`dateline`,`useragent`,`ip`,`content`) values ('$username','$timestamp','$useragent','$onlineip','前台登录成功')");
 					message('登陆成功', $profile_url);
 				}
 			}

@@ -1,7 +1,5 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 // 获得文件扩展名
-
 function getextension($filename) {
 	$pathinfo = pathinfo($filename);
 	return $pathinfo['extension'];

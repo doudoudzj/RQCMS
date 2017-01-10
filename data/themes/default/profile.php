@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 include RQ_DATA."/themes/{$theme}/header.php";
 ?>
 <div id=main>

@@ -1,6 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
-
 if ($host['attachments_remote_open']&&!$host['attach_display']) //禁止从非本站下载
 {	
 	if(strpos($refer_url,RQ_HTTP.RQ_HOST)!=0) message('附件禁止从地址栏直接输入或从其他站点链接访问', './');

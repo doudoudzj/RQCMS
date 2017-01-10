@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 if(empty($action)) $action='cmlist';
 $cid = empty($_GET['cid']) ? '':intval($_GET['cid']);
 if(!$cid) $cid = empty($_POST['cid']) ? '':intval($_POST['cid']);

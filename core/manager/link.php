@@ -1,6 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
-
 if(RQ_POST)
 {
 	if($action == 'addlink') 

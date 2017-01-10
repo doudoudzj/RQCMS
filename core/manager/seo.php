@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 include RQ_CORE.'/include/tag.php';
 $searchfield='tag,keywords,title,excerpt';
 $searchnum=0;

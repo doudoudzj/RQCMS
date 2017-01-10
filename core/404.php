@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 $rqhost=RQ_HOST;
 	
 //没有找到站点信息的话就禁止访问

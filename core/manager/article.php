@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 include RQ_CORE.'/include/article.php';
 if(empty($action)) $action='list';
 
@@ -13,54 +12,47 @@ $hiddenCount=$hidden['ct'];
 if(RQ_POST)
 {	
 	$view=isset($_POST['view'])?'hidden':'';
-	$fieldadd1=$fieldadd2=$fieldupdateadd='';
-
+	$article=isset($_POST['article'])?$_POST['article']:array();
+	$content=isset($_POST['content'])?$_POST['content']:array();
+	
+	$article['hostid']=$hostid;
+	$article['userid']=$uid;
+	$article['modified']=$timestamp;
+	
+    $attachments=getAttach();
+	$attcount=count($attachments);
+	$article['attachments']=$attcount;
+	
 	if(in_array($action,array('add','mod')))
 	{
-		$title       = trim($_POST['title']);
-		$cateid      = intval($_POST['cid']);
-		$url         =  $_POST['url'];
-		$excerpt     =  $_POST['excerpt'];
-		$thumb     =  $_POST['thumb'];
-		$content     = $_POST['content'];
-		$password    =  $_POST['password'];
-		$keywords    = trim($_POST['keywords']);
-		$tags        = getTagArr(trim($_POST['tag']));
-		$closed      = isset($_POST['closed'])? intval($_POST['closed']):0;
-		$visible     = isset($_POST['visible'])?intval($_POST['visible']):0;
-		$stick       = isset($_POST['stick'])?intval($_POST['stick']):0;
-		$dateline    = isset($_POST['edittime'])?getDateLine():$timestamp;
-
-		if(isset($_POST['field'])&&is_array($_POST['field']))
-		{
-			foreach($_POST['field'] as $fkey=>$fvalue)
-			{
-				$fieldadd1.=',`'.$fkey.'`';
-				$fieldadd2.=",'".$fvalue."'";
-				$fieldupdateadd.=",`$fkey`='$fvalue'";
-			}
-		}
-
+		$article['title'] = trim($article['title']);
+		$article['cateid'] = intval($article['cateid']);
+		$article['keywords'] = trim($article['keywords']);
+		$article['closed'] = isset($article['closed'])? intval($article['closed']):0;
+		$article['visible'] = isset($article['visible'])?intval($article['visible']):0;
+		$article['stick'] = isset($article['stick'])?intval($article['stick']):0;
+		$article['dateline'] = isset($article['edittime'])?getDateLine():$timestamp;
+		
+		$tags        = getTagArr(trim($article['tag']));
 		$attachments = '';//一个序列化的结果,附件名,Id,大小
 		$attachInfo=array();//
-		$tag=!empty($tags)?implode(',',$tags):'';
+		$article['tag']=!empty($tags)?implode(',',$tags):'';
 		saveCookie();
 	}
 	$attachments=array();
 	switch($action)
 	{
 		case 'add':
-			if(empty($title)) redirect('标题不得为空','admin.php?file=article&action=add');
-			if(empty($content)) redirect('内容不得为空','admin.php?file=article&action=add');
+			if(empty($article['title'])) redirect('标题不得为空','admin.php?file=article&action=add');
+			if(empty($content['content'])) redirect('内容不得为空','admin.php?file=article&action=add');
 
-			
 			// 插入数据部分
-			$attachments=getAttach();
-			$attcount=count($attachments);
-			
-			$DB->query("INSERT INTO ".DB_PREFIX."article (hostid,cateid, userid, title, excerpt, keywords,tag, dateline,modified, closed, visible, stick, password,url,thumb,attachments{$fieldadd1}) VALUES ('$hostid','$cateid', '$uid', '$title', '$excerpt', '$keywords','$tag', '$dateline','$dateline','$closed', '$visible', '$stick', '$password','$url','$thumb','$attcount'{$fieldadd2})");
+
+			$addsql="INSERT INTO ".DB_PREFIX."article set ".getJoinSql($article);
+			$DB->query($addsql);
+			//$DB->query("INSERT INTO ".DB_PREFIX."article (hostid,cateid, userid, title, excerpt, keywords,tag, dateline,modified, closed, visible, stick, password,url,thumb,attachments{$fieldadd1}) VALUES ('$hostid','$cateid', '$uid', '$title', '$excerpt', '$keywords','$tag', '$dateline','$dateline','$closed', '$visible', '$stick', '$password','$url','$thumb','$attcount'{$fieldadd2})");
 			$articleid = $DB->insert_id();
-			if(!$url) $DB->query('update '.DB_PREFIX."article set url='$articleid' where aid=$articleid");
+			if(!$article['url']) $DB->query('update '.DB_PREFIX."article set url='$articleid' where aid=$articleid");
 			if($attachments&&is_array($attachments))
 			{
 				$fileidarr=array();
@@ -75,7 +67,8 @@ if(RQ_POST)
 					if($content!='') $content=str_replace('[localfile='.$localid.']','[attach='.$fileid.']',$content);
 				}
 			}
-			$DB->query("Insert into ".DB_PREFIX."content (articleid,content) VALUES ('$articleid','$content')");
+			$content['articleid']=$articleid;
+			$DB->query("Insert into ".DB_PREFIX."content set ".getJoinSql($content));
 			//添加tags
 			$DB->query('delete from '.DB_PREFIX."tag where articleid='$articleid' and hostid='$hostid'");
 			if($tags)
@@ -106,8 +99,8 @@ if(RQ_POST)
 			$old=$DB->fetch_first('Select * from '.DB_PREFIX."article where aid=$aid and hostid=$hostid");
 			if(!$old) redirect('不存在的记录','admin.php?file=article&action=list');
 			if($old['userid']!=$uid&&$groupid<3) redirect('您无权修改别人的文章','admin.php?file=article&action=list');
-			if(empty($title)) redirect('标题不得为空','admin.php?file=article&action=mod&aid='.$aid);
-			if(empty($content)) redirect('内容不得为空','admin.php?file=article&action=mod&aid='.$aid);
+			if(empty($article['title'])) redirect('标题不得为空','admin.php?file=article&action=mod&aid='.$aid);
+			if(empty($content['content'])) redirect('内容不得为空','admin.php?file=article&action=mod&aid='.$aid);
 			
 			//附件先处理
 			$attachments=getAttach();
@@ -175,14 +168,14 @@ if(RQ_POST)
 				}
 				foreach($fileidarr as $localid=>$fileid)
 				{
-					if($content!='') $content=str_replace('[localfile='.$localid.']','[attach='.$fileid.']',$content);
+					if($content['content']!='') $content['content']=str_replace('[localfile='.$localid.']','[attach='.$fileid.']',$content['content']);
 				}
 			}
 			$attach=$DB->fetch_first('select count(*) from '.DB_PREFIX."attachment where articleid=$aid");
 			$attcount=$attach['count(*)'];
 			// 插入数据部分
-			$DB->query("Update ".DB_PREFIX."article set `cateid`='$cateid',`title`='$title',`excerpt`='$excerpt',`keywords`='$keywords',`tag`='$tag',`modified`='$timestamp',`dateline`='$dateline',`attachments`='$attcount',`closed`='$closed',`visible`='$visible',`stick`='$stick',`password`='$password',`thumb`='$thumb',`url`='$url'{$fieldupdateadd} where aid=$aid");
-			$DB->query("Update ".DB_PREFIX."content set `content`='$content' where `articleid`='$aid'");
+			$DB->query("Update ".DB_PREFIX."article set ".getJoinSql($article)." where aid=$aid");
+			$DB->query("Update ".DB_PREFIX."content set ".getJoinSql($content)." where `articleid`='$aid'");
 			//添加tags
 			$DB->query('delete from '.DB_PREFIX."tag where articleid='$aid' and hostid='$hostid'");
 			if($tags)
@@ -292,7 +285,8 @@ if(RQ_POST)
 						$text = trim($text);
 						if($text) {
 							$sqltxtsrch .= $andor;
-							$sqltxtsrch .= "(a.content LIKE '%".str_replace('_', '\_', $text)."%' OR a.excerpt LIKE '%".$text."%' OR a.title LIKE '%".$text."%')";
+							$sqltxtsrch .= "(a.excerpt LIKE '%".$text."%' OR a.title LIKE '%".$text."%' OR a.tag LIKE '%".$text."%' OR a.keywords LIKE '%".$text."%' OR a.url LIKE '%".$text."%')";
+							doAction('admin_article_search_changesql');
 						}
 					}
 					$searchsql .= " AND ($sqltxtsrch)";

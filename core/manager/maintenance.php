@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 if(!$action) $action='cache';
 
 //系统管理包含一个 缓存生成 , 重新统计,日志查看

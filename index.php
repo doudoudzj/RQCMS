@@ -2,14 +2,14 @@
 /**
  * RQCMS       A simple,personal,multi-site cms 
  *
- * @copyright  Copyright (c) 2010-2012 RQ204
+ * @copyright  Copyright (c) 2010-2014 RQ204
  * @license    GNU General Public License 2.0
  * @t          http://t.qq.com/winslow
  */
  //版权相关设置
 define('RQ_AppName','RQCMS');
-define('RQ_VERSION','1.33');
-define('RQ_RELEASE','20131020');
+define('RQ_VERSION','1.4');
+define('RQ_RELEASE','20140119');
 define('RQ_AUTHOR','RQ204');
 define('RQ_WEBSITE','http://www.rqcms.com');
 define('RQ_EMAIL','rq204@qq.com');
@@ -155,7 +155,7 @@ else
 		{
 			$tempfile=ltrim(strpos(REQUEST_URI,'?')>1?substr(REQUEST_URI,0,strpos(REQUEST_URI,'?')):REQUEST_URI,'/');
 			if(substr($tempfile,0-strlen($urlext))==$urlext) $tempfile=substr($tempfile,0,strlen($tempfile)-strlen($urlext));
-			if($mapArr['file'][$tempfile]=='admin.php') define('RQ_FILE',$tempfile);
+			if(isset($mapArr['file'][$tempfile])&&$mapArr['file'][$tempfile]=='admin.php') define('RQ_FILE',$tempfile);
 			$urlstring='';
 		}
 		

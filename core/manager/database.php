@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 if(!$action) $action = 'mysqlinfo';
 $backupdir = RQ_DATA.'/backup';
 

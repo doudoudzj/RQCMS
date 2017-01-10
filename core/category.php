@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 if(!isset($_GET['url'])) message('未定义参数', './');
 
 $cate=array();
@@ -18,7 +17,7 @@ $multipage='';
 $allcount=1;
 if($total>0)
 {
-	$arr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article WHERE hostid=$hostid and visible=1 and cateid={$cate['cid']}");
+	$arr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article WHERE hostid=$hostid and visible=1 and cateid in ({$cate['child']})");
 	if(!empty($arr)) $allcount=$arr['count(*)'];
 	$pagenums=@ceil($allcount/$host['list_shownum']);
 }

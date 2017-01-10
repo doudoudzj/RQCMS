@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 print <<<EOT
 <div class="mainbody">
   <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">

@@ -263,8 +263,8 @@ CREATE TABLE `rqcms_var` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 Insert Into `rqcms_var` (`hostid`,`title`,`value`,`visible`) values ('1','demo','这是一个测试变量','1');
 
-DROP TABLE IF EXISTS `rqcms_log`;
-CREATE TABLE `rqcms_log` (
+DROP TABLE IF EXISTS `rqcms_login`;
+CREATE TABLE `rqcms_login` (
   `lid` int(10) NOT NULL AUTO_INCREMENT,
   `hostid` smallint(5) NOT NULL COMMENT '站点id',
   `user` varchar(12) NOT NULL,

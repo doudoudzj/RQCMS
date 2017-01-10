@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 print <<<EOT
 <div class="mainbody">
   <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
@@ -128,11 +127,6 @@ print <<<EOT
                   <td width="200">Js页(js.php):</td>
                   <td><input class="formfield" type="text" name="maps[js.php]" size="35" maxlength="50" value="{$info['js.php']}"></td>
 				    <td><input class="formfield" type="text" name="args[js.php]" size="35" maxlength="200" value="{$args['js.php']}"></td>
-                </tr>
-				<tr class="tablecell">
-                  <td width="200">存档页(archive.php):</td>
-                  <td><input class="formfield" type="text" name="maps[archive.php]" size="35" maxlength="50" value="{$info['archive.php']}"></td>
-				    <td><input class="formfield" type="text" name="args[archive.php]" size="35" maxlength="200" value="{$args['archive.php']}"></td>
                 </tr>
 				<tr class="tablecell">
                   <td width="200">友情链接页(link.php):</td>

@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 //在不同的页面，有不同的title,keywords,description
 
 function pagination($count,$perlogs,$page,$file,$url){
@@ -18,7 +17,7 @@ function pagination($count,$perlogs,$page,$file,$url){
 	$u1=mkUrl($file,$url,1);
 	$uend=mkUrl($file,$url,$pnums);
 	if ($page > 6) $re = "<a href=\"<?php echo $u1}\" title=\"首页\">&laquo;</a><em>...</em>$re";
-	if ($page + 5 < $pnums) $re .= "<em>...</em> <a href=\"<?php echo $uend}\" title=\"尾页\">&raquo;</a>";
+	if ($page + 5 < $pnums) $re .= "<em>...</em> <a href=\"{$uend}\" title=\"尾页\">&raquo;</a>";
 	if ($pnums <= 1) $re = '';
 	return $re;
 }

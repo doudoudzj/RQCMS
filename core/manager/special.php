@@ -3,7 +3,7 @@ if(empty($action)) $action='list';
 $sitedb=array();
 $setting['name']=$setting['host']=$setting['host2']=$setting['hid']='';
 $setting['url_ext']='php';
-$files=array('index.php','category.php','article.php','attachment.php','search.php','comment.php','tag.php','profile.php','admin.php','captcha.php','rss.php','js.php','archive.php','link.php');
+$files=array('index.php','category.php','article.php','attachment.php','search.php','comment.php','tag.php','profile.php','admin.php','captcha.php','rss.php','js.php','link.php');
 foreach($files as $f) $info[$f]='';
 foreach($files as $f) $args[$f]='';
 $hid=isset($_GET['hid'])?intval($_GET['hid']):'';

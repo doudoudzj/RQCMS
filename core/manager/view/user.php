@@ -1,6 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
-
 print <<<EOT
 <div class="mainbody">
 <p class="p_nav"><a href="admin.php?file=user&action=add">添加用户</a> [ 降序排列: <a href="admin.php?file=user&action=list&order=username">用户名</a> | <a href="admin.php?file=user&action=list&order=logincount">登陆次数</a> | <a href="admin.php?file=user&action=list&order=regdateline">注册时间</a> ] [ 发表与否: <a href="admin.php?file=user&action=list&lastpost=already">发表过评论</a> | <a href="admin.php?file=user&action=list&lastpost=never">从未发表过评论</a> ] [ 组别: <a href="admin.php?file=user&action=list&groupid=3">管理组</a> | <a href="admin.php?file=user&action=list&groupid=2">撰写组</a> | <a href="admin.php?file=user&action=list&groupid=1">注册组</a> ]</p>

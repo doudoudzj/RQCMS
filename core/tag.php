@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 $page=isset($_GET['page'])?intval($_GET['page']):1;
 $item=isset($_GET['url'])?$_GET['url']:'';
 $articledb=array();

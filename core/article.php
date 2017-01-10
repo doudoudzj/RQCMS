@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 if(!isset($_GET['url'])) message('未定义参数');
 $page=isset($_GET['page'])?intval($_GET['page']):1;//这个是文章的页数
 $catepage=isset($_GET['catepage'])?intval($_GET['catepage']):1;//这个是评论的页数

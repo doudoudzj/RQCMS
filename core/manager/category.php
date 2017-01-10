@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 include RQ_CORE.'/include/category.php';
 include RQ_CORE.'/include/attachment.php';
 if(RQ_POST)

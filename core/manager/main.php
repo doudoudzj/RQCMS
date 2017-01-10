@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 function get_real_size($size) 
 {
 	$kb = 1024; // Kilobyte

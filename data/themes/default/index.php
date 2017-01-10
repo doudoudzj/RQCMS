@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 $top10cache=getLatestArticle(10);
 $stickcache=getStickArticle(10);
 $picscache=getPicArticle(5);

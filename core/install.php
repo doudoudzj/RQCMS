@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 $lockfile=RQ_DATA.'/install.lock';
 $sqlfile=RQ_CORE.'/resource/install.sql';
 $configfile=RQ_CORE.'/resource/conig.sample.php';

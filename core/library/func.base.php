@@ -451,3 +451,16 @@ function getChildCate($cateid,$cateArr)
 	}
 	return implode(',',$has);
 }
+
+//从key 和value结构中生成sql语句
+function getJoinSql($article)
+{
+	$sql='';
+	foreach($article as $k=>$v)
+	{
+		$sql.="`$k`='$v',";
+	}
+	$sql=substr($sql,0,strlen($sql)-1);
+	return $sql;
+}
+

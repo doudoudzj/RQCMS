@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 include RQ_CORE.'/include/comment.php';
 if(RQ_POST)
 {
@@ -24,7 +23,7 @@ else
 {
 	$page=1;
 	if(isset($_GET['page'])) $page=(int)$_GET['page'];
-	$commentdb =getAllComment($page);//print_r($commentdb);exit;
+	$commentdb =getAllComment($page);
 	doAction('comment_data_view',$commentdb);
 	$total=count($commentdb);
 	$multipage='';

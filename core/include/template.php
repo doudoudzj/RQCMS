@@ -1,5 +1,5 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
+
 //获取模板信息
 function get_template_info($infofile) {
 	global $template_dir,$datadir;
@@ -34,7 +34,7 @@ function get_template_info($infofile) {
 			'templatedir' => $templatedir,
 			'screenshot' => $screenshot
 		);
-		//print_r($info);exit;
+
 		return $info;
 	} else {
 		return false;

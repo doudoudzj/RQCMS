@@ -1,5 +1,5 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');if (!$action) $action = 'list';
+if (!$action) $action = 'list';
 include RQ_CORE.'/include/attachment.php';
 
 if(RQ_POST)

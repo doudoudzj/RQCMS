@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 $searchd = isset($_POST['keywords'])?$_POST['keywords']:'';
 if(!$searchd&&isset($_GET['url'])) $searchd = $_GET['url'];
 $searchkey=$searchd;

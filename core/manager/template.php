@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 if(!$action) $action = 'template';
 include RQ_CORE.'/include/template.php';
 $refile='admin.php?file=template&action=template';

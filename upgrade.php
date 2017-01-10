@@ -1,6 +1,6 @@
 <?php
 /**
- *  该升级程序可以将以前的所有旧版本升级到 RQCMS 1.33 
+ *  该升级程序可以将以前的所有旧版本升级到 RQCMS 1.4 
  *  注意要 RQ_CORE 和 RQ_DATA 要和网站一致
  *  升级完成后删除这个文件.升级完后后台更新一下缓存
  */
@@ -20,6 +20,7 @@ include RQ_CORE.'/library/func.base.php';
 include RQ_CORE.'/library/func.agile.php';
 include RQ_CORE.'/library/func.cache.php';
 include RQ_CORE.'/library/func.data.php';
+include RQ_CORE.'/library/func.convert.php';
 include RQ_DATA.'/config.php';
 
 //数据库实例化
@@ -38,21 +39,7 @@ print <<<EOT
 <title>RQCMS自动升级程序</title></head><body>
 EOT;
 
-
-//获取表的所有字段
-function GetField($table)
-{
-	global $DB;
-	$arrlist=array();
-	$sqlColumns = $DB->query("SHOW COLUMNS FROM ".DB_PREFIX."$table");
-	while($re=$DB->fetch_array($sqlColumns))
-	{
-		$arrlist[]=$re['Field'];
-	}
-	return $arrlist;
-}
-
-$varhost=GetField('host');
+$varhost=GetTableField('host');
 if(!in_array('host2',$varhost))//1.2的升级
 {
 	$DB->query("ALTER TABLE `".DB_PREFIX."host` ADD COLUMN `host2` VARCHAR(100) NULL DEFAULT ''");
@@ -69,7 +56,7 @@ if(!in_array('search_max_num',$varhost))//1.2的升级
 	echo '升级host字段search_max_num成功<br />';
 }
 
-$varplugin=GetField('plugin');
+$varplugin=GetTableField('plugin');
 if(!in_array('mapname',$varplugin))//1.3的升级
 {
 	$DB->query("ALTER TABLE `".DB_PREFIX."plugin` ADD COLUMN `mapname` VARCHAR(15) NULL DEFAULT ''");
@@ -85,13 +72,11 @@ $hostquery=$DB->query('Select * from '.DB_PREFIX.'host');//1.2
 while($arr=$DB->fetch_array($hostquery))
 {
 	$varhid=$arr['hid'];
-	$varfilemap=$DB->fetch_first('Select * from '.DB_PREFIX."filemap where original='archive.php' and hostid=$varhid");
-	if(!isset($varfilemap['original'])) $DB->query('insert into '.DB_PREFIX."filemap (`original`,`filename`,`hostid`) values ('archive.php','archive','$varhid')");
 	$varfilemap=$DB->fetch_first('Select * from '.DB_PREFIX."filemap where original='link.php' and hostid=$varhid");
 	if(!isset($varfilemap['original'])) $DB->query('insert into '.DB_PREFIX."filemap (`original`,`filename`,`hostid`) values ('link.php','link','$varhid')");
 }
 
-$varcate=GetField('category');
+$varcate=GetTableField('category');
 if(!in_array('keywords',$varcate))//1.3的升级
 {
 	$DB->query("ALTER TABLE `".DB_PREFIX."category` ADD COLUMN `keywords` VARCHAR(100) NULL DEFAULT ''");
@@ -103,7 +88,7 @@ if(!in_array('description',$varcate))//1.3的升级
 	echo '升级category字段description成功<br />';//1.3的升级
 }
 
-$vararticle=GetField('article');
+$vararticle=GetTableField('article');
 if(!in_array('search',$vararticle))//1.4的升级
 {
 	$DB->query("ALTER TABLE `".DB_PREFIX."article` ADD COLUMN `search` VARCHAR(1500) NULL DEFAULT ''");
@@ -125,5 +110,11 @@ CREATE TABLE IF NOT EXISTS `rqcms_search` (
 EOT;
 $createsearch=str_replace('rqcms_',DB_PREFIX,$createsearch);
 $DB->query($createsearch);
+
+//1.4将log表改名为login表
+$renametable='RENAME TABLE `rqcms_log` TO `rqcms_login`;';
+$renametable=str_replace('rqcms_',DB_PREFIX,$renametable);
+$DB->query($renametable);
+echo '升级log表为login表成功<br />';//1.3的升级
 
 exit('升级完成<body></html>');

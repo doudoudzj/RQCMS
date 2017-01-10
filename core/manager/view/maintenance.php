@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 print <<<EOT
 <div class="mainbody">
   <table border="0"  cellspacing="0" cellpadding="0" style="width:100%;">
@@ -54,14 +53,17 @@ EOT;
     </tr>
   </form>
 EOT;
-} elseif ($action == 'log') {print <<<EOT
+} elseif ($action == 'log') {
+if($do=='login'||$do=='dberror'){
+$show=$do=='login'?'登录结果':'SQL语句';
+print <<<EOT
 <form action="admin.php?file=maintenance"  method="POST">
     <tr class="tdbheader">
       <td width="10%"><b>用户名</b></td>
       <td width="10%"><b>时间</b></td>
       <td width="10%"><b>IP地址</b></td>
-      <td width="50%"><b>$browser</b></td>
-	  <td width="20%"><b>$result</b></td>
+      <td width="50%"><b>浏览器</b></td>
+	  <td width="20%"><b>$show</b></td>
     </tr>
 EOT;
 foreach($searchdb as $key => $search){print <<<EOT
@@ -71,6 +73,23 @@ foreach($searchdb as $key => $search){print <<<EOT
           <td nowrap="nowrap">$search[ip]</td>
           <td>$search[useragent]</td>
           <td nowrap="nowrap">$search[content]</td>
+        </tr>
+EOT;
+}
+}else if($do=='search'){
+print <<<EOT
+<form action="admin.php?file=maintenance"  method="POST">
+    <tr class="tdbheader">
+      <td width="20%" colspan="2"><b>时间</b></td>
+      <td width="20%"><b>IP地址</b></td>
+	  <td width="50%" colspan="2"><b>关键词</b></td>
+    </tr>
+EOT;
+foreach($searchdb as $key => $search){print <<<EOT
+        <tr class="tablecell">
+          <td nowrap="nowrap" colspan="2">$search[dateline]</td>
+          <td nowrap="nowrap">$search[ip]</td>
+          <td nowrap="nowrap" colspan="2">$search[keywords]</td>
         </tr>
 EOT;
 }print <<<EOT
@@ -86,7 +105,7 @@ EOT;
     </tr>
   </form>
 EOT;
-}print <<<EOT
+}}print <<<EOT
     <tr>
       <td class="tablebottom" colspan="6"></td>
     </tr>

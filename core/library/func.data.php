@@ -1,6 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
-
 //得到友情链接$num条
 function getLink($num=null)
 {
@@ -130,7 +128,8 @@ function getRelatedArticle($aid,$tagarr,$num)
 	global $DB,$hostid,$host;
 	$articledb=array();
 	$tag="'".implode("','",$tagarr)."'";
-	$query=$DB->query('Select distinct articleid from '.DB_PREFIX."tag where tag in ($tag) and articleid!=$aid");
+	$num2=$num*5;//考虑有部分visible
+	$query=$DB->query('Select distinct articleid from '.DB_PREFIX."tag where tag in ($tag) and articleid!=$aid limit $num2");
 	$aidarr=array();
 	while($aq=$DB->fetch_array($query))
 	{
@@ -139,11 +138,12 @@ function getRelatedArticle($aid,$tagarr,$num)
 	if(!empty($aidarr))
 	{
 		$aids=implode_ids($aidarr);
-		$query=$DB->query('Select * from '.DB_PREFIX."article where hostid=$hostid and aid in ($aids) and visible=1 order by rand() limit $num");
+		$query=$DB->query('Select * from '.DB_PREFIX."article where hostid=$hostid and aid in ($aids) and visible=1 limit $num");
 		while($article=$DB->fetch_array($query))
 		{
 			$articledb[]=showArticle($article);
 		}
+		shuffle($articledb);
 	}	
 	return $articledb;
 }
@@ -169,10 +169,14 @@ function getCateArticle($cateids,$page)
 function getArticle($url)
 {
 	global $DB,$hostid,$host;
-	$sql = "SELECT * FROM ".DB_PREFIX."article a,".DB_PREFIX."content c WHERE url='$url' and visible='1' and hostid=$hostid and a.aid=c.articleid limit 1";
+	//$sql = "SELECT * FROM ".DB_PREFIX."article a,".DB_PREFIX."content c WHERE url='$url' and visible='1' and hostid=$hostid and a.aid=c.articleid limit 1";
+	$sql = "SELECT * FROM ".DB_PREFIX."article WHERE url='$url' limit 1";
 	$article=$DB->fetch_first($sql);
-	if(!empty($article))
+	if(!empty($article)&&$article['hostid']==$hostid)
 	{
+		$sql="SELECT * FROM ".DB_PREFIX."content WHERE articleid={$article['aid']} limit 1";
+		$article2=$DB->fetch_first($sql);
+		$article=array_merge($article,$article2);
 		$article=showArticle($article);
 		$articleid=$article['aid'];
 		//处理附件

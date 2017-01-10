@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 $clearurl=mkUrl('profile.php','clearcookies');
 ?>
 <div class=foot>

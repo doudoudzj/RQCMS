@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 print <<<EOT
 <script type="text/javascript">
 
@@ -10,7 +9,7 @@ function checkform()
 		alert("请输入标题");
 		return false;
 	}
-	if ($("#cid").val()==0)	
+	if ($("#cateid").val()==0)	
 	{
 		alert("请选择分类");
 		return false;
@@ -98,11 +97,11 @@ EOT;
     </tr>
     <tr class="tablecell">
       <td>文章标题:</td>
-      <td><input class="formfield" type="text" name="title" id="title" size="70" value="$article[title]"></td>
+      <td><input class="formfield" type="text" name="article[title]" id="title" size="70" value="$article[title]"></td>
     </tr>
     <tr class="tablecell">
       <td valign="top">选择分类:</td>
-      <td><select name="cid" id="cid">
+      <td><select name="article[cateid]" id="cateid">
           <option value="">== 选择分类 ==</option>
 EOT;
 $i=0;
@@ -117,36 +116,36 @@ EOT;
     </tr>
     <tr class="tablecell">
       <td>标签(Tag):</td>
-      <td><input class="formfield" type="text" name="tag" size="80" maxlength="10000" value="$article[tag]">&nbsp;多个Tag用,分隔</td>
+      <td><input class="formfield" type="text" name="article[tag]" size="80" maxlength="10000" value="$article[tag]">&nbsp;多个Tag用,分隔</td>
     </tr>
 	 <tr class="tablecell">
       <td>关键字:</td>
-      <td><input class="formfield" type="text" name="keywords" size="80" maxlength="10000" value="$article[keywords]">&nbsp;多个关键字用,分隔</td>
+      <td><input class="formfield" type="text" name="article[keywords]" size="80" maxlength="10000" value="$article[keywords]">&nbsp;多个关键字用,分隔</td>
     </tr>
     <tr class="tablecell">
       <td valign="top">文章描述:</td>
-      <td><textarea name="excerpt" style="width:100%; height:100px;">{$article['excerpt']}</textarea></td>
+      <td><textarea name="article[excerpt]" style="width:100%; height:100px;">{$article['excerpt']}</textarea></td>
     </tr>
     <tr class="tablecell">
       <td valign="top">文章内容:<br /><br />手动分页符<br /><a href="javascript:void(0);" onClick="editor.pasteHTML('[page]');">[page]</a></td>
-      <td><textarea name="content" id="content" style="width:100%; height:400px;">{$article['content']}</textarea></td>
+      <td><textarea name="content[content]" id="content" style="width:100%; height:400px;">{$article['content']}</textarea></td>
     </tr>
 	 <tr class="tablecell">
       <td>友好网址:</td>
-      <td><input class="formfield" type="text" name="url" size="50" maxlength="255" value="$article[url]"> 255个字符以内</td>
+      <td><input class="formfield" type="text" name="article[url]" size="50" maxlength="255" value="$article[url]"> 255个字符以内</td>
     </tr>
 	<tr class="tablecell">
       <td>缩略图片:</td>
-      <td><input class="formfield" type="text" name="thumb" size="50" maxlength="20" value="$article[thumb]"> 255个字符以内</td>
+      <td><input class="formfield" type="text" name="article[thumb]" size="50" maxlength="20" value="$article[thumb]"> 255个字符以内</td>
     </tr>
 EOT;
 print <<<EOT
     <tr class="tablecell">
       <td valign="top">更多选项:</td>
-      <td> <input name="visible" type="checkbox" value="1" $visible_check>
-        发布本文,不选则为草稿 <input name="stick" type="checkbox" value="1" $stick_check>
+      <td> <input name="article[visible]" type="checkbox" value="1" $visible_check>
+        发布本文,不选则为草稿 <input name="article[stick]" type="checkbox" value="1" $stick_check>
         置顶本文<br />
-		<input name="closed" type="checkbox" value="1" $closecomment_check><input class="formfield" type="hidden" name="password" size="50" maxlength="20" value="$article[password]"> 
+		<input name="article[closed]" type="checkbox" value="1" $closecomment_check><input class="formfield" type="hidden" name="article[password]" size="50" maxlength="20" value="$article[password]"> 
         禁止评论
 		<input name='edittime' type="checkbox" value="1">
 		更改发布时间 <input class="formfield" name="newyear" type="text" value="$newyear" maxlength="4" style="width:40px"> 年 <input class="formfield" name="newmonth" type="text" value="$newmonth" maxlength="2" style="width:20px"> 月 <input class="formfield" name="newday" type="text" value="$newday" maxlength="2" style="width:20px"> 日 <input class="formfield" name="newhour" type="text" value="$newhour" maxlength="2" style="width:20px"> 时 <input class="formfield" name="newmin" type="text" value="$newmin" maxlength="2" style="width:20px"> 分 <input class="formfield" name="newsec" type="text" value="$newsec" maxlength="2" style="width:20px"> 秒 <input class="formbutton" type="button" onclick="alert('有效的时间戳典型范围是从格林威治时间 1901 年 12 月 13 日 星期五 20:45:54 到 2038年 1 月 19 日 星期二 03:14:07\\n\\n该日期根据 32 位有符号整数的最小值和最大值而来\\n\\n取值说明: 日取 01 到 30 之间, 时取 0 到 24 之间, 分和秒取 0 到 60 之间!\\n\\n系统会自动检查时间有效性,如果不在有效范围内,将不会执行更改时间操作\\n\\n注意:如果系统是按照时间而不是提交次序排列文章,修改时间可以改变文章的顺序.');" value="时间说明">		
@@ -179,7 +178,6 @@ EOT;
     </tr>
     <input type="hidden" name="action" value="$action">
     <input type="hidden" name="aid" value="$aid">
-    <input type="hidden" name="oldtags" value="$article[keywords]">
     <tr class="tablecell">
       <td colspan="2" align="center"><input type="submit" name="submit" id="submit" value="提交" class="formbutton" onclick="return checkform();">
         <input type="reset" value="重置" class="formbutton"></td>
@@ -242,7 +240,7 @@ EOT;
     </tr>
     <tr class="tablecell">
       <td valign="top"><b>搜索分类:</b></td>
-      <td><select name="cateid">
+      <td><select name="article[cateid]">
           <option value="">== 全部分类 ==</option>
 EOT;
 $i=0;
@@ -256,7 +254,7 @@ EOT;
         </select></td>
     </tr>
     <tr class="tablecell">
-	  <td><b>标题、作者、描述、内容内的关键字:</b></td>
+	  <td><b>标题、作者、描述,Tag,关键词内的关键字:</b></td>
 	  <td><input class="formfield" type="text" name="keywords" size="35" maxlength="50" value=""></td>
     </tr>
     <tr class="tablecell">

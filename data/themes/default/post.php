@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 $coredir=basename(RQ_CORE);//core目录
 $cssfile ='admin.php?file=css';//管理后台的css文件
 $action=!empty($_GET['action'])?$_GET['action']:(!empty($_POST['action'])?$_POST['action']:'');

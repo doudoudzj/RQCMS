@@ -1,5 +1,4 @@
 <?php
-if(!defined('RQ_ROOT')) exit('Access Denied');
 $tempView=$coreView;//不用再去加载模板了
 $coredir=basename(RQ_CORE);//core目录
 $datadir=basename(RQ_DATA);//data目录

@@ -67,7 +67,7 @@ function getoption($pid,$cateArr,$select,$level,$self)
 	return $re;
 }
 
-/*
+
 function getChildArr($cid,$cateArr)
 {
 	$childidArr[]=$cid;
@@ -75,7 +75,8 @@ function getChildArr($cid,$cateArr)
 	{
 		if($cateinfo['pid']==$cid)
 		{
-			$childidArr[]=getChild($id,$cateArr);
+			$child=getChildArr($id,$cateArr);
+			$childidArr=array_merge($childidArr,$child);
 		}
 	}
 	return $childidArr;
@@ -100,6 +101,4 @@ function getMaxCid($cateArr)
 	$a=end($cateArr);
 	return $a['cid'];
 }
-
-*/
 	
