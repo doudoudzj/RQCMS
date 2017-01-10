@@ -109,6 +109,8 @@ Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','search
 Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','tag.php','tag');
 Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','article.php','article');
 Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','js.php','js');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','archive.php','archive');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','link.php','link');
 
 DROP TABLE IF EXISTS `rqcms_link`;
 CREATE TABLE `rqcms_link` (

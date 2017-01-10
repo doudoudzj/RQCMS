@@ -42,6 +42,16 @@ if(!isset($varhost['host2']))//1.2的升级
 {
 	$DB->query("ALTER TABLE `".DB_PREFIX."host` ADD COLUMN `host2` VARCHAR(100) NULL DEFAULT ''");
 	echo '升级host字段host2成功<br />';
- }
+}
+
+$hostquery=$DB->query('Select * from '.DB_PREFIX.'host');
+while($arr=$DB->fetch_array($hostquery))
+{
+	$varhid=$arr['hid'];
+	$varfilemap=$DB->fetch_first('Select * from '.DB_PREFIX."filemap where original='archive.php' and hostid=$varhid");
+	if(!isset($varfilemap['original'])) $DB->query('insert into '.DB_PREFIX."filemap (`original`,`filename`,`hostid`) values ('archive.php','archive','$varhid')");
+	$varfilemap=$DB->fetch_first('Select * from '.DB_PREFIX."filemap where original='link.php' and hostid=$varhid");
+	if(!isset($varfilemap['original'])) $DB->query('insert into '.DB_PREFIX."filemap (`original`,`filename`,`hostid`) values ('link.php','link','$varhid')");
+}
  
  exit('升级完成<body></html>');

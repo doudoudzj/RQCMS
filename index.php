@@ -32,12 +32,18 @@ include RQ_CORE.'/library/func.data.php';
 include RQ_DATA.'/config.php';
 
 //获取请求的网址，处理部分服务器对重写的网址没有GET参数的解决办法
-if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'IIS'))//IIS,如 Microsoft-IIS/6.0
+if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'IIS')!==false)//IIS,如 Microsoft-IIS/6.0
 {
 	if(!isset($_SERVER['HTTP_X_REWRITE_URL'])) exit('this iis server is not support rqcms!');
 	$def_request_url=getRequestFile($_SERVER['HTTP_X_REWRITE_URL']);
 	define('REQUEST_URI',$def_request_url);
 	if(empty($_GET)&&strpos($_SERVER['HTTP_X_REWRITE_URL'],'?')) $_GET=getGetArr($_SERVER['HTTP_X_REWRITE_URL']);
+}
+else if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'nginx')!==false)//nginx
+{
+	if(!isset($_SERVER['REQUEST_URI'])) exit('this nginx server is not support rqcms!');
+	$def_request_url=getRequestFile($_SERVER['REQUEST_URI']);
+	define('REQUEST_URI',$def_request_url);
 }
 else
 {
@@ -97,9 +103,9 @@ $DB->connect(DB_HOST,DB_USER,DB_PASSWORD,DB_DATABASE,0);
 
 if(!isset($host))//没找到任何站点时，403或是安装
 {
-	$view='install.php';
-	if(is_array($HostArr)&&count($HostArr)>0) $view='404.php';
-	include_once RQ_CORE.'/'.$view;
+	if(is_array($HostArr)&&count($HostArr)>0) include_once RQ_CORE.'/404.php';
+	else if(REQUEST_URI!='install.php') exit("<p ><a href='/install.php'>install rqcms</a>");
+	else include_once RQ_CORE.'/install.php';
 	exit();
 }
 

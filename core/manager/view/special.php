@@ -129,6 +129,16 @@ print <<<EOT
                   <td><input class="formfield" type="text" name="maps[js.php]" size="35" maxlength="50" value="{$info['js.php']}"></td>
 				    <td><input class="formfield" type="text" name="args[js.php]" size="35" maxlength="200" value="{$args['js.php']}"></td>
                 </tr>
+				<tr class="tablecell">
+                  <td width="200">存档页(archive.php):</td>
+                  <td><input class="formfield" type="text" name="maps[archive.php]" size="35" maxlength="50" value="{$info['archive.php']}"></td>
+				    <td><input class="formfield" type="text" name="args[archive.php]" size="35" maxlength="200" value="{$args['archive.php']}"></td>
+                </tr>
+				<tr class="tablecell">
+                  <td width="200">友情链接页(link.php):</td>
+                  <td><input class="formfield" type="text" name="maps[link.php]" size="35" maxlength="50" value="{$info['link.php']}"></td>
+				    <td><input class="formfield" type="text" name="args[link.php]" size="35" maxlength="200" value="{$args['link.php']}"></td>
+                </tr>
 				 <tr class="tablecell">
                     <td colspan="3" align="center"><input type="submit" value="提交" class="formbutton">
                       <input type="reset" value="重置" class="formbutton">

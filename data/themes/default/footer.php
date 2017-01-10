@@ -9,7 +9,7 @@ target=_blank><B><?php echo $constant['RQ_AppName'];?>&nbsp;<?php echo $constant
 <?php
 if($host['icp']){ 
 ?>
-<a href="http://www.miibeian.gov.cn/" target="_blank"><?php echo $host['icp'];?>;</a>
+<a href="http://www.miibeian.gov.cn/" target="_blank"><?php echo $host['icp'];?></a>
 <?php
 }
 ?>
