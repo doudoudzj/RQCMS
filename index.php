@@ -8,8 +8,8 @@
  */
  //版权相关设置
 define('RQ_AppName','RQCMS');
-define('RQ_VERSION','1.01');
-define('RQ_RELEASE','20120922');
+define('RQ_VERSION','1.02');
+define('RQ_RELEASE','20120927');
 define('RQ_AUTHOR','RQ204');
 define('RQ_WEBSITE','http://www.rqcms.com');
 define('RQ_EMAIL','rq204@qq.com');
@@ -223,7 +223,7 @@ header($contentType);
 $output=ob_get_contents();
 ob_end_clean();
 $output=adminRewrite($output);
-doAction('before_output',$output);
+doAction('before_output');
 if($host['gzipcompress']&& function_exists('ob_gzhandler'))
 {
 	ob_start('ob_gzhandler');

@@ -14,6 +14,33 @@ echo <<<EOT
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>RQCMS $rqcms_version 安装脚本</title>
 <link href="$rqcms_coredir/resource/install.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="$rqcms_coredir/manager/editor/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+function checkNull()
+{
+	var str="";
+	if($("#username").val()=='')
+	{
+		 alert("用户名不能为空!");
+		 return false;
+	}
+	$("input[type$='password']").each(function(n)
+	{
+		if($(this).val()=="")
+		{
+			alert($(this).attr("title")+"不能为空!");
+			return false;
+		}
+	});
+	
+	if($("#password").val()!==$("#comfirpassword").val())
+	{
+		alert("两次输入的密码必须一样!");
+		return false;
+	}
+	return true;
+}
+</script>
 </head>
 <body>
 <div id="main">
@@ -33,9 +60,9 @@ else
 			$username=$_POST['username'];
 			$password=$_POST['password'];
 			$comfirpassword=$_POST['comfirpassword'];
-			if(empty($username)) redirect('用户名不得为空');
-			if(empty($password)) redirect('密码不得为空');
-			if($password!=$comfirpassword) redirect('两次输入的密码必须一样!');
+			if(empty($username)) exit('用户名不得为空');
+			if(empty($password)) exit('密码不得为空');
+			if($password!=$comfirpassword) exit('两次输入的密码必须一样!');
 			$password=md5($password);
 			$tablenum=0;
 			runquery($sql);
@@ -98,24 +125,24 @@ echo <<<EOT
 	<table width="100%" border="0" cellspacing="0" cellpadding="4">
 	  <tr>
 		<td width="30%" nowrap>用户名:</td>
-		<td><input type="text" value="" name="username" class="formfield" style="width:150px"></td>
+		<td><input type="text" value="" name="username" id="username" class="formfield" style="width:150px" title="用户名"></td>
 	  </tr>
 	  <tr>
 		<td width="30%" nowrap>密码:</td>
-		<td><input type="password" value="" name="password" class="formfield" style="width:150px"></td>
+		<td><input type="password" value="" name="password" id="password" class="formfield" style="width:150px" title="密码"></td>
 	  </tr>
 	  <tr>
 		<td width="30%" nowrap>确认密码:</td>
-		<td><input type="password" value="" name="comfirpassword" class="formfield" style="width:150px"></td>
+		<td><input type="password" value="" name="comfirpassword" id="comfirpassword" class="formfield" style="width:150px" title="确认密码"></td>
 	  </tr>
 	</table>
 	<p>&nbsp;</p>
 	<hr noshade="noshade" />
 	<p align="right">
 	  <input type="hidden" name="step" value="4" />
-	  <input class="formbutton" type="submit" value="开始安装"/>
+	  <input class="formbutton" type="submit" value="开始安装" onclick="return checkNull()"/>
 	</p>
-	</form>
+	</form>	
 EOT;
 			}
 		}

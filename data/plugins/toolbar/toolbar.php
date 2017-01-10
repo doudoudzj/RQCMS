@@ -1,15 +1,15 @@
 <?php
 /*
-Plugin Name: 访问统计
+Plugin Name: 底部导航
 Version: 1.0
-Description: 这是世界上第一个RQCMS插件，通过它我们可以很方便的添加统计代码。
+Description: 可以在所有的页角放一个代码
 Author: RQ204
 Author URL: http://www.rqcms.com
 */
 
 /*插件可以处理的位置和方法
 doAction('before_router');在没有加载处理文件之前的处理，可以用来处理url
-doAction('before_output'); 在输出之前对输出的内容进行处理
+doAction('before_output',$output); 在输出之前对输出的内容进行处理
 doAction('404_before_output');对出现404结果后的情况进行再处理
 doAction('article_not_find');在没有找到文章时的处理方法
 doAction('article_before_view');在程序处理完数据后显示前的处理
@@ -34,22 +34,45 @@ doAction('admin_plugin_setting_view');插件设置界面
 !defined('RQ_DATA') && exit('access deined!');
 
 //添加一个菜单在插件菜单中
-function stat_add_item()
+function toolbar_add_item()
 {
 	global $pluginitem;
-	$pluginitem['添加统计']='stat';
+	$pluginitem['底部导航']='toolbar';
 }
-addAction('admin_plugin_add_item','stat_add_item');
+addAction('admin_plugin_add_item','toolbar_add_item');
 
-function stat_footer_add()
+function toolbar_footer_add()
 {
-	global $pluginArr,$mapArr,$output;
+	global $hostid,$pluginArr,$mapArr,$output;
+	$code=$pluginArr['toolbar'];
 	$html=$output;
+	$pos=strrpos($html,'</head>');
+	
+	$cssstr=<<<EOT
+<style type="text/css">
+body{ margin:0px; padding:0px; background:url(notfound) fixed;}
+.fixfooter {
+ color:#fff;
+    bottom: 0;
+    margin: 0 auto;
+    position: fixed;
+ height:23px;
+ opacity: .60;
+ filter: alpha(opacity=60);
+ line-height:23px;
+    width: 100%;
+    z-index: 999;
+    _bottom:auto;
+    _width: 100%;
+    _position: absolute;
+    _top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-this.offsetHeight-(parseInt(this.currentStyle.marginTop,10)||0)-(parseInt(this.currentStyle.marginBottom,10)||0)));
+}
+</style>
+EOT;
+	
+	if($pos) $html=substr($html,0,$pos).$cssstr.substr($html,$pos);
 	$pos=strrpos($html,'</body>');
-	if($pos&&$mapArr['file'][RQ_FILE]!='admin.php')
-	{
-		$html=substr($html,0,$pos).$pluginArr['stat'].substr($html,$pos);
-	}
+	if($pos) $html=substr($html,0,$pos).'<div class="fixfooter">'.$code.'</div>'.substr($html,$pos);
 	$output=$html;
 }
-addAction('before_output','stat_footer_add');
+addAction('before_output','toolbar_footer_add');

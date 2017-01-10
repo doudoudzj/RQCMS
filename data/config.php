@@ -7,5 +7,5 @@ define('DB_PASSWORD','rq204');//数据库密码
 define('DB_PREFIX','rqcms_');//数据表前缀
 
 //参数开关
-define('RQ_DEBUG',True);//是否开启调试模式
+define('RQ_DEBUG',False);//是否开启调试模式
 define('RQ_CACHE',True);//对内容页是否启用自动缓存。

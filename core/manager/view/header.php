@@ -13,8 +13,6 @@ print <<<EOT
 <script type="text/javascript" src="{$cssdir}global.js"></script>
 <script type="text/javascript" src="{$editordir}jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="{$editordir}xheditor-1.1.14-zh-cn.min.js"></script>
-<link rel="stylesheet" href="{$editordir}xheditor_plugins/prettify/prettify.css" type="text/css">
-<script type="text/javascript" src="{$editordir}xheditor_plugins/prettify/prettify.js"></script>
 
 <style type="text/css">
 <!--
