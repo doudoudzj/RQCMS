@@ -1,14 +1,12 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
-$artarg=$host['friend_url'];
-if(!isset($_GET[$artarg])) message('未定义参数');
-$expr="$artarg='{$_GET[$artarg]}'";
+if(!isset($_GET['url'])) message('未定义参数');
 $page=isset($_GET['page'])?intval($_GET['page']):1;//这个是评论的页数
 
 $comment_username=isset($_COOKIE['comment_username'])?$_COOKIE['comment_username']:'';
 $comment_url=isset($_COOKIE['comment_url'])?$_COOKIE['comment_url']:'';
 
-$article=getArticle($expr);
+$article=getArticle($_GET['url']);
 if(empty($article))
 {
 	doAction('article_not_find');
@@ -39,12 +37,11 @@ else
 	$article['content'] = preg_replace("/\s*\[php\](.+?)\[\/php\]\s*/ies", "phphighlite('\\1')", $article['content']);
 	if($article['cateid']=='0')
 	{
-		$article['cname']=$article['carg']='';
+		$article['cname']=$article['curl']='';
 	}
 	else
 	{
-		$article['cname'] = $cates[$article['cateid']]['name'];
-		$article['carg']= $cates[$article['cateid']]['crg'];
+		$article['cname'] = $cateArr[$article['cateid']]['name'];
 	}
 	// 评论	
 	$commentdb=array();

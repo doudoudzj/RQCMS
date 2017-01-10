@@ -89,17 +89,6 @@ if(!$type || $type=='display'){print <<<EOT
                       </select>
                     </td>
                   </tr>
-				   <tr class="tablecell">
-                    <td width="60%"><b>文章和栏目显示参数:</b><br />
-                      aid和cid就是文章显示时显示的arcticle.php?aid=1这样的格式,oid同理,oid在单个网站中是递增的<br />
-                      url参数文章或栏目中英文标题的值,比如 article.php?url=mytitle这样的格式 </td>
-                    <td><select name="setting[friend_url]">
-                        <option value="aid" $friend_url[aid]>文章aid和栏目cid</option>
-						<option value="oid" $friend_url[oid]>文章oid和栏目oid</option>
-                        <option value="url" $friend_url[url]>文章url和栏目url</option>
-                      </select>
-                    </td>
-                  </tr>
                   <tr class="tablecell">
                     <td width="60%"><b>文章列表标题截取字节数:</b><br />
                       因为模板的不同，如果设置过多，可能会把表格撑变形。根据界面美观设置.如果设置为0表示不截取.</td>
@@ -119,11 +108,13 @@ if(!$type || $type=='display'){print <<<EOT
                       浏览文章的时候,可以显示使用相同标签的文章，选择不显示在浏览文章的时候减少一次查询以提高程序执行效率.建议不要设置太大,建议设置10,设置为0表示不显示相关文章.</td>
                     <td><input class="formfield" type="text" name="setting[related_shownum]" size="15" maxlength="50" value="$settings[related_shownum]"></td>
                   </tr>
+				  <!--
                   <tr class="tablecell">
                     <td width="60%"><b>相关文章标题截取字数:</b><br />
                       因为模板的不同,如果设置过多,可能会把表格撑变形.根据界面美观设置.如果设置为0表示不截取.</td>
                     <td><input class="formfield" type="text" name="setting[related_title_limit]" size="15" maxlength="50" value="$settings[related_title_limit]"></td>
                   </tr>
+				  -->
                   <tr class="tablecell">
                     <td width="60%"><b>相关文章排列依据:</b></td>
                     <td><select name="setting[related_order]">
@@ -299,6 +290,7 @@ if(!$type || $type=='dateline'){print <<<EOT
                   <tr class="tdbheader">
                     <td colspan="2">时间设置</td>
                   </tr>
+				  <!--
                   <tr class="tablecell">
                     <td width="60%"><b>服务器所在时区:</b><br />
                       网站所在的服务器是放在地球的哪个时区？</td>
@@ -336,6 +328,7 @@ if(!$type || $type=='dateline'){print <<<EOT
                       </select>
                     </td>
                   </tr>
+				  -->
                   <tr class="tablecell">
                     <td width="60%"><b>文章的日期格式:</b><br />
                       Y, F j, g:i A 显示为 2005, May 10, 2:12 PM</td>

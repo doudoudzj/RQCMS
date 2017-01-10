@@ -1,35 +1,28 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
 
-$action=isset($_GET['action'])?$_GET['action']:(isset($_POST['action'])?$_POST['action']:'');
-$loginurl='profile.php?action=login';
-$regurl='profile.php?action=register';
+$action=isset($_GET['url'])?$_GET['url']:(isset($_POST['url'])?$_POST['url']:'');
+$loginurl='profile.php?url=login';
+$regurl='profile.php?url=register';
 
 if(RQ_POST)
 {
 	if($action == 'register' || $action == 'modpro')
 	{
 		$doreg = $action == 'register' ? true : false;
-		$username        = trim($_POST['username']);
-		$password        = $_POST['password'];
 		$confirmpassword = $_POST['confirmpassword'];
-		$url             = trim($_POST['url']);
-		$result = checkurl($url);
-		if($result)
-		{
-			message($result);
-		}
 		if ($doreg) 
 		{
+			$username        =trim($_POST['username']);
+	     	$password        = $_POST['password'];
 			doAction('profile_reg_check');
 			//注册
 			if ($options['seccode_enable']) 
 			{
 				$clientcode = $_POST['clientcode'];
 				session_start();
-				$tc=strtolower($_SESSION['code']);
-				$truecode=$tc{3}.$tc{2}.$tc{1};
-				if (!$clientcode || strtolower($clientcode) != $truecode) 
+				$truecode=strtolower($_SESSION['code']);
+				if (strtolower($clientcode) != $truecode) 
 				{
 					unset($_SESSION['code']);
 					message('验证码错误,请返回重新输入.', $regurl);
@@ -76,7 +69,7 @@ if(RQ_POST)
 				message('密码包含不可接受字符.', $regurl);
 			}
 			$username = char_cv($username);
-			$r = $DB->fetch_first("SELECT userid FROM ".DB_PREFIX."users WHERE username='$username'");
+			$r = $DB->fetch_first("SELECT userid FROM ".DB_PREFIX."user WHERE username='$username'");
 			if($r['userid']) 
 			{
 				message('该用户名已被注册,请返回重新选择其他用户名.', $regurl);
@@ -85,7 +78,7 @@ if(RQ_POST)
 			$url = char_cv($url);
 			if ($url && isemail($url))
 			{
-				$r = $DB->fetch_first("SELECT userid FROM ".DB_PREFIX."users WHERE url='$url'");
+				$r = $DB->fetch_first("SELECT userid FROM ".DB_PREFIX."user WHERE url='$url'");
 				if($r['userid']) 
 				{
 					message('该E-mail已被注册.', $regurl);
@@ -95,12 +88,9 @@ if(RQ_POST)
 
 			$password = md5($password);
 
-			$DB->query("INSERT INTO ".DB_PREFIX."users (username, password, logincount, loginip, logintime, url, regdateline, regip, groupid) VALUES ('$username', '$password', '1', '$onlineip', '$timestamp', '$url', '$timestamp', '$onlineip', '3')");
+			$DB->query("INSERT INTO ".DB_PREFIX."user (username, password, logincount, loginip, logintime, url, regdateline, regip, groupid) VALUES ('$username', '$password', '1', '$onlineip', '$timestamp', '$url', '$timestamp', '$onlineip', '3')");
 			$userid = $DB->insert_id();
-			$DB->unbuffered_query("UPDATE ".DB_PREFIX."statistics SET user_count=user_count+1");
-			setcookie('sax_auth', authcode("$userid\t$password\t1"), $timestamp+2592000);
-			require_once(SACMS_ROOT.'include/cache.php');
-			statistics_recache();
+			//自动登录
 			message('注册成功.', './');
 		}
 		else
@@ -111,7 +101,7 @@ if(RQ_POST)
 			$newpassword = $_POST['newpassword'];
 			if ($newpassword)
 			{
-				$user = $DB->fetch_first("SELECT password FROM ".DB_PREFIX."users WHERE userid='$sax_uid'");
+				$user = $DB->fetch_first("SELECT password FROM ".DB_PREFIX."users WHERE userid='$uid'");
 				if (!$user) {
 					message('出错,请尝试重新登陆再进行此操作',$loginurl);
 				}
@@ -131,13 +121,13 @@ if(RQ_POST)
 			}
 			$url = char_cv($url);
 			if ($url && isemail($url)) {
-				$r = $DB->fetch_first("SELECT userid FROM ".DB_PREFIX."users WHERE url='$url' AND userid!='$sax_uid'");
+				$r = $DB->fetch_first("SELECT userid FROM ".DB_PREFIX."users WHERE url='$url' AND userid!='$uid'");
 				if($r['userid']) {
 					message('该E-mail已被注册');
 				}
 				unset($r);
 			}
-			$DB->unbuffered_query("UPDATE ".DB_PREFIX."users SET url='$url' $password_sql WHERE userid='$sax_uid'");
+			$DB->unbuffered_query("UPDATE ".DB_PREFIX."users SET url='$url' $password_sql WHERE userid='$uid'");
 			if ($newpassword) {
 				setcookie('sax_auth', '');
 				setcookie('comment_post_time', '');
@@ -207,7 +197,7 @@ else
 			$title='登陆';
 			break;
 		case 'register':
-			$pagefile='reg';
+			$pagefile='register';
 			$title='注册用户';
 			break;
 			case 'edit':

@@ -36,7 +36,7 @@ if(RQ_POST&&isset($_POST['action'])&&$_POST['action'] == 'updatesetting')
 		latest_recache();
 		cates_recache();
 	}
-	redirect('更新系统配置成功', RQ_FILE.'?file=configurate&type='.$type);
+	redirect('更新系统配置成功', 'admin.php?file=configurate&type='.$type);
 }
 else
 {
@@ -101,12 +101,12 @@ else
 	ifselected('attachments_remote_open');
 }
 
-function ifselected($var) {
-	global $settings,${$var.'_Y'},${$var.'_N'};
-	if(isset($settings[$var])&&$settings[$var]) {
-		${$var.'_Y'} = 'selected';
+function ifselected($varArr) {
+	global $settings,${$varArr.'_Y'},${$varArr.'_N'};
+	if(isset($settings[$varArr])&&$settings[$varArr]) {
+		${$varArr.'_Y'} = 'selected';
 	} else {
-		${$var.'_N'} = 'selected';
+		${$varArr.'_N'} = 'selected';
 	}
 }
 ?>

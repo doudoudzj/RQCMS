@@ -48,7 +48,7 @@ EOT;
 
                 <input type="hidden" name="articleid" value="$articleid">
                 <tr class="tablecell">
-                  <td colspan="9" nowrap="nowrap"><div class="records">记录:$tatol</div>
+                  <td colspan="9" nowrap="nowrap"><div class="records">记录:$total</div>
                     <div class="multipage">$multipage</div></td>
                 </tr>
 EOT;

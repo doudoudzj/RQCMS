@@ -131,33 +131,6 @@ function changeFileSize($fileSize){
 }
 
 /**
- * 分页函数
- *
- * @param int $count 条目总数
- * @param int $perlogs 每页显示条数目
- * @param int $page 当前页码
- * @param string $url 页码的地址
- * @return unknown
- */
-function pagination($count,$perlogs,$page,$url){
-	$pnums = @ceil($count / $perlogs);
-	$re = '';
-	for ($i = $page-5;$i <= $page+5 && $i <= $pnums; $i++){
-		if ($i > 0){
-			if ($i == $page){
-				$re .= " <span>$i</span> ";
-			} else {
-				$re .= " <a href=\"$url=$i\">$i</a> ";
-			}
-		}
-	}
-	if ($page > 6) $re = "<a href=\"$url=1\" title=\"首页\">&laquo;</a><em>...</em>$re";
-	if ($page + 5 < $pnums) $re .= "<em>...</em> <a href=\"$url=$pnums\" title=\"尾页\">&raquo;</a>";
-	if ($pnums <= 1) $re = '';
-	return $re;
-}
-
-/**
  * 该函数在插件中调用,挂载插件函数到预留的钩子上
  *
  * @param string $hook
@@ -165,9 +138,9 @@ function pagination($count,$perlogs,$page,$url){
  * @return boolearn
  */
 function addAction($hook, $actionFunc){
-	global $wdHooks;
-	if (!isset($wdHooks[$hook])||!in_array($actionFunc, $wdHooks[$hook])){
-		$wdHooks[$hook][] = $actionFunc;
+	global $hookArr;
+	if (!isset($hookArr[$hook])||!in_array($actionFunc, $hookArr[$hook])){
+		$hookArr[$hook][] = $actionFunc;
 }
 	return true;
 }
@@ -178,10 +151,10 @@ function addAction($hook, $actionFunc){
  * @param string $hook
  */
 function doAction($hook){
-	global $wdHooks;
+	global $hookArr;
 	$args = array_slice(func_get_args(), 1);
-	if (isset($wdHooks[$hook])){
-		foreach ($wdHooks[$hook] as $function){
+	if (isset($hookArr[$hook])){
+		foreach ($hookArr[$hook] as $function){
 			$string = call_user_func_array($function, $args);
 		}
 	}
@@ -429,91 +402,6 @@ function debug($errno, $errstr, $errfile, $errline)
     return true;	
 }
 
-/**
- * 将数组写入缓存文件
- *
- * @param string $cacheFile 要保存的文件路径
- * @param array $cacheArray 需要保存的数组
- * @return false or strlen
- */
-function writeCache($cacheFile,$cacheArray)
-{
-	if(!is_array($cacheArray)) return false;
-	$array = "<?php\nreturn ".var_export($cacheArray, true).";\n?>";
-	$wirteFile = RQ_DATA.'/cache/'.$cacheFile.'.php';
-	$strlen = file_put_contents($wirteFile, $array);
-	@chmod($wirteFile, 0777);
-	return $strlen;
-}
-
-//网址重写,重写的只是文件名,只能是相对地址,以'或"后就是地址,如<a href="admin.php或<a href='admin.php
-function urlRewrite($buffer)
-{
-	global $Files,$host;
-	if(is_array($Files))
-	{
-		$left=array('action','href','url');
-		foreach($Files['arg'] as $file=>$args)
-		{
-			if(is_array($args))
-			{
-				$oldfile=$Files['file'][$file];
-				foreach($left as $lf)
-				{
-					$buffer=str_ireplace("$lf='{$oldfile}","$lf='$file",$buffer);
-					$buffer=str_ireplace("$lf=\"{$oldfile}","$lf=\"$file",$buffer);
-				}
-			}
-		}
-	}
-	return $buffer;
-}
-
-//参数重写，将浏览器传过来的参数写在程序可以识别的参数,除后台的不写外
-function argRewrite()
-{
-	global $Files;
-	if(is_array($Files)&&isset($Files['file'][RQ_FILE])&&$Files['file'][RQ_FILE]!='admin.php'&&is_array($Files['arg'][RQ_FILE]))
-	{
-		foreach($Files['arg'][RQ_FILE] as $new=>$old)
-		{
-			if(isset($_GET[$old])) unset($_GET[$old]);
-			if(isset($_GET[$new]))
-			{
-				$_GET[$old]=$_GET[$new];
-				unset($_GET[$new]);
-			}
-		}
-	}
-}
-
-//对某个文件的参数进行重写，如aid重写成id,注意每次只写一个
-function argUrlRewrite($filename,$arg)
-{
-	global $Files;
-	if(is_array($Files)&&!empty($Files))
-	{	
-		foreach($Files['file'] as $nfile=>$ofile)
-		{
-			if($ofile==$filename&&!empty($Files['arg'][$nfile]))
-			{
-				$fs= array_flip($Files['arg'][$nfile]);
-				if(isset($fs[$arg])) return $fs[$arg];
-			}
-		
-		}
-	}
-	return $arg;
-}
-
-function message($msg,$returnurl='')
-{
-	global $theme,$host;
-	if(!$returnurl) $returnurl='http://'.$host['host'];
-	include RQ_DATA."/themes/$theme/message.php";
-	exit();
-}
-
 // 连接多个ID
 function implode_ids($array){
 	$ids = $comma = '';
@@ -524,48 +412,6 @@ function implode_ids($array){
 		}
 	}
 	return $ids;
-}
-
-function showArticle($article)
-{
-	global $host;
-	$article['month'] = date('M', $article['dateline']);
-	$article['day'] = date('d', $article['dateline']);
-	$article['dateline']=date($host['time_article_format'], $article['dateline']);
-	$article['lastmodified']=$article['modified']+(isset($article['comment'])?$article['comment']:0);
-	$article['modified']=date($host['time_article_format'], $article['modified']);
-	$arg=argUrlRewrite('article.php',$host['friend_url']);
-	$article['arg'] = $arg.'='.$article[$host['friend_url']];
-	$article['attachments']=$article['attachments'];
-	return $article;
-}
-
-function showCategory($cate)
-{
-	global $host;
-	$arg1=$arg2=$host['friend_url'];
-	if($host['friend_url']=='aid') $arg1=$arg2='cid';
-	$arg1=argUrlRewrite('category.php',$arg1);
-	$cate['crg']=$arg1.'='.$cate[$arg2];
-	return $cate;
-}
-
-function cacheControl($lastmodified)
-{
-	$lastmodified=gmdate('D, d M Y H:i:s',$lastmodified).' GMT';
-	if(array_key_exists('HTTP_IF_MODIFIED_SINCE',$_SERVER))
-	{
-		if($_SERVER['HTTP_IF_MODIFIED_SINCE']==$lastmodified)
-		{
-			header('HTTP/1.0 304 Not Modified');
-			exit;
-		}
-	}
-	else
-	{
-		header("Cache-Control: max-age=259200");
-		header("Last-Modified: ".$lastmodified); //Fri, 31 Oct 2008 02:14:04 GMT
-	}
 }
 
 /**

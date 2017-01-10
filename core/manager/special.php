@@ -2,16 +2,36 @@
 if(empty($action)) $action='list';
 $sitedb=array();
 $setting['name']=$setting['host']=$setting['hid']='';
+$setting['url_ext']='php';
 $files=array('index.php','category.php','article.php','attachment.php','search.php','comment.php','tag.php','profile.php','admin.php','captcha.php','rss.php','js.php');
-foreach($files as $f) $info[$f]=$f;
+foreach($files as $f) $info[$f]='';
 foreach($files as $f) $args[$f]='';
 $hid=isset($_GET['hid'])?intval($_GET['hid']):'';
 $curhostid=$hostid;
 $curhost=$host;
-$curFiles=$Files;
+$curmapArr=$mapArr;
+$url_html1=$url_html0='';
 
 if(RQ_POST)
 {
+	if($action=='add'||$action=='edit')
+	{	
+		if(!$hid) $hid=isset($_POST['setting']['hid'])?intval($_POST['setting']['hid']):'';
+		$hidadd=!$hid?'':'&action=edit&hid='.$hid;
+		$test=array();
+		foreach($files as $k)
+		{
+			$postvalue=$_POST['maps'][$k];
+			if(!$postvalue) redirect($k.'参数不能为空','admin.php?file=special'.$hidadd);
+			if(!preg_match("/^\w*?$/i",$postvalue)) redirect($k.'参数不符合条件，只能是字母或数字','admin.php?file=special'.$hidadd);
+			if(isset($test[$postvalue])) redirect($k.'参数和参数'.$test[$postvalue].'新文件名重复，请修改','admin.php?file=special'.$hidadd);
+			$test[$postvalue]=$k;
+		}
+		$url_html=$_POST['setting']['url_html'];
+		$url_ext=$_POST['setting']['url_ext'];
+		if($url_ext&&!preg_match("/^\w*?$/i",$url_ext)) redirect('文件后缀只能是字母或数字','admin.php?file=special'.$hidadd);
+		if(!$url_html&&!$url_ext) redirect('当使用动态网址后，必须指定文件后缀','admin.php?file=special'.$hidadd);
+	}
 	switch($action)
 	{
 		case 'add':
@@ -29,12 +49,12 @@ if(RQ_POST)
 			foreach($files as $k)
 			{
 				$filename=$_POST['maps'][$k];
-				$filemaps=$_POST['args'][$k];
-				$DB->query('Insert into '.DB_PREFIX."filemap (`hostid`,`original`,`filename`,`maps`) values ('$insertid','$k','$filename','$filemaps')");
+				$mapArr=$_POST['args'][$k];
+				$DB->query('Insert into '.DB_PREFIX."filemap (`hostid`,`original`,`filename`,`maps`) values ('$insertid','$k','$filename','$mapArr')");
 			}
 			$hostid=$insertid;
 			$host=$DB->fetch_first('Select * from '.DB_PREFIX."host where hid='$insertid'");
-			$Files=getFiles($hostid);
+			$mapArr=getFiles($hostid);
 			hosts_recache();
 			filemaps_recache();
 			cates_recache();
@@ -49,11 +69,10 @@ if(RQ_POST)
 			hot_recache();
 			$host=$curhost;
 			$hostid=$curhostid;
-			$Files=$curFiles;
+			$mapArr=$curmapArr;
 			redirect('新站点添加成功','admin.php?file=special');
 		break;
 		case 'edit':
-			$hid=isset($_POST['setting']['hid'])?intval($_POST['setting']['hid']):'';
 			if(!$hid) redirect('缺少站点Id参数','admin.php?file=special');
 			if(!isset($_POST['setting'])) redirect('Setting参数不足','admin.php?file=special');
 			if(!isset($_POST['maps'])) redirect('maps参数不足','admin.php?file=special');
@@ -61,20 +80,22 @@ if(RQ_POST)
 			if(!$result) redirect('不存在的站点','admin.php?file=special');
 			$hostname=$_POST['setting']['name'];
 			$hosturl=$_POST['setting']['host'];
-			$DB->query('update '.DB_PREFIX."host set `host`='$hosturl',`name`='$hostname' where hid=$hid");
+			$url_html=$_POST['setting']['url_html'];
+			$url_ext=$_POST['setting']['url_ext'];
+			$DB->query('update '.DB_PREFIX."host set `host`='$hosturl',`name`='$hostname',`url_html`=$url_html,`url_ext`='$url_ext' where hid=$hid");
 			foreach($files as $k)
 			{
 				$filename=$_POST['maps'][$k];
-				$filemaps=$_POST['args'][$k];
-				$DB->query('Update '.DB_PREFIX."filemap set `filename`='$filename',`maps`='$filemaps' where `original`='$k' and `hostid`='$hid'");
+				$mapArr=$_POST['args'][$k];
+				$DB->query('Update '.DB_PREFIX."filemap set `filename`='$filename',`maps`='$mapArr' where `original`='$k' and `hostid`='$hid'");
 			}
 			$hostid=$hid;
 			$host=$DB->fetch_first('Select * from '.DB_PREFIX."host where hid='$hid'");
-			$Files=getFiles($hid);
+			$mapArr=getFiles($hid);
 			if($curhostid==$hid)
 			{
 				$curhost=$host;
-				$curFiles=$Files;
+				$curmapArr=$mapArr;
 			}
 			hosts_recache();
 			filemaps_recache();
@@ -84,10 +105,14 @@ if(RQ_POST)
 			comments_recache();
 			pics_recache();
 			stick_recache();
-			$host=$curhost;
-			$hostid=$curhostid;
-			$Files=$curFiles;
-			redirect('站点更新成功','admin.php?file=special');
+			hot_recache();
+			if($curhostid!=$hid)
+			{
+				$host=$curhost;
+				$hostid=$curhostid;
+				$mapArr=$curmapArr;
+			}
+			redirect('站点更新成功',mkUrl('admin.php','').'?file=special');
 		break;
 	}
 }
@@ -101,11 +126,11 @@ else
 			while($host=$DB->fetch_array($hquery))
 			{
 				$hostid=$host['hid'];
-				$Files=getFiles($hostid);
+				$mapArr=getFiles($hostid);
 				if($curhostid==$hid)
 				{
 					$curhost=$host;
-					$curFiles=$Files;
+					$curmapArr=$mapArr;
 				}
 				vars_recache();
 				pics_recache();
@@ -123,8 +148,8 @@ else
 			}
 			$host=$curhost;
 			$hostid=$curhostid;
-			$Files=$curFiles;
-			redirect('更新所有站点缓存成功','admin.php?file=special');
+			$mapArr=$curmapArr;
+			redirect('更新所有站点缓存成功',mkUrl('admin.php','').'?file=special');
 			break;
 		case 'list':
 			$query=$DB->query('Select * from '.DB_PREFIX.'host');
@@ -139,6 +164,7 @@ else
 			$info=$args=array();
 			if(!$hid) redirct('缺少站点Id参数');
 			$setting=$DB->fetch_first('Select * from '.DB_PREFIX.'host where hid='.$hid);
+			${'url_html'.$host['url_html']}='selected';
 			if(empty($setting)) redirct('不存在的站点id');
 			$query=$DB->query('Select * from '.DB_PREFIX.'filemap where hostid='.$hid);
 			while($fname=$DB->fetch_array($query))
@@ -152,12 +178,13 @@ else
 		case 'go':
 			if(!$hid) redirct('缺少站点Id参数');
 			$nsessionid=urlencode($sessionid);
-			$info=$DB->fetch_first('Select * from '.DB_PREFIX.'host where hid='.$hid);
-			$rhost=$info['host'];
-			$map=$DB->fetch_first('Select * from '.DB_PREFIX."filemap where hostid=$hid and `original`='admin.php'");
-			if($info)
+			$host=$DB->fetch_first('Select * from '.DB_PREFIX.'host where hid='.$hid);
+			$rhost=$host['host'];
+			$mapArr=getFiles($hid);
+			$admin_url=mkUrl('admin.php','');
+			if($host)
 			{
-				redirect('正在转向转站点'.$info['name'],RQ_HTTP."{$rhost}/{$map['filename']}?sessionid={$nsessionid}");
+				redirect('正在转向转站点'.$host['name'],RQ_HTTP."{$rhost}/{$admin_url}?sessionid={$nsessionid}");
 				break;
 			}
 	}
@@ -165,7 +192,7 @@ else
 
 function getFiles($hostid)
 {
-	global $DB;
+	global $DB,$host;
 	$files= $DB->query('SELECT f.*,h.host,h.hid FROM `'.DB_PREFIX.'filemap` f,`'.DB_PREFIX.'host` h where h.hid=f.hostid and f.hostid='.$hostid);
 	$arrfiles=array();
 	while ($fs = $DB->fetch_array($files)) 
@@ -180,6 +207,7 @@ function getFiles($hostid)
 				if(count($ag)==2&&$ag[0]&&$ag[1]) $args[$ag[0]]=$ag[1];
 			}
 		}
+		if(!$host['url_html']) $fs['filename']=$fs['filename'].'.'.$host['url_ext'];
 		$arrfiles['file'][$fs['filename']]=$fs['original'];
 		$arrfiles['arg'][$fs['filename']]=$args;
 	}

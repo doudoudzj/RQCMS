@@ -54,8 +54,8 @@ $groupdb=array(4=>'创始人',3=>'管理员',2=>'编辑',1=>'注册会员',0=>'�
 		} else {
 			$orderby = 'uid';
 		}
-		$tatol     = $DB->num_rows($DB->query("SELECT uid FROM ".DB_PREFIX."user ".$sqladd));
-		$multipage = multi($tatol, 30, $page, 'admin.php?file=user&action=list'.$pagelink);
+		$total     = $DB->num_rows($DB->query("SELECT uid FROM ".DB_PREFIX."user ".$sqladd));
+		$multipage = multi($total, 30, $page, 'admin.php?file=user&action=list'.$pagelink);
 		$query = $DB->query("SELECT * FROM ".DB_PREFIX."user $sqladd ORDER BY $orderby DESC LIMIT $start_limit, 30");
 		$userdb = array();
 		while ($user = $DB->fetch_array($query))		{

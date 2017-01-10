@@ -9,7 +9,7 @@ $incfile=!empty($_GET['file'])?$_GET['file']:'main';
 $do=isset($_POST['do'])?$_POST['do']:'';
 if(!$do) $do=isset($_GET['do'])?$_GET['do']:'';
 $action=!empty($_GET['action'])?$_GET['action']:(!empty($_POST['action'])?$_POST['action']:'');
-$cssdir=$coredir.'/manager/view/images/';
+$cssdir='/'.$coredir.'/manager/view/images/';
 $page=isset($_GET['page'])?intval($_GET['page']):'';
 if($incfile!='css'&&$groupid<2)  $incfile='login';
 
@@ -20,14 +20,13 @@ include RQ_CORE.'/library/func.image.php';
 function redirect($msg, $url = 'javascript:history.go(-1);', $min='2')
 {
 	global $cssdir,$cssfile;
-	@ob_end_clean();
+	ob_end_clean();
 	ob_start();
 	include RQ_CORE.'/manager/view/redirect.php';
 	$output=ob_get_contents();
-	$output=urlRewrite($output);
+	$output=adminRewrite($output);
 	@ob_end_clean();
-	echo $output;
-	exit;
+	exit($output);
 }
 
 $adminitem=array();
@@ -74,23 +73,6 @@ if(!in_array($incfile,$other)&&!array_key_exists($incfile,$adminitem)) redirect(
 if($groupid!=4&&$incfile=='special') redirect('您无权限访问多站点设置','admin.php?file=main');
 if($groupid<3&&$incfile=='tag') redirect('您无权限编辑tag设置','admin.php?file=main');
 if($groupid!=4&&$incfile=='database') redirect('您无权限操作数据库设置','admin.php?file=main');
-
-//这里对域名进行重新判断,查找cookie里的参数,设置对应的站点信息,包含
-//$Plugins = array();//插件文件数组
-//$wdHooks = array();//插件函数数据
-//$Hosts = @include RQ_DATA.'/cache/hosts.php';
-//$cates=array();//当前站点的分类数据
-
-//$host=$Hosts[RQ_HOST];//站点数组,包含
-//$hostid=$host['id'];//站点id
-//$theme=$host['theme'];//站点模板
-//$Plugins = @include RQ_DATA.'/cache/plugins.php';
-//$Categories=@include RQ_DATA.'/cache/categories.php';
-//if($Categories&&is_array($Categories)) $cates=$Categories[RQ_HOST];
-//if($Plugins&&is_array($Plugins)) $Plugins=$Plugins[RQ_HOST];
-
-
-
 
 $onlines=array();//在线后台用户
 if($incfile!='css') include RQ_CORE.'/manager/view/header.php';

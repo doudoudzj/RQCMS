@@ -59,14 +59,14 @@ else
 		//todo查询文本文件
 		$logfilename = RQ_DATA.'/logs/dberror.php';
 		$searchdb = array();
-		$tatol     = 0;
+		$total     = 0;
 		if(file_exists($logfilename))
 		{
 			$logs = @file($logfilename);
-			$tatol     = count($logs);
-			if($tatol>0)
+			$total     = count($logs);
+			if($total>0)
 			{
-				if($page>$tatol) $page=$tatol;
+				if($page>$total) $page=$total;
 				$logs=array_slice($logs,($page-1)*30,30);
 				foreach($logs as $log)
 				{
@@ -81,15 +81,15 @@ else
 			$logs=array();
 		}
 
-		$multipage = multi($tatol, 30, $page, "admin.php?file=maintenance&action=log&do=$do");
+		$multipage = multi($total, 30, $page, "admin.php?file=maintenance&action=log&do=$do");
 		$browser='Sql语句';
 		$result='文件';
 	}
 	else
 	{
 		$searchs  = $DB->query("SELECT * FROM ".DB_PREFIX."log where `type`='$type'");
-		$tatol     = $DB->num_rows($searchs);
-		$multipage = multi($tatol, 30, $page, "admin.php?file=maintenance&action=log&do=$do");
+		$total     = $DB->num_rows($searchs);
+		$multipage = multi($total, 30, $page, "admin.php?file=maintenance&action=log&do=$do");
 		$searchdb = array();
 		$query = $DB->query("SELECT * FROM ".DB_PREFIX."log where `type`='$type' ORDER BY lid DESC LIMIT $start_limit, 30");
 		while ($search = $DB->fetch_array($query)) {

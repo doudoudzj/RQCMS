@@ -47,7 +47,7 @@ function addattach(attachid){
         <div class="leftmenubody">
 		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list&view=stick">置顶文章</a></div>
 EOT;
-foreach($cates as $key => $cate){print <<<EOT
+foreach($cateArr as $key => $cate){print <<<EOT
           <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list&cid={$cate['cid']}">{$cate['name']}</a></div>
 EOT;
 }print <<<EOT
@@ -84,7 +84,7 @@ foreach($articledb as $key => $article){print <<<EOT
 EOT;
 }print <<<EOT
         <tr class="tablecell">
-          <td colspan="8" nowrap="nowrap"><div class="records">记录:$tatol</div>
+          <td colspan="8" nowrap="nowrap"><div class="records">记录:$total</div>
                   <div class="multipage">$multipage</div></td>
         </tr>
 EOT;
@@ -102,7 +102,7 @@ EOT;
           <option value="">== 选择分类 ==</option>
 EOT;
 $i=0;
-foreach($cates as $key => $cate){
+foreach($cateArr as $key => $cate){
 $i++;
 $selected = ($cate['cid'] == $article['cateid']) ? "selected" : "";
 print <<<EOT
@@ -134,7 +134,7 @@ EOT;
     </tr>
 	 <tr class="tablecell">
       <td>友好网址:</td>
-      <td><input class="formfield" type="text" name="url" size="20" maxlength="20" value="$article[url]"> 20个字符以内</td>
+      <td><input class="formfield" type="text" name="url" size="20" maxlength="20" value="$article[url]"> 60个字符以内</td>
     </tr>
 EOT;
 print <<<EOT
@@ -200,7 +200,7 @@ EOT;
         <select name="cid">
             <option value="" selected>选择分类</option>
 EOT;
-foreach($cates as $key => $cate){print <<<EOT
+foreach($cateArr as $key => $cate){print <<<EOT
             <option value="{$cate['cid']}">{$cate['name']}</option>
 EOT;
 }print <<<EOT
@@ -243,7 +243,7 @@ EOT;
           <option value="">== 全部分类 ==</option>
 EOT;
 $i=0;
-foreach($cates as $key => $cate){
+foreach($cateArr as $key => $cate){
 $i++;
 $selected = ($cate['cid'] == $article['cid']) ? 'selected' : '';
 print <<<EOT

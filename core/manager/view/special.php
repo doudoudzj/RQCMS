@@ -19,7 +19,7 @@ print <<<EOT
         </div></td>
       <td valign="top" style="width:20px;"></td>
       <td valign="top">
-        <table width="100%" align="center" border="0" cellspacing="0" cellpadding="0"><form action='admin.php?file=special' method='post'><input type="hidden" name="action" value="{$action}">
+        <table width="100%" align="center" border="0" cellspacing="0" cellpadding="0"><form action="admin.php?file=special" method="post"><input type="hidden" name="action" value="{$action}">
 EOT;
 if($action=='add'||$action=='edit') {print <<<EOT
           <tr>
@@ -34,7 +34,18 @@ if($action=='add'||$action=='edit') {print <<<EOT
                   </tr>
 				  <tr class="tablecell">
 					 <td width="200"><b>网站地址:</b></td>
-                    <td><input class="formfield" type="text" name="setting[host]" size="35" maxlength="50" value="{$setting['host']}"></td>
+                    <td><input class="formfield" type="text" name="setting[host]" size="35" maxlength="50" value="{$setting['host']}">&nbsp;示例如&nbsp;www.rqcms.com</td>
+                  </tr>
+				    <tr class="tablecell">
+					 <td width="200"><b>网址格式:</b></td>
+                    <td><select name="setting[url_html]">
+                        <option value="0" $url_html0>纯动态网址</option>
+                        <option value="1" $url_html1>目录伪静态</option>
+                      </select>&nbsp;目录伪静态形如/categroy/test/p1.三个参数分别是分类标识，分类友好名称，p1是第一页，p2是第二页</td>
+                  </tr>
+				    <tr class="tablecell">
+					 <td width="200"><b>文件后缀:</b></td>
+                    <td><input class="formfield" type="text" name="setting[url_ext]" size="35" maxlength="50" value="{$setting['url_ext']}">当使用纯动态或是目录伪静态加文件后缀时，即使用该后缀，如php</td>
                   </tr>
 EOT;
 print <<<EOT

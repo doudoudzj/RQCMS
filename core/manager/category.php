@@ -143,8 +143,8 @@ else
 		while($cateinfo=$DB->fetch_array($catequery))
 		{
 			$cid=$cateinfo['cid'];
-			$cates[$cid]=$cateinfo;
-			$cates[$cid]['articles']=getArticleNum($hostid,$cid);
+			$cateArr[$cid]=$cateinfo;
+			$cateArr[$cid]['articles']=getArticleNum($hostid,$cid);
 		}
 	}
 }

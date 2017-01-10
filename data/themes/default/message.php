@@ -9,9 +9,7 @@ print <<<EOT
 <meta http-equiv="Pragma" content="no-cache" />
 <meta name="keywords" content="{$host['keywords']}" />
 <meta name="description" content="{$host['description']}" />
-<meta name="copyright" content="rq204" />
-<meta name="author" content="rq204" />
-<link rel="stylesheet" href="images/common.css" type="text/css" media="all"  />
+<link rel="stylesheet" href="/images/common.css" type="text/css" media="all"  />
 EOT;
 if ($returnurl) {
 print <<<EOT

@@ -54,8 +54,8 @@ if(RQ_POST)
 		$query = $DB->query("SELECT articleid FROM ".DB_PREFIX."comment where cid IN ($cids)");
 		while ($article = $DB->fetch_array($query)) {
 			// 更新所有文章的评论数
-			$tatol = $DB->num_rows($DB->query("SELECT cid FROM ".DB_PREFIX."comment WHERE articleid='".$article['articleid']."' AND visible='1'"));
-			$DB->unbuffered_query("UPDATE ".DB_PREFIX."article SET comments='$tatol' WHERE aid='".$article['articleid']."'");
+			$total = $DB->num_rows($DB->query("SELECT cid FROM ".DB_PREFIX."comment WHERE articleid='".$article['articleid']."' AND visible='1'"));
+			$DB->unbuffered_query("UPDATE ".DB_PREFIX."article SET comments='$total' WHERE aid='".$article['articleid']."'");
 		}
 		redirect($msg, 'admin.php?file=comment&action=cmlist&articleid='.$articleid);
 	} else {		
@@ -123,8 +123,8 @@ else
 			$start_limit = 0;
 			$page = 1;
 		}
-		$tatol     = $DB->num_rows($DB->query("SELECT cid FROM ".DB_PREFIX."comment $sql_query"));
-		$multipage = multi($tatol, 30, $page, 'admin.php?file=comment&action=cmlist'.$pagelink);
+		$total     = $DB->num_rows($DB->query("SELECT cid FROM ".DB_PREFIX."comment $sql_query"));
+		$multipage = multi($total, 30, $page, 'admin.php?file=comment&action=cmlist'.$pagelink);
 
 		$query  = $DB->query("SELECT * FROM ".DB_PREFIX."comment $sql_query ORDER BY cid DESC LIMIT $start_limit, 30");
 		$commentdb = array();

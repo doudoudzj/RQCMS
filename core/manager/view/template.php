@@ -30,7 +30,7 @@ EOT;
 if ($action == 'stylevar') {print <<<EOT
         <div class="box">
           <div class="alert">关于自定义模板变量</div>
-          <div class="alertmsg">设置一个变量about,内容为 &lt;b&gt;关于我&lt;/b&gt;在前后台模板的任意地方,均可以放一个 <b>\$var[about]</b> 变量,模板则直接显示 <b>关于我</b></div>
+          <div class="alertmsg">设置一个变量about,内容为 &lt;b&gt;关于我&lt;/b&gt;在前后台模板的任意地方,均可以放一个 <b>\$varArr[about]</b> 变量,模板则直接显示 <b>关于我</b></div>
         </div>
 EOT;
 } 
@@ -115,14 +115,14 @@ EOT;
 foreach($stylevardb as $stylevar){print <<<EOT
                   <tr class="tablecell">
 				    <td nowrap="nowrap"><select name="visible[$stylevar[vid]]">$stylevar[visible]</select></td>
-                    <td nowrap="nowrap"><b>\$var[$stylevar[title]]</b></td>
+                    <td nowrap="nowrap"><b>\$varArr[$stylevar[title]]</b></td>
                     <td nowrap="nowrap"><textarea id="varid_$stylevar[vid]" class="formarea" name="stylevar[$stylevar[vid]]" style="width:400px;height:30px;">$stylevar[value]</textarea> <b><a href="###" onclick="resizeup('varid_$stylevar[vid]');">[+]</a> <a href="###" onclick="resizedown('varid_$stylevar[vid]');">[-]</a></b></td>
                     <td nowrap><input type="checkbox" name="delete[]" value="$stylevar[vid]"></td>
                   </tr>                
 EOT;
 }print <<<EOT
                   <tr class="tablecell">
-                    <td colspan="4" nowrap="nowrap"><div class="records">记录:$tatol</div>
+                    <td colspan="4" nowrap="nowrap"><div class="records">记录:$total</div>
                       <div class="multipage">$multipage</div></td>
                   </tr>
                   <tr class="tablecell">

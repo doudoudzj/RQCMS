@@ -50,13 +50,13 @@ if(RQ_POST)
 	$sortby = 'dateline';
 	$orderby = 'desc';
 	$query_sql = "SELECT * FROM ".DB_PREFIX."article WHERE visible='1' and hostid=$hostid AND ($sqltxtsrch) ORDER BY dateline desc limit 100";
-	$tatols = $ids = 0;
+	$totals = $ids = 0;
 	$query = $DB->query($query_sql);
 	while($article = $DB->fetch_array($query)) 
 	{
 		$articledb[]=showArticle($article);
 	}
-	$tatol=count($articledb);
+	$total=count($articledb);
 	//插入日志
 	$DB->query('insert into `'.DB_PREFIX."log` (`user`,`dateline`,`type`,`useragent`,`ip`,`content`) values ('$username','$timestamp','search','$useragent','$onlineip','$keywords')");
 	

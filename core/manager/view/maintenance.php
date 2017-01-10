@@ -75,7 +75,7 @@ foreach($searchdb as $key => $search){print <<<EOT
 EOT;
 }print <<<EOT
         <tr class="tablecell">
-          <td colspan="6" nowrap="nowrap"><div class="records">记录:$tatol</div>
+          <td colspan="6" nowrap="nowrap"><div class="records">记录:$total</div>
                   <div class="multipage">$multipage</div></td>
         </tr>
     <input type="hidden" name="action" value="log">

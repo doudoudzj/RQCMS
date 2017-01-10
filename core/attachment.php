@@ -10,16 +10,16 @@ if ($host['attachments_remote_open'])
 }
 
 // 查询文章
-$aid = intval($_GET['aid']);
+$aid = intval($_GET['url']);
 if (!$aid)
 {
 	message('缺少参数', './');
 } 
 else 
 {
-	$attachinfo = $DB->fetch_first("select * from ".DB_PREFIX."attachment where aid='$aid'");
+	$attachinfo = $DB->fetch_first("select * from ".DB_PREFIX."attachment where aid='$aid' and hostid=$hostid");
 	if (!$attachinfo)
-	{		message('附件不存在', './');
+	{		message('附件不存在', '/');
 	}
 	else
 	{
@@ -32,7 +32,7 @@ if(RQ_CACHE) cacheControl($attachinfo['dateline']);
 $filepath = RQ_DATA.'/files/'.$attachinfo['filepath'];
 $filepath=str_replace('//','/',$filepath);
 
-$attachment = $isimage ? 'inline' : 'attachment';
+$attachment = $attachinfo['isimage'] ? 'inline' : 'attachment';
 $attachinfo['filetype'] = $attachinfo['filetype'] ? $attachinfo['filetype'] : 'unknown/unknown';
 
 doAction('attachment_before_download');
@@ -65,6 +65,6 @@ if(is_readable($filepath))
 }
 else 
 {
-	message('读取附件失败', './');
+	message('读取附件失败', '/');
 }
 ?>

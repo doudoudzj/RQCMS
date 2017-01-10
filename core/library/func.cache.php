@@ -41,7 +41,7 @@ function links_recache()
 // 更新映射文件
 function filemaps_recache()
 {
-	global $DB,$hostid;
+	global $DB,$host,$hostid;
 	$files= $DB->query('SELECT f.*,h.host,h.hid FROM `'.DB_PREFIX.'filemap` f,`'.DB_PREFIX.'host` h where h.hid=f.hostid and f.hostid='.$hostid);
 	$arrfiles=array();
 	$hostname='';
@@ -57,6 +57,7 @@ function filemaps_recache()
 				if(count($ag)==2&&$ag[0]&&$ag[1]) $args[$ag[0]]=$ag[1];
 			}
 		}
+		if(!$host['url_html']) $fs['filename']=$fs['filename'].'.'.$host['url_ext'];
 		$arrfiles['file'][$fs['filename']]=$fs['original'];
 		$arrfiles['arg'][$fs['filename']]=$args;
 		$hostname=$fs['host'];
@@ -73,6 +74,8 @@ function comments_recache()
 	$commentdb = array();
 	while ($comment= $DB->fetch_array($comments))
 	{
+	
+		$comment['url']=mkUrl('comment.php', $comment['cid']);
 		$commentdb[] = $comment;
 	}
 	writeCache('comment_'.$host['host'],$commentdb);
@@ -94,7 +97,7 @@ function rss_recache()
 	if(count($aids)>0)
 	{
 		$aid=implode_ids($aids);
-		$rquery= $DB->query('SELECT * FROM `'.DB_PREFIX."article` where aid in ($aid)");
+		$rquery= $DB->query('SELECT * FROM `'.DB_PREFIX."article` where aid in ($aid) order by aid desc");
 		while($rss=$DB->fetch_array($rquery))
 		{
 			$arrfiles[]=showArticle($rss);
@@ -125,7 +128,8 @@ function cates_recache()
 	$arrcates=array();
 	while($cate=$DB->fetch_array($cquery))
 	{
-		$arrcates[$cate['cid']]=showCategory($cate);
+		$cate['curl']=mkUrl('category.php',$cate['url'],0);
+		$arrcates[$cate['cid']]=$cate;
 	}
 	writeCache('cate_'.$host['host'],$arrcates);
 }
@@ -134,9 +138,9 @@ function cates_recache()
 function vars_recache()
 {
 	global $DB,$host,$hostid;
-	$var= $DB->query('SELECT * FROM `'.DB_PREFIX."var` where visible=1 and hostid=$hostid");
+	$varArr= $DB->query('SELECT * FROM `'.DB_PREFIX."var` where visible=1 and hostid=$hostid");
 	$arrvars=array();
-	while ($fs = $DB->fetch_array($var)) 
+	while ($fs = $DB->fetch_array($varArr)) 
 	{
 		$arrvars[$fs['title']]=$fs['value'];
 	}
@@ -147,9 +151,9 @@ function vars_recache()
 function pics_recache()
 {
 	global $DB,$host,$hostid;
-	$var= $DB->query('SELECT a.*,d.* FROM `'.DB_PREFIX.'article` a,'.DB_PREFIX."attachment d where a.thumb>0 and a.thumb=d.aid and a.hostid=d.hostid and a.visible=1 and a.hostid=$hostid order by a.aid desc limit 20");
+	$varArr= $DB->query('SELECT a.*,d.* FROM `'.DB_PREFIX.'article` a,'.DB_PREFIX."attachment d where a.thumb>0 and a.thumb=d.aid and a.hostid=d.hostid and a.visible=1 and a.hostid=$hostid order by a.aid desc limit 20");
 	$arrvars=array();
-	while ($fs = $DB->fetch_array($var)) 
+	while ($fs = $DB->fetch_array($varArr)) 
 	{
 		$arrvars[]=showArticle($fs);
 	}
@@ -159,8 +163,9 @@ function pics_recache()
 function latest_recache()
 {
 	global $DB,$host,$hostid;
-	$query= $DB->query('SELECT cid,oid,name,url,hostid from '.DB_PREFIX."category where hostid=$hostid and visible=1");
+	$query= $DB->query('SELECT cid,name,url,hostid from '.DB_PREFIX."category where hostid=$hostid and visible=1");
 	$cache=array();
+	$cate0=array();
 	while($catearr=$DB->fetch_array($query))
 	{
 		$cid=$catearr['cid'];
@@ -170,13 +175,15 @@ function latest_recache()
 			unset($artarr['content']);
 			$cache['article'][$artarr['aid']]=showArticle($artarr);
 			$cache['cateids'][$cid][]=$artarr['aid'];
-			$cache['cateids'][0][]=$artarr['aid'];
+			$cate0[]=$artarr['aid'];
 		}
 		if($DB->num_rows($artquery)==0)
 		{
 			$cache['cateids'][$cid]=array();
 		}
 	}
+	sort($cate0);
+	$cache['cateids'][0]=array_reverse($cate0);
 	writeCache('latest_'.$host['host'],$cache);
 }
 
@@ -184,9 +191,9 @@ function latest_recache()
 function redirect_recache()
 {
 	global $DB,$host,$hostid;
-	$var= $DB->query('SELECT * FROM `'.DB_PREFIX."redirect` where hostid=$hostid");
+	$varArr= $DB->query('SELECT * FROM `'.DB_PREFIX."redirect` where hostid=$hostid");
 	$arrvars=array();
-	while ($fs = $DB->fetch_array($var)) 
+	while ($fs = $DB->fetch_array($varArr)) 
 	{
 		$arrvars[$fs['old']]=array($fs['new'],$fs['status']);
 	}

@@ -19,9 +19,9 @@ function get_real_size($size)
 	}
 }
 
-function getphpcfg($varname) 
+function getphpcfg($varArrname) 
 {
-	switch ($result = get_cfg_var ($varname)) {
+	switch ($result = get_cfg_var ($varArrname)) {
 		case 0 :
 			return '关闭';
 			break;

@@ -44,7 +44,7 @@ foreach($tagdb as $key => $tag){print <<<EOT
 EOT;
 }print <<<EOT
         <tr class="tablecell">
-          <td colspan="5" nowrap="nowrap"><div class="records">记录:$tatol</div>
+          <td colspan="5" nowrap="nowrap"><div class="records">记录:$total</div>
                   <div class="multipage">$multipage</div></td>
         </tr>
     <tr class="tablecell">
@@ -140,7 +140,7 @@ foreach($redirectdb as $key => $rdb){print <<<EOT
 EOT;
 }print <<<EOT
         <tr class="tablecell">
-          <td colspan="7" nowrap="nowrap"><div class="records">记录:$tatol</div>
+          <td colspan="7" nowrap="nowrap"><div class="records">记录:$total</div>
                   <div class="multipage">$multipage</div></td>
         </tr>
     <tr class="tablecell">

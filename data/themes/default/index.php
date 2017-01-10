@@ -20,18 +20,18 @@ print <<<EOT
   <div id=main>
     <div id=left>
       <h3>最新文章</h3>
-      <div class=leftbox>
+      <div class=leftbox_index>
         <div id=focus><dl><dt>
 EOT;
 foreach($picscache as $k=>$v){
 print <<<EOT
-<a href="article.php?{$v['arg']}" title="{$v['title']}">$k</a>
+<a href="{$v['url']}" title="{$v['title']}">$k</a>
 EOT;
 }print <<<EOT
 <dd>
 EOT;
 foreach($picscache as $k=>$v){print <<<EOT
-<img src="attachment.php?{$v['arg']}" id="pic{$v['aid']}" />
+<img src="{$v['aurl']}" id="pic{$v['aid']}" />
 EOT;
 }print <<<EOT
 </dd></dl></div>
@@ -41,33 +41,32 @@ EOT;
 EOT;
 foreach($top10cache AS $data){
 print <<<EOT
-            <li><a href="article.php?{$data['arg']}" title="{$data['title']}" target="_parent">{$data['title']}</a></li>
+            <li><a href="{$data['aurl']}" title="{$data['title']}">{$data['title']}</a></li>
 EOT;
 }print <<<EOT
           </ul>
         </div>
 EOT;
-if(!empty($listcache)){
-foreach($listcache AS $key=>$value){
-$cname=$cates[$key];
+foreach($cateArr as $cateid=>$cname){
+if(isset($listcache[$cateid])){//隐藏的栏目不显示
 print <<<EOT
       <div class=box>
-        <h3><a href="category.php?{$cname['crg']}">{$cname['name']}</a></h3>
+        <h3><a href="{$cname['curl']}">{$cname['name']}</a></h3>
         <ul>
 EOT;
+$value=$listcache[$cateid];
 if(!empty($value))
 {
 foreach($value AS $k=>$v){
 $data=$latestarray['article'][$v];
 print <<<EOT
-           <li><a href="article.php?{$data['arg']}" title="{$data['title']}" target="_parent">{$data['title']}</a></li>
+           <li><a href="{$data['aurl']}" title="{$data['title']}">{$data['title']}</a></li>
 EOT;
 }}print <<<EOT
         </ul>
       </div>
 EOT;
-}
-}
+}}
 print <<<EOT
       <div id=oneline></div>
     </div>
@@ -77,7 +76,7 @@ print <<<EOT
         <ul>
 EOT;
 foreach($hotcache as $data){ print <<<EOT
-          <li><a href="article.php?{$data['arg']}" title="{$data['title']}" target="_parent">{$data['title']}</a></li>
+          <li><a href="{$data['aurl']}" title="{$data['title']}">{$data['title']}</a></li>
 EOT;
 }print <<<EOT
         </ul>
@@ -88,7 +87,7 @@ EOT;
 EOT;
 foreach($stickcache AS $data){
 print <<<EOT
-          <li><a href="article.php?{$data['arg']}" title="{$data['title']}" target="_parent">{$data['title']}</a></li>
+          <li><a href="{$data['aurl']}" title="{$data['title']}">{$data['title']}</a></li>
 EOT;
 }print <<<EOT
         </ul>
@@ -99,7 +98,7 @@ EOT;
 EOT;
 foreach($commentdata AS $data){
 print <<<EOT
-         <li><a href="comment.php?cmid={$data['cid']}" target="_parent">{$data['content']}</a></li>
+         <li><a href="{$data['url']}">{$data['content']}</a></li>
 EOT;
 }print <<<EOT
         </ul>

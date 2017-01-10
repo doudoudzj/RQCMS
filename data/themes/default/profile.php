@@ -6,7 +6,7 @@ print <<<EOT
 <div id=fullbox>
 <div class=full>
 <form action="profile.php" method="post">
-<input type="hidden" name="action" value="modpro" />
+<input type="hidden" name="url" value="modpro" />
 <div class="formbox">
   <p>
     <label for="oldpassword">旧密码(*):<br />

@@ -81,8 +81,8 @@ if ($action=='taglist') {
 	}
 	$numsql = "LIMIT $start_limit, 30";
 	$rs = $DB->fetch_first("SELECT count(*) AS tags FROM ".DB_PREFIX."tag");
-	$tatol = $rs['tags'];
-	$multipage = multi($tatol, 30, $page, 'admin.php?file=seo&action=taglist');
+	$total = $rs['tags'];
+	$multipage = multi($total, 30, $page, 'admin.php?file=seo&action=taglist');
 
     $query = $DB->query("SELECT tag,count(articleid) as usenum FROM ".DB_PREFIX."tag where hostid='$hostid' group by tag $numsql");
 	$tagdb = array();
@@ -104,8 +104,8 @@ else if($action=='redirect')
 	}
 	$numsql = "LIMIT $start_limit, 30";
 	$coutarr=$DB->fetch_first('select count(*) from '.DB_PREFIX."redirect where hostid=$hostid");
-	$tatol=$coutarr['count(*)'];
-	$multipage = multi($tatol, 30, $page, 'admin.php?file=tag&action=redirect');
+	$total=$coutarr['count(*)'];
+	$multipage = multi($total, 30, $page, 'admin.php?file=tag&action=redirect');
 	$rs = $DB->query("SELECT * FROM ".DB_PREFIX."redirect where hostid=$hostid $numsql");
 	$redirectdb = array();
     while ($tag = $DB->fetch_array($rs)) {

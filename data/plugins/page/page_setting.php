@@ -77,8 +77,8 @@ EOT;
 	{
 		$page=isset($_GET['page'])?intval($_GET['page']):1;
 		$rs = $DB->fetch_first("SELECT count(*) AS pages FROM ".DB_PREFIX."page where hostid=$hostid");
-		$tatol = $rs['pages'];
-		$multipage = multi($tatol, 30, $page, $urllink);
+		$total = $rs['pages'];
+		$multipage = multi($total, 30, $page, $urllink);
 		$start=($page-1)*30;
 		$query=$DB->query('Select * from '.DB_PREFIX."page where hostid=$hostid limit $start,30");
 		print <<<EOT
@@ -112,7 +112,7 @@ EOT;
       <td nowrap><input type="checkbox" name="aids[]" value="4"></td>
     </tr>
 	<tr class="tablecell">
-          <td colspan="8" nowrap="nowrap"><div class="records">记录:$tatol</div>
+          <td colspan="8" nowrap="nowrap"><div class="records">记录:$total</div>
                   <div class="multipage">$multipage</div></td>
         </tr>    <tr>
     </tr>

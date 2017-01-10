@@ -8,13 +8,13 @@ print <<<EOT
   <div id=main>
     <div id=left>
       <div class=leftbox>
-        <h3><a href="category.php?{$article['carg']}">{$article['cname']}</a>&gt;&gt;$article[title]</h3>
+        <h3><a href="{$article['curl']}">{$article['cname']}</a>&gt;&gt;$article[title]</h3>
         <H2>$article[title]</H2>
         <div id=info>发布:{$article['dateline']}     浏览:<span id=spn1>$article[views]</span></div>
         <div id=contents>
 EOT;
 if (!$article['allowread']) {print <<<EOT
-<div class="needpwd"><form action="article.php?{$article['arg']}" method="post">这篇日志被加密了。请输入密码后查看。<br /><input class="formfield" type="password" name="readpassword" style="margin-right:5px;" /> <button class="formbutton" type="submit">提交</button></form></div>
+<div class="needpwd"><form action="{$article['aurl']}" method="post">这篇日志被加密了。请输入密码后查看。<br /><input class="formfield" type="password" name="readpassword" style="margin-right:5px;" /> <button class="formbutton" type="submit">提交</button></form></div>
 EOT;
 } 
 else
@@ -28,7 +28,7 @@ if($article['attachments'])
 		if($image['isimage'])
 		{
 			print <<<EOT
-			<p class="attach">{$image['filename']}<br /><a href="attachment.php?{$image['arg']}" target="_blank"><img src="attachment.php?{$image['arg']}" border="0" alt="大小: {$image['filesize']}KB&#13;浏览: {$image['downloads']} 次" /></a></p>
+			<p class="attach">{$image['filename']}<br /><a href="{$image['aurl']}" target="_blank"><img src="{$image['aurl']}" border="0" alt="大小: {$image['filesize']}KB&#13;浏览: {$image['downloads']} 次" /></a></p>
 EOT;
 		}
 	}
@@ -37,7 +37,7 @@ EOT;
 		if(!$attach['isimage']) 
 		{
 			print <<<EOT
-			<p class="attach"><strong>附件: </strong><a href="attachment.php?{$attach['arg']}" target="_blank">{$attach['filename']}</a> ({$attach['filesize']}KB, 下载次数:{$attach['downloads']})</p>
+			<p class="attach"><strong>附件: </strong><a href="{$image['aurl']}" target="_blank">{$attach['filename']}</a> ({$attach['filesize']}KB, 下载次数:{$attach['downloads']})</p>
 EOT;
 		}
 	}
@@ -62,7 +62,7 @@ EOT;
 }
 print <<<EOT
 </li>
-          <li>原文链接：<a href="article.php?{$article['arg']}">article.php?{$article['arg']}</a></li>
+          <li>原文链接：<a href="{$article['aurl']}">{$article['aurl']}</a></li>
           <li><B>将本文收藏到网摘：</B></li>
         </ul>
       <div class=pagebreak></div>
@@ -86,7 +86,7 @@ if (!$article['closed']) {
 print <<<EOT
   <a name="addcomment"></a>
   <form method="post" name="form" id="form" action="comment.php" onsubmit="return checkform();">
-    <input type="hidden" name="aid" value="{$article['aid']}" />
+    <input type="hidden" name="url" value="{$article['url']}" />
     <div class="formbox">
 EOT;
 if ($uid) {
@@ -136,8 +136,9 @@ EOT;
         <ul>
 EOT;
 if(isset($likedata)){
-foreach($likedata as $key => $title){print <<<EOT
-          <li><a href="article.php?{$title['arg']}" title="$title[title],浏览$title[views]">$title[title]</a></li>
+foreach($likedata as $key => $title){
+print <<<EOT
+          <li><a href="{$title['aurl']}" title="$title[title],浏览$title[views]">$title[title]</a></li>
 EOT;
 }}print <<<EOT
         </ul>
@@ -148,7 +149,7 @@ EOT;
 EOT;
 foreach($hotdata AS $data){
 print <<<EOT
-        <li><a href="article.php?{$data['arg']}" title="$data[title],浏览$data[views]" target="_parent">$data[title]</a></li>
+        <li><a href="{$data['aurl']}" title="$data[title],浏览$data[views]">$data[title]</a></li>
 EOT;
 }print <<<EOT
         </ul>

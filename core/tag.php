@@ -1,7 +1,7 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
 $page=isset($_GET['page'])?intval($_GET['page']):1;
-$item=isset($_GET['item'])?$_GET['item']:'';
+$item=isset($_GET['url'])?$_GET['url']:'';
 $articledb=array();
 $multipage ='';
 $title='';
@@ -21,14 +21,14 @@ if ($item)
 			$idarray[]=$m['articleid'];
 		}
 		$aids=implode_ids($idarray);
-		$query_sql = "SELECT aid,oid,title,excerpt,dateline,modified,attachments,keywords FROM ".DB_PREFIX."article WHERE aid in ($aids)  and visible='1' and hostid=$hostid ORDER BY dateline desc";
+		$query_sql = "SELECT * FROM ".DB_PREFIX."article WHERE aid in ($aids)  and visible='1' and hostid=$hostid ORDER BY dateline desc";
 		$query=$DB->query($query_sql);
 		$articledb=array();
 		while($adb=$DB->fetch_array($query))
 		{
 			$articledb[]=showArticle($adb);
 		}
-		$tatol=count($articledb);
+		$total=count($articledb);
 	}
 	else
 	{

@@ -43,11 +43,11 @@ addAction('admin_plugin_add_item','stat_add_item');
 
 function stat_footer_add($output)
 {
-	global $host,$Plugins,$Files;
+	global $host,$pluginArr,$mapArr;
 	$pos=strrpos($output,'</body>');
-	if($pos&&$Files['file'][RQ_FILE]!='admin.php')
+	if($pos&&$mapArr['file'][RQ_FILE]!='admin.php')
 	{
-		$output=substr($output,0,$pos).$Plugins['stat'].substr($output,$pos);
+		$output=substr($output,0,$pos).$pluginArr['stat'].substr($output,$pos);
 		if($host['gzipcompress']&& function_exists('ob_gzhandler'))
 		{
 			ob_start('ob_gzhandler');

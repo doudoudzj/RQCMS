@@ -38,14 +38,13 @@ if(RQ_POST)
 		case 'add':
 			if(empty($title)) redirect('标题不得为空','admin.php?file=article&action=add');
 			if(empty($content)) redirect('内容不得为空','admin.php?file=article&action=add');
-			$oidarr=$DB->fetch_first('Select max(oid) as oid from '.DB_PREFIX.'article where hostid='.$hostid);
-			$oid=$oidarr['oid']+1;
 			
 			// 插入数据部分
 			$attachments=getAttach();
 			$attcount=count($attachments);
-			$DB->query("INSERT INTO ".DB_PREFIX."article (hostid,oid,cateid, userid, title, excerpt, keywords,tag, dateline,modified, closed, visible, stick, password,url,attachments) VALUES ('$hostid','$oid','$cateid', '$uid', '$title', '$excerpt', '$keywords','$tag', '$dateline','$dateline','$closed', '$visible', '$stick', '$password','$url','$attcount')");
+			$DB->query("INSERT INTO ".DB_PREFIX."article (hostid,cateid, userid, title, excerpt, keywords,tag, dateline,modified, closed, visible, stick, password,url,attachments) VALUES ('$hostid','$cateid', '$uid', '$title', '$excerpt', '$keywords','$tag', '$dateline','$dateline','$closed', '$visible', '$stick', '$password','$url','$attcount')");
 			$articleid = $DB->insert_id();
+			if(!$url) $DB->query('update '.DB_PREFIX."article set url='$articleid' where aid=$articleid");
 			if($attachments&&is_array($attachments))
 			{
 				$fileidarr=array();
@@ -84,7 +83,7 @@ if(RQ_POST)
 				pics_recache();
 				latest_recache();
 			}
-			redirect('添加文章成功', RQ_FILE.'?file=article&action=add'.($visible?'':'&view=hidden'));
+			redirect('添加文章成功', 'admin.php?file=article&action=add'.($visible?'':'&view=hidden'));
 			break;
 		case 'mod'://修改文章
 			$aid=intval($_POST['aid']);
@@ -186,7 +185,7 @@ if(RQ_POST)
 			rss_recache();
 			pics_recache();
 			latest_recache();
-			redirect('修改文章成功', RQ_FILE.'?file=article&action=list'.($visible?'':'&view=hidden'));
+			redirect('修改文章成功', 'admin.php?file=article&action=list'.($visible?'':'&view=hidden'));
 		break;
 		case 'domore':
 			if(isset($_POST['aids'])&&is_array($_POST['aids']))
@@ -226,7 +225,7 @@ if(RQ_POST)
 							rss_recache();
 							stick_recache();
 							pics_recache();
-							redirect('您选择的文章已成功删除', RQ_FILE.'?file=article&action=list'.($view?'&view='.$view:''));
+							redirect('您选择的文章已成功删除', 'admin.php?file=article&action=list'.($view?'&view='.$view:''));
 							break;
 						case 'domove':
 							$cid=$_POST['cid'];
@@ -239,14 +238,14 @@ if(RQ_POST)
 								stick_recache();
 								pics_recache();
 								latest_recache();
-								redirect('您选择的文章成功移动', RQ_FILE.'?file=article&action=list&cid='.$cid.($view?'&view='.$view:''));
+								redirect('您选择的文章成功移动', 'admin.php?file=article&action=list&cid='.$cid.($view?'&view='.$view:''));
 							}
-							else redirect('您选择的栏目不存在', RQ_FILE.'?file=article&action=list');
+							else redirect('您选择的栏目不存在', 'admin.php?file=article&action=list');
 						break;
 					}
 				}
 			}
-			else redirect('请选择要操作的文章', RQ_FILE.'?file=article&action=list');
+			else redirect('请选择要操作的文章', 'admin.php?file=article&action=list');
 			break;
 		case 'list':
 			if ($do == 'search') 
@@ -295,12 +294,12 @@ if(RQ_POST)
 					$article['dateline'] = date('Y-m-d H:i',$article['dateline']);
 					$articledb[] = $article;
 				}
-				$tatol=count($articledb);
+				$total=count($articledb);
 			}
-			else redirect('请指定搜索条件', RQ_FILE.'?file=article&action=list');
+			else redirect('请指定搜索条件', 'admin.php?file=article&action=list');
 			break;
 		default:
-		redirect('未定义操作', RQ_FILE.'?file=article&action=list');
+		redirect('未定义操作', 'admin.php?file=article&action=list');
 	}
 }
 else
@@ -379,8 +378,8 @@ else
 		if(empty($tag))
 		{
 			$rs = $DB->fetch_first("SELECT count(*) AS articles FROM ".DB_PREFIX."article a WHERE 1 $searchsql $addquery $uquery and hostid=$hostid");
-			$tatol = $rs['articles'];
-			$multipage = multi($tatol, 30, $page, 'admin.php?file=article&action=list'.$pagelink);
+			$total = $rs['articles'];
+			$multipage = multi($total, 30, $page, 'admin.php?file=article&action=list'.$pagelink);
 			$query = $DB->query("SELECT a.aid,a.title,a.cateid,a.userid,a.dateline,a.comments,a.attachments,a.visible,a.views,a.stick,a.hostid,c.name as cname FROM ".DB_PREFIX."article a 
 			LEFT JOIN ".DB_PREFIX."category c ON c.cid=a.cateid
 			WHERE a.hostid='$hostid' $searchsql $addquery $uquery ORDER BY a.aid DESC LIMIT $start_limit, 30");
@@ -394,13 +393,13 @@ else
 			{
 				$tagarray[]=$result['articleid'];
 			}
-			$tatol=count($tagarray);
-			if (!$tatol) 
+			$total=count($tagarray);
+			if (!$total) 
 			{
 				redirect('标签不存在', 'admin.php?file=article&action=list');
 			}
 			$pagelink = '&tag='.urlencode($item);
-			$multipage = multi($tatol, 30, $page, 'admin.php?file=article&action=list'.$pagelink);
+			$multipage = multi($total, 30, $page, 'admin.php?file=article&action=list'.$pagelink);
 			
 			$articleids=implode(',',$tagarray);
 			$query=$DB->query('Select a.aid,a.title,a.cateid.a.userid,a.dateline,a.comments,a.attachments,a.visible,a.views,a.stick,c.name as cname from '.DB_PREFIX."article a LEFT JOIN ".DB_PREFIX."category c ON c.cid=a.cateid where a.aid in ($articleids) and a.hostid='$hostid'");

@@ -99,7 +99,7 @@ foreach($attachdb as $key => $attach){print <<<EOT
 EOT;
 }print <<<EOT
           <tr class="tablecell">
-            <td colspan="8" nowrap><div class="records">记录:$tatol</div>
+            <td colspan="8" nowrap><div class="records">记录:$total</div>
                   <div class="multipage">$multipage</div></td>
           </tr>
           <tr class="tablecell">

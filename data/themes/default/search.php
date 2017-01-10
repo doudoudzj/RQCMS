@@ -22,7 +22,7 @@ print <<<EOT
 EOT;
 foreach($stickcache AS $data){
 print <<<EOT
-          <li><a href="show.php?$data[arg]" title="$data[title]" target="_parent">$data[title]</a></li>
+          <li><a href="$data[aurl]" title="$data[title]">$data[title]</a></li>
 EOT;
 }print <<<EOT
         </ul>
@@ -33,7 +33,7 @@ EOT;
 EOT;
 foreach($hotcache AS $data){
 print <<<EOT
-        <li><a href="article.php?$data[arg]" title="$data[title],浏览$data[views]" target="_parent">$data[title]</a></li>
+        <li><a href="$data[aurl]" title="$data[title],浏览$data[views]">$data[title]</a></li>
 EOT;
 }print <<<EOT
         </ul>
@@ -43,7 +43,7 @@ EOT;
     <div id=fullbox>
       <div style=" margin:40px auto; width:880px; text-align:center;">
       <p style=" margin:10px auto; width:600px; text-align:center; font-weight:bold;color:#1c5E96;">{$host['name']}搜索</p>
-      <form action="search.php" method="post" >
+      <form action="{$search_url}" method="post" >
       <input type="hidden" name="formhash" value="53368c9c"/>
       <span style="font-family:宋体; font-size:16px; font-weight:600; color:#1c5E96;">关键字:</span>
       <input type="text" name="keywords" id="keywords" type="text" value="" onmouseover="this.focus()"  autocomplete="off" style=" width:220px; height:22px; line-height:22px;"/> <input style="margin-left:8px; height:30px;" type="submit" id="go" value="搜 &nbsp; 索" /></form>

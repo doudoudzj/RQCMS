@@ -72,33 +72,6 @@ function getHotArticle($num,$cateid=null)
 	return $hotdata;
 }
 
-/* //得到随机文章todo
-function getRndArticle($num,$cateid=null)
-{
-	global $DB,$hostid,$host;
-	if($cateid==null) $cate="";
-	else $cate=" and cateid=$cateid";
-	//$query=$DB->query('Select aid from '.DB_PREFIX."article where visible=1 $cate order by rand() limit $num");
-	$aidarr=array();
-	for($i=0;$i<$num;$i++)
-	{
-		$data=$DB->fetch_first('SELECT aid FROM `'.DB_PREFIX.'article` AS t1 JOIN (SELECT ROUND(RAND() aid ((SELECT MAX(aid) FROM `'.DB_PREFIX.'article`)-(SELECT MIN(aid) FROM `'.DB_PREFIX.'article`))+(SELECT MIN(aid) FROM `'.DB_PREFIX."article`)) AS id) AS t2 WHERE t1.id >= t2.id and hostid=$hostid $cate ORDER BY t1.id LIMIT $num");
-		if(is_array($data)) $aidarr[]=$data['aid'];
-	}
-	$articledb=array();
-	$aidarr=array_unique($aidarr);
-	if(count($aidarr)>0)
-	{
-		$aids=implode_ids($aidarr);
-		$query=$DB->query('Select * from '.DB_PREFIX."article where aid in ($aids)");
-		while($article=$DB->fetch_array($query))
-		{
-			$articledb[]=showArticle($article);
-		}
-	}
-	return $articledb;
-}  */
-
 //得到相关文章
 function getRelatedArticle($aid,$tagarr,$num)
 {
@@ -123,31 +96,28 @@ function getRelatedArticle($aid,$tagarr,$num)
 	return $articledb;
 }
 
-//得到某个分类的某页符合$expr的文章列表
-function getCateArticle($expr,$page)
+//得到某个分类的文章列表
+function getCateArticle($cateid,$page)
 {
-	global $DB,$hostid,$host;
+	global $DB,$hostid,$host,$cateArr;
 	$pagenum = intval($host['list_shownum']);
 	$start_limit = ($page - 1) * $pagenum;
-	$sql = "SELECT a.*,c.cid,c.url as curl FROM ".DB_PREFIX."article a,".DB_PREFIX."category c WHERE $expr And c.hostid=$hostid and a.visible=1 and c.cid=a.cateid ORDER BY aid DESC LIMIT $start_limit, ".$pagenum;//exit($sql);
+	$catesql=$cateid==0?'':" and `cateid`=$cateid";
+	$sql = "SELECT * FROM ".DB_PREFIX."article WHERE hostid=$hostid $catesql and visible=1 ORDER BY aid DESC LIMIT $start_limit, ".$pagenum;//exit($sql);
 	$articledb=array();
 	$query=$DB->query($sql);
-	$arg1=$arg2=$host['friend_url'];
-	if($arg1=='aid') $arg1=$arg2='cid';
-	else if($arg1=='url') $arg2='curl';
 	while($article=$DB->fetch_array($query))
 	{
-		$article['crg']=$arg1.'='.$article[$arg2];
 		$articledb[]=showArticle($article);
 	}
 	return $articledb;
 }
 
 //得到符合条件的文章，包含附件
-function getArticle($expr)
+function getArticle($url)
 {
 	global $DB,$hostid,$host;
-	$sql = "SELECT * FROM ".DB_PREFIX."article a,".DB_PREFIX."content c WHERE $expr and visible='1' and hostid=$hostid and a.aid=c.articleid limit 1";
+	$sql = "SELECT * FROM ".DB_PREFIX."article a,".DB_PREFIX."content c WHERE url='$url' and visible='1' and hostid=$hostid and a.aid=c.articleid limit 1";
 	$article=$DB->fetch_first($sql);
 	if(!empty($article))
 	{
@@ -165,14 +135,14 @@ function getArticle($expr)
 					$article['attachments'][$aid]=$attach;
 					$article['attachments'][$aid]['downloads']=$attach['downloads'];
 					$article['attachments'][$aid]['filesize']=(int)($attach['filesize']/1024);
-					$arg=argUrlRewrite('attachment.php','aid');
+					$argurl=mkUrl('attachment.php',$aid);
 					if($attach['isimage'])
 					{
-						$file="<a href='attachment.php?$arg=$aid' target='_blank'><img src='attachment.php?$arg=$aid' alt='{$attach['filename']}'></a>";
+						$file="<a href='{$argurl}' target='_blank'><img src='{$argurl}' alt='{$attach['filename']}'></a>";
 					}
 					else
 					{
-						$file="<a href='attachment.php?$arg=$aid' target='_blank'>{$attach['filename']}</a>";
+						$file="<a href='{$argurl}' target='_blank'>{$attach['filename']}</a>";
 					}
 
 					if(strpos($article['content'],"[attach=$aid]")!==false)
@@ -182,7 +152,7 @@ function getArticle($expr)
 					}
 					else
 					{
-						$article['attachments'][$aid]['arg']=$arg.'='.$aid;
+						$article['attachments'][$aid]['aurl']=$argurl;
 					}
 				}
 				//print_r($article['attachments']);exit;
@@ -216,8 +186,8 @@ function getHotComment($num,$cateid=null)
 {
 	global $DB,$host,$hostid;
 	if($cateid==null) $cate='';
-	else $cate=' where cateid='.$cateid;
-	$query=$DB->query('Select * from '.DB_PREFIX."article where visible=1 and hostid=$hostid order by views desc limit $num");
+	else $cate=' and cateid='.$cateid;
+	$query=$DB->query('Select * from '.DB_PREFIX."article where visible=1 and hostid=$hostid $cate order by views desc limit $num");
 	return getArticleByAid($query);
 }
 

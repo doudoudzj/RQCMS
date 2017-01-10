@@ -2,7 +2,7 @@
 if(!defined('RQ_ROOT')) exit('Access Denied');
 if(!$action) $action = 'template';
 include RQ_CORE.'/include/template.php';
-$refile=RQ_FILE.'?file=template&action=template';
+$refile='admin.php?file=template&action=template';
 //读取模板套系(目录)
 $template_dir = RQ_DATA.'/themes/';
 
@@ -70,8 +70,8 @@ else
 				$start_limit = 0;
 				$page = 1;
 			}
-			$tatol = $DB->num_rows($DB->query("SELECT vid FROM ".DB_PREFIX."var where hostid='$hostid' "));
-			$multipage = multi($tatol, 30, $page, 'admin.php?file=template&action=stylevar');
+			$total = $DB->num_rows($DB->query("SELECT vid FROM ".DB_PREFIX."var where hostid='$hostid' "));
+			$multipage = multi($total, 30, $page, 'admin.php?file=template&action=stylevar');
 			$query = $DB->query("SELECT * FROM ".DB_PREFIX."var where hostid='$hostid'  ORDER BY vid DESC LIMIT $start_limit, 30");
 
 			$stylevardb = array();
@@ -137,6 +137,6 @@ else
 	// @closedir($opened);
 	// $path = in_array($path,$dirdb) ? $path : 'default';
 	// if (strstr($file,'.') || strstr($path,'.')) {
-		// redirect('模板无效', RQ_FILE.'?file=template&action=filelist');
+		// redirect('模板无效', 'admin.php?file=template&action=filelist');
 	// }
 }

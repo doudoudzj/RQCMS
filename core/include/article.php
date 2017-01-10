@@ -33,7 +33,7 @@ function clearCookie()
 	setcookie('cid','');
 	setcookie('title','');
 	setcookie('excerpt','');
-	setcookie('content','');
+	//setcookie('content','');
 	setcookie('keywords','');
 }
 
@@ -45,7 +45,7 @@ function saveCookie()
 	setcookie('cid',$cid,$cookietime);
 	setcookie('title',$title,$cookietime);
 	setcookie('excerpt',$excerpt,$cookietime);
-	setcookie('content',$content,$cookietime);
+	//setcookie('content',$content,$cookietime);//dreamhost会出错，不知道为什么,12.7.14
 	setcookie('keywords',$keywords,$cookietime);
 }
 
@@ -74,8 +74,8 @@ function getAttach()
 	global $_POST,$_FILES,$host,$cid;
 	$attachments=array();//name, tmp_name,size,type,error
 	if(isset($_FILES['attach']) && is_array($_FILES['attach'])) {
-		foreach($_FILES['attach'] as $key => $var) {
-			foreach($var as $id => $val) {
+		foreach($_FILES['attach'] as $key => $varArr) {
+			foreach($varArr as $id => $val) {
 				$attachments[$id][$key] = $val;
 			}
 		}

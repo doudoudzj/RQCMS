@@ -43,7 +43,7 @@ foreach($userdb as $key => $user){print <<<EOT
 EOT;
 }print <<<EOT
   <tr class="tablecell">
-    <td colspan="10" nowrap="nowrap"><div class="records">记录:$tatol</div>
+    <td colspan="10" nowrap="nowrap"><div class="records">记录:$total</div>
                   <div class="multipage">$multipage</div></td>
   </tr>
   <tr class="tablecell">

@@ -26,7 +26,7 @@ if($action == 'list'){print <<<EOT
       <td width="20%" nowrap>操作</td>
     </tr>
 EOT;
-foreach($cates as $key => $cate){print <<<EOT
+foreach($cateArr as $key => $cate){print <<<EOT
     <tr class="tablecell">
       <td nowrap><input class="formfield" style="text-align: center;font-size: 11px;" type="text" value="$cate[displayorder]" name="displayorder[{$cate['cid']}]" size="1"></td>
       <td><b>{$cate['name']}</b></td>

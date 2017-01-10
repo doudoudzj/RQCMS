@@ -14,8 +14,9 @@ if($articledb){
 require RQ_DATA."/themes/{$theme}/list.php";
 }else if($tagdb){
 foreach($tagdb as $key => $tag){
+$tagurl=mkUrl('tag.php',$tag['url']);
 print <<<EOT
-<span style="line-height:160%;font-size:$tag[fontsize]px;margin-right:10px;"><a href="tag.php?item=$tag[url]" title="使用次数: $tag[usenum]">$tag[item]</a></span>
+<span style="line-height:160%;font-size:$tag[fontsize]px;margin-right:10px;"><a href="$tagurl" title="使用次数: $tag[usenum]">$tag[item]</a></span>
 EOT;
 }}print <<<EOT
 $multipage
@@ -25,19 +26,19 @@ $multipage
 <div class=rightbox>
 <h3>XXX</h3>
       <ul>
-        <li><a href="#" title="" target="_parent">test</a></li>
+        <li><a href="#" title="">test</a></li>
       </ul>
 </div>
 <div class=rightbox>
 <h3>XXX</h3>
       <ul>
-        <li><a href="#" title="" target="_parent">test</a></li>
+        <li><a href="#" title="">test</a></li>
       </ul>
 </div>
 <div class=rightbox>
 <h3>XXX</h3>
       <ul>
-        <li><a href="#" title="" target="_parent">test</a></li>
+        <li><a href="#" title="">test</a></li>
       </ul>
 </div>
 </div></div>

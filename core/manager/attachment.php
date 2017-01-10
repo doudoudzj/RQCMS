@@ -112,9 +112,9 @@ else
 			}
 		}
 
-		$tatol = $DB->num_rows($DB->query("SELECT aid FROM ".DB_PREFIX."attachment a ".$sql.(isset($order)?" order by $order desc":'')));
+		$total = $DB->num_rows($DB->query("SELECT aid FROM ".DB_PREFIX."attachment a ".$sql.(isset($order)?" order by $order desc":'')));
 		$aidadd=$aid?'&aid='.$aid:'';
-		$multipage = multi($tatol, 30, $page, 'admin.php?file=attachment&action=list&view='.$view.$aidadd);
+		$multipage = multi($total, 30, $page, 'admin.php?file=attachment&action=list&view='.$view.$aidadd);
 		$query = $DB->query("SELECT a.*,ar.title as article FROM ".DB_PREFIX."attachment a LEFT JOIN ".DB_PREFIX."article ar ON (ar.aid=a.articleid) $sql and ar.hostid=$hostid  ORDER BY ".(isset($order)?"$order DESC, ":'')."a.aid DESC LIMIT $start_limit, 30");
 
 		$attachdb = array();

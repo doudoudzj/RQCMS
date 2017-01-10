@@ -1,11 +1,11 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
-if ($tatol) {print <<<EOT
+if ($total) {print <<<EOT
         <ul id=list>
 EOT;
 foreach($articledb as $key => $article){
 print <<<EOT
-          <li><span class=postdate>$article[dateline]</span> <a href="article.php?$article[arg]" title="$article[excerpt]">$article[title]</a> </li>
+          <li><span class=postdate>$article[dateline]</span> <a href="$article[aurl]" title="$article[excerpt]">$article[title]</a> </li>
 EOT;
 }print <<<EOT
         </ul>

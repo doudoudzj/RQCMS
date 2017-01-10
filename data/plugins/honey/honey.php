@@ -31,7 +31,7 @@ function honey_404_before_output()
 		}
 	}
 
-	$filearr=array('upload','ewebeditor','editor','login','upfile','config','datebase');
+	$filearr=array('upload','ewebeditor','editor','login','upfile','config','datebase','version.php','blog-space-uid-');
 	foreach($filearr as $file)
 	{
 		if(strpos(REQUEST_URI,$file)!==false)

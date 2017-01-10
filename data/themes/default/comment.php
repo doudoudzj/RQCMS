@@ -10,9 +10,9 @@ print <<<EOT
 <div class=leftbox>
 <h3>当前位置&gt;&gt;查看评论</h3>
 EOT;
-if ($tatol) {
+if ($total) {
 foreach($commentdb as $key => $comment){print <<<EOT
-<p class="art-title"><a href="article.php?{$comment['arg']}">$comment[title]</a></p><p class="lesscontent">$comment[content]</p>
+<p class="art-title"><a href="{$comment['aurl']}">$comment[title]</a></p><p class="lesscontent">$comment[content]</p>
 <p class="lessdate">Post by {$comment['username']} on {$comment['commentdate']}</p>
 EOT;
 }print <<<EOT
@@ -30,7 +30,7 @@ EOT;
 EOT;
 foreach($host10comments AS $data){
 print <<<EOT
-          <li><a href="article.php?$data[arg]" title="$data[title]" target="_parent">$data[title]</a></li>
+          <li><a href="$data[aurl]" title="$data[title]">$data[title]</a></li>
 EOT;
 }print <<<EOT
 </ul></div>
@@ -40,7 +40,7 @@ EOT;
 EOT;
 foreach($top10cache AS $data){
 print <<<EOT
-        <li><a href="article.php?$data[arg]" title="$data[title],浏览$data[views]" target="_parent">$data[title]</a></li>
+        <li><a href="$data[aurl]" title="$data[title],浏览$data[views]">$data[title]</a></li>
 EOT;
 }print <<<EOT
 </ul></div>

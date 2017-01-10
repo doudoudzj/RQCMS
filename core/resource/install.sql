@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS `rqcms_article`;
 CREATE TABLE `rqcms_article` (
   `aid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `oid` mediumint(8) NOT NULL COMMENT '每个站点的自增id',
   `hostid` tinyint(3) NOT NULL COMMENT '站点id',
   `cateid` smallint(4) unsigned NOT NULL COMMENT '分类id',
   `userid` smallint(5) unsigned NOT NULL COMMENT '用户id',
@@ -24,7 +23,7 @@ CREATE TABLE `rqcms_article` (
   `password` varchar(20) NOT NULL COMMENT '访问密码',
   `ban` tinyint(1) NOT NULL DEFAULT '0' COMMENT '禁止访问，预留给bbs用的',
   PRIMARY KEY (`aid`),
-  KEY `article` (`hostid`,`cateid`,`userid`,`url`,`dateline`,`visible`,`oid`,`views`,`modified`)
+  KEY `article` (`hostid`,`cateid`,`userid`,`url`,`dateline`,`visible`,`views`,`modified`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `rqcms_content`;
@@ -57,7 +56,6 @@ CREATE TABLE `rqcms_attachment` (
 DROP TABLE IF EXISTS `rqcms_category`;
 CREATE TABLE `rqcms_category` (
   `cid` smallint(4) unsigned NOT NULL AUTO_INCREMENT COMMENT '栏目id',
-  `oid` mediumint(8) NOT NULL COMMENT '每个站点的栏目id,是自增的',
   `hostid` tinyint(3) NOT NULL DEFAULT '0' COMMENT '站点id',
   `name` varchar(100) NOT NULL DEFAULT '' COMMENT '栏目名称',
   `url` char(60) NOT NULL DEFAULT '' COMMENT '栏目友好网址',
@@ -68,7 +66,7 @@ CREATE TABLE `rqcms_category` (
   `visible` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否可见',
   `displayorder` SMALLINT(5) NOT NULL DEFAULT '0' COMMENT '显示次序',
   PRIMARY KEY (`cid`),
-  KEY `category` (`hostid`,`url`,`oid`,`visible`)
+  KEY `category` (`hostid`,`url`,`visible`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO `rqcms_category` (`cid`, `hostid`, `name`, `pid`, `style`, `keywords`, `description`, `displayorder`,`url`) VALUES (NULL, '1', '默认栏目', '0', '', '', '', '0','hello');
 
@@ -99,18 +97,18 @@ CREATE TABLE `rqcms_filemap` (
   `maps` varchar(1000) NOT NULL,
    KEY `hostid`(`hostid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','index.php','index.php');
-Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','admin.php','admin.php');
-Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','attachment.php','attachment.php');
-Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','category.php','category.php');
-Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','captcha.php','captcha.php');
-Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','comment.php','comment.php');
-Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','profile.php','profile.php');
-Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','rss.php','rss.php');
-Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','search.php','search.php');
-Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','tag.php','tag.php');
-Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','article.php','article.php');
-Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','js.php','js.php');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','index.php','index');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','admin.php','admin');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','attachment.php','attachment');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','category.php','category');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','captcha.php','captcha');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','comment.php','comment');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','profile.php','profile');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','rss.php','rss');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','search.php','search');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','tag.php','tag');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','article.php','article');
+Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','js.php','js');
 
 DROP TABLE IF EXISTS `rqcms_link`;
 CREATE TABLE `rqcms_link` (
@@ -187,10 +185,12 @@ CREATE TABLE `rqcms_host` (
   `rss_num` tinyint(3) NOT NULL,
   `rss_ttl` smallint(5) NOT NULL,
   `status` tinyint(1) NOT NULL default 0,
+  `url_html` tinyint(1) NOT NULL default 0,
+  `url_ext` varchar(6) NOT NULL,
   PRIMARY KEY (`hid`),
   KEY `host` (`host`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-INSERT INTO `rqcms_host` (`hid`, `name`, `host`, `gzipcompress`, `theme`, `password`, `keywords`, `description`, `icp`, `close`, `close_note`, `list_shownum`, `article_order`, `title_limit`, `tags_shownum`, `related_shownum`, `related_title_limit`, `related_order`, `audit_comment`, `comment_order`, `article_comment_num`, `comment_min_len`, `comment_max_len`, `commentlist_num`, `comment_post_space`, `allow_search_content`, `search_post_space`, `search_keywords_min_len`, `attach_save_dir`, `attach_thumbs`, `attach_display`, `attach_thumbs_size`, `attachments_remote_open`, `watermark`, `watermark_size`, `watermark_pos`, `watermark_trans`, `watermark_padding`, `server_timezone`, `time_article_format`, `time_comment_format`, `closereg`, `censoruser`, `banip_enable`, `ban_ip`, `spam_enable`, `spam_words`, `spam_url_num`, `js_enable`, `js_cache_life`, `js_lock_url`, `rss_enable`, `rss_num`,`status`,`listcachenum`,`friend_url`,`guest_comment`) VALUES (1, '默认站点', 'rq.cn', 0, 'default', '', 'CMS,RQCMS', '又一个RQCMS', '1234567890', 0, '服务器检修中,稍后开放', 10, 'articleid', 0, 10, 10, 0, 'dateline', 1, 0, 10, 10, 3000, 20, 10, 1, 10, 2, 2, 0, 2, '200x200', 1, 0, 150, 4, 10, 5, '8', 'Y-m-d', 'Y-m-d', 0, 'admin', 0, '', 0, '', 0, 0, 3600, '', 1, 20,1,10,'aid','0');
+INSERT INTO `rqcms_host` (`hid`, `name`, `host`, `gzipcompress`, `theme`, `password`, `keywords`, `description`, `icp`, `close`, `close_note`, `list_shownum`, `article_order`, `title_limit`, `tags_shownum`, `related_shownum`, `related_title_limit`, `related_order`, `audit_comment`, `comment_order`, `article_comment_num`, `comment_min_len`, `comment_max_len`, `commentlist_num`, `comment_post_space`, `allow_search_content`, `search_post_space`, `search_keywords_min_len`, `attach_save_dir`, `attach_thumbs`, `attach_display`, `attach_thumbs_size`, `attachments_remote_open`, `watermark`, `watermark_size`, `watermark_pos`, `watermark_trans`, `watermark_padding`, `server_timezone`, `time_article_format`, `time_comment_format`, `closereg`, `censoruser`, `banip_enable`, `ban_ip`, `spam_enable`, `spam_words`, `spam_url_num`, `js_enable`, `js_cache_life`, `js_lock_url`, `rss_enable`, `rss_num`,`status`,`listcachenum`,`guest_comment`,`url_html`,`url_ext`) VALUES (1, '默认站点', 'rq.cn', 0, 'default', '', 'CMS,RQCMS', '又一个RQCMS', '1234567890', 0, '服务器检修中,稍后开放', 10, 'articleid', 0, 10, 10, 0, 'dateline', 1, 0, 10, 10, 3000, 20, 10, 1, 10, 2, 2, 0, 2, '200x200', 1, 0, 150, 4, 10, 5, '8', 'Y-m-d', 'Y-m-d', 0, 'admin', 0, '', 0, '', 0, 0, 3600, '', 1, 20,1,10,'0','0','php');
 
 DROP TABLE IF EXISTS `rqcms_tag`;
 CREATE TABLE `rqcms_tag` (

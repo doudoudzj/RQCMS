@@ -27,27 +27,29 @@ if(RQ_FILE=='robots.txt')
 	exit("User-agent: *\r\nAllow: /");
 }
 
+$notfind=substr(REQUEST_URI,1);
+
 //先检查文件是否存在,然后检查缓存文件
 $cachefile=RQ_DATA.'/cache/file_'.$host['host'].'.php';
 $themefiles=@include $cachefile;
-$fileext=strtolower(substr(RQ_FILE,-3));
+$fileext=strtolower(substr(REQUEST_URI,-3));
 if(!$themefiles&&!file_exists($cachefile)) writeCache('file_'.$host['host'],array());
 
 if(!is_array($themefiles)) $themefiles=array();
-$themefile=RQ_DATA."/themes/$theme/".RQ_FILE;
+$themefile=RQ_DATA."/themes/$theme/".REQUEST_URI;
 doAction('404_before_output');
 if(file_exists($themefile)&&$fileext!='php')
 {
-	if(!array_key_exists(RQ_FILE,$themefiles))
+	if(!array_key_exists(REQUEST_URI,$themefiles))
 	{
 		$modified=filectime($themefile);
-		$themefiles[RQ_FILE]=gmdate('D, d M Y H:i:s', $modified). ' GMT';
+		$themefiles[REQUEST_URI]=gmdate('D, d M Y H:i:s', $modified). ' GMT';
 		writeCache('file_'.$host['host'],$themefiles);
 	}
 	//时间判断
 	if(array_key_exists('HTTP_IF_MODIFIED_SINCE',$_SERVER))
 	{
-		if($_SERVER['HTTP_IF_MODIFIED_SINCE']==$themefiles[RQ_FILE])
+		if($_SERVER['HTTP_IF_MODIFIED_SINCE']==$themefiles[REQUEST_URI])
 		{
 			header('HTTP/1.0 304 Not Modified');
 			exit;
@@ -55,12 +57,12 @@ if(file_exists($themefile)&&$fileext!='php')
 	}
 	ob_end_clean();
 	header("Cache-Control: max-age=259200");
-	$ContentType='Content-Type: text/html; charset=UTF-8';
-	if($fileext=='css') $ContentType='Content-Type: text/css; charset=UTF-8';
-	if(in_array($fileext,array('jpg','png','gif'))) $ContentType='Content-Type: image/jpeg';
-	header($ContentType);
-	header("Last-Modified: ".$themefiles[RQ_FILE]); //Fri, 31 Oct 2008 02:14:04 GMT
-	readfile(RQ_DATA."/themes/$theme/".RQ_FILE);
+	$contentType='Content-Type: text/html; charset=UTF-8';
+	if($fileext=='css') $contentType='Content-Type: text/css; charset=UTF-8';
+	if(in_array($fileext,array('jpg','png','gif'))) $contentType='Content-Type: image/jpeg';
+	header($contentType);
+	header("Last-Modified: ".$themefiles[REQUEST_URI]); //Fri, 31 Oct 2008 02:14:04 GMT
+	readfile(RQ_DATA."/themes/$theme/".REQUEST_URI);
 	exit();
 }
 
@@ -99,7 +101,7 @@ if(!file_exists($tempView))
 <TITLE>404 Not Found</TITLE>
 </HEAD><BODY>
 <H1>Not Found</H1>
-The requested URL <?php echo RQ_FILE;?> was not found on this server.<P>
+The requested URL <?php echo REQUEST_URI;?> was not found on this server.<P>
 <HR>
 <ADDRESS>Web Server at <?php echo RQ_HOST;?> Port <?php echo $_SERVER["SERVER_PORT"];?></ADDRESS>
 </BODY></HTML>

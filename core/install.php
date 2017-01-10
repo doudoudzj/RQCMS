@@ -5,13 +5,14 @@ $sqlfile=RQ_CORE.'/resource/install.sql';
 $configfile=RQ_CORE.'/resource/conig.sample.php';
 $rqcms_coredir=basename(RQ_CORE);
 $rqcms_datadir= basename(RQ_DATA);
+$rqcms_version=RQ_VERSION;
 $dbcharset='Utf-8';
 echo <<<EOT
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>RQCMS {$constant['RQ_VERSION']} 安装脚本</title>
+<title>RQCMS $rqcms_version 安装脚本</title>
 <link href="$rqcms_coredir/resource/install.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -19,7 +20,7 @@ echo <<<EOT
 EOT;
 if(file_exists($lockfile)) 
 {	
-	echo "<p>您已经安装过RQCMS {$constant['RQ_VERSION']},如果您需要重新安装,请删除{$rqcms_datadir}目录下的install.lock文件并刷新本页面</p>";
+	echo "<p>您已经安装过RQCMS $rqcms_version,如果您需要重新安装,请删除{$rqcms_datadir}目录下的install.lock文件并刷新本页面</p>";
 }
 else
 {
@@ -43,7 +44,7 @@ else
 			echo "成功添加管理员帐号{$username}<br />";
 			file_put_contents($lockfile,md5(RQ_HOST));
 			$DB->query("update ".DB_PREFIX."host set `host`='".RQ_HOST."'");
-			$DB->query("INSERT INTO `".DB_PREFIX."article` (`aid`, `oid`, `hostid`, `cateid`, `userid`, `title`, `keywords`, `tag`, `url`, `excerpt`, `dateline`, `modified`, `views`, `comments`, `attachments`, `closed`, `visible`, `stick`, `score`, `password`, `ban`) VALUES (NULL, '1', '1', '1', '1', '感谢您使用RQCMS', '', 'rqcms', 'welcome', '','$timestamp', '$timestamp', '1', '0', '0',  '0', '1', '1', '0', '', '0')");
+			$DB->query("INSERT INTO `".DB_PREFIX."article` (`aid`, `hostid`, `cateid`, `userid`, `title`, `keywords`, `tag`, `url`, `excerpt`, `dateline`, `modified`, `views`, `comments`, `attachments`, `closed`, `visible`, `stick`, `score`, `password`, `ban`) VALUES (NULL, '1', '1', '1', '感谢您使用RQCMS', '', 'rqcms', 'welcome', '','$timestamp', '$timestamp', '1', '0', '0',  '0', '1', '1', '0', '', '0')");
 			$DB->query("INSERT INTO `".DB_PREFIX."comment` (`cid`, `hostid`, `articleid`, `userid`, `username`, `dateline`, `content`, `ipaddress`, `score`, `visible`, `ban`) VALUES (1, 1, 1, 1, '$username', '$timestamp', '测试评论', '$onlineip', 0, 1, 0)");
 			$DB->query('Insert into `'.DB_PREFIX."content` (`articleid`,`content`) values ('1','感谢您使用RQCMS')");
 			hosts_recache();
@@ -53,9 +54,11 @@ else
 			filemaps_recache();
 			plugins_recache();
 			links_recache();
-			rss_recache();
 			cates_recache();
 			vars_recache();
+			$mapArr= @include RQ_DATA.'/cache/map_'.$host['host'].'.php';
+			$cateArr=@include RQ_DATA.'/cache/cate_'.$host['host'].'.php';
+			rss_recache();
 			stick_recache();
 			pics_recache();
 			latest_recache();
@@ -125,7 +128,7 @@ EOT;
 
 echo <<<EOT
 </div>
-<strong>Powered by RQCMS {$constant['RQ_VERSION']} (C) 2010 RQCMS.COM</strong>
+<strong>Powered by RQCMS $rqcms_version (C) 2010-2012 RQCMS.COM</strong>
 </body>
 </html>
 EOT;
