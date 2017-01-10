@@ -8,8 +8,8 @@
  */
  //版权相关设置
 define('RQ_AppName','RQCMS');
-define('RQ_VERSION','0.98');
-define('RQ_RELEASE','20120617');
+define('RQ_VERSION','0.99');
+define('RQ_RELEASE','20120701');
 define('RQ_AUTHOR','RQ204');
 define('RQ_WEBSITE','http://www.rqcms.com');
 define('RQ_EMAIL','rq204@qq.com');
@@ -77,9 +77,9 @@ if($Hosts&&is_array($Hosts)&&isset($Hosts[RQ_HOST]))
 {
 	$host=$Hosts[RQ_HOST];//站点数组,包含
 }
-else if(RQ_ALIAS&&$Hosts&&is_array($Hosts)&&!isset($Hosts[RQ_HOST]))
+else if($Hosts&&is_array($Hosts)&&!isset($Hosts[RQ_HOST]))
 {
-	//如果使用了内容页泛域名解析功能，则需要对当前域名进行判断。RQ_ALIAS在data/config.php中设置
+	//如果使用了泛解析的，多级域名的处理
 	foreach($Hosts as $hs)
 	{	
 		//$aliasname为除过根域名外的域名部分，如 xx.rq.cn 相对 rq.cn 多出来的 xx 即为该值
@@ -171,13 +171,7 @@ if(!isset($theme)) $theme='default';
 $views=isset($Files['file'][RQ_FILE])?$Files['file'][RQ_FILE]:"404.php";
 if(RQ_FILE=='index.php'&&isset($host)) $views='index.php';
 if(isset($host['close'])&&$host['close']&&isset($Files['file'][RQ_FILE])&&$Files['file'][RQ_FILE]!='admin.php') exit($host['close_note']);
-if(RQ_ALIAS&&isset($aliasname)&&$views=="index.php")//只对文章页面进行二级域名处理，如果需要对其它页面进行处理，请插件实现
-{ 
-	$views='article.php';
-	$host['friend_url']='url';
-	$_GET['url']=$aliasname;
-}
-$coreView=RQ_CORE.'/'.$views;//核心模板文件
+$coreView=RQ_CORE.'/'.$views;//核心处理文件
 $tempView=RQ_DATA.'/themes/'.$theme.'/'.$views;//风格模板文件
 $ContentType='Content-Type: text/html; charset=UTF-8';
 

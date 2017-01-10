@@ -1,7 +1,6 @@
 ﻿<?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
 $hotdata=getHotArticle(10,$article['cateid']);
-$randdata=getRndArticle(10,$article['cateid']);
 if(is_array($article['tag'])) $likedata=getRelatedArticle($article['aid'],$article['tag'],10);
 
 include RQ_DATA."/themes/{$theme}/header.php";
@@ -29,7 +28,7 @@ if($article['attachments'])
 		if($image['isimage'])
 		{
 			print <<<EOT
-			<p class="attach">{$image['filename']}<br /><a href="attachment.php?{$image['arg']}" target="_blank"><img src="attachment.php?{$image['arg']}}" border="0" alt="大小: {$image['filesize']}KB&#13;尺寸: {$image['thumb_width']} x {$image['thumb_height']}&#13;浏览: {$image['downloads']} 次&#13;点击打开新窗口浏览全图" width="{$image['thumb_width']}" height="{$image['thumb_height']}" /></a></p>
+			<p class="attach">{$image['filename']}<br /><a href="attachment.php?{$image['arg']}" target="_blank"><img src="attachment.php?{$image['arg']}" border="0" alt="大小: {$image['filesize']}KB&#13;浏览: {$image['downloads']} 次" /></a></p>
 EOT;
 		}
 	}
@@ -47,8 +46,8 @@ EOT;
 print <<<EOT
         </div>
         <div class=pagebreak></div>
-      </div>
-      <div class=leftbox>
+      </div><!--end leftbox-->
+      <div id=comments>
         <h3>相关信息</h3>
         <ul id=like>
          <li>上下一篇</a> &raquo;</p></li>
@@ -67,6 +66,7 @@ print <<<EOT
           <li><B>将本文收藏到网摘：</B></li>
         </ul>
       <div class=pagebreak></div>
+	  </div><!--end leftbox-->
       <div id=comments>
 EOT;
 }
@@ -121,16 +121,15 @@ EOT;
 }print <<<EOT
       <p><input type="hidden" name="action" value="addcomment" />
           <button type="submit" name="submit" class="formbutton">提交</button></p>
-    </div>
+	</div>
   </form>
 EOT;
 } else {print <<<EOT
 <p align="center"><strong>本文因为某种原因此时不允许访客进行评论</strong></p>
 EOT;
 }print <<<EOT
-    </div>
-    </div>
-  </div>
+    </div><!--end comments-->
+	</div><!--end left-->
     <div id=right>
       <div class=rightbox>
         <h3>相关文章</h3>
@@ -154,17 +153,8 @@ EOT;
 }print <<<EOT
         </ul>
       </div>
-    <div class=rightbox>
-        <h3>随机推荐</h3>
-        <ul>
+    </div><!--end right-->
+  </div><!--end main-->
 EOT;
-foreach($randdata AS $data){print <<<EOT
-          <li><a href="article.php?{$data['arg']}" title="$data[title]" target="_parent">$data[title]</a></li>
-EOT;
-}print <<<EOT
-        </ul>
-      </div>
-    </div>
-  </div>
-EOT;
+include RQ_DATA."/themes/$theme/footer.php";
 ?>

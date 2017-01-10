@@ -1,7 +1,7 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
 
-//Ã»ÓÐÕÒµ½Õ¾µãÐÅÏ¢µÄ»°¾Í½ûÖ¹·ÃÎÊ
+//æ²¡æœ‰æ‰¾åˆ°ç«™ç‚¹ä¿¡æ¯çš„è¯å°±ç¦æ­¢è®¿é—®
 if(empty($host))
 {
 	header("http/1.1 403 Forbidden");
@@ -19,7 +19,7 @@ EOT;
 	exit();
 }
 
-//ÏÈ¼ì²éÎÄ¼þÊÇ·ñ´æÔÚ,È»ºó¼ì²é»º´æÎÄ¼þ
+//å…ˆæ£€æŸ¥æ–‡ä»¶æ˜¯å¦å­˜åœ¨,ç„¶åŽæ£€æŸ¥ç¼“å­˜æ–‡ä»¶
 $cachefile=RQ_DATA.'/cache/file_'.$host['host'].'.php';
 $themefiles=@include $cachefile;
 $fileext=strtolower(substr(RQ_FILE,-3));
@@ -36,7 +36,7 @@ if(file_exists($themefile)&&$fileext!='php')
 		$themefiles[RQ_FILE]=gmdate('D, d M Y H:i:s', $modified). ' GMT';
 		writeCache('file_'.$host['host'],$themefiles);
 	}
-	//Ê±¼äÅÐ¶Ï
+	//æ—¶é—´åˆ¤æ–­
 	if(array_key_exists('HTTP_IF_MODIFIED_SINCE',$_SERVER))
 	{
 		if($_SERVER['HTTP_IF_MODIFIED_SINCE']==$themefiles[RQ_FILE])
@@ -45,6 +45,7 @@ if(file_exists($themefile)&&$fileext!='php')
 			exit;
 		}
 	}
+	ob_end_clean();
 	header("Cache-Control: max-age=259200");
 	$ContentType='Content-Type: text/html; charset=UTF-8';
 	if($fileext=='css') $ContentType='Content-Type: text/css; charset=UTF-8';
@@ -55,8 +56,8 @@ if(file_exists($themefile)&&$fileext!='php')
 	exit();
 }
 
-//¼ì²éÍøÖ·Ìø×ª
-$redirects=@include RQ_DATA.'/cache/redirect_'.$host['host'].'.php';//¼ÓÔØËùÓÐÕ¾µãÐÅÏ¢
+//æ£€æŸ¥ç½‘å€è·³è½¬
+$redirects=@include RQ_DATA.'/cache/redirect_'.$host['host'].'.php';//åŠ è½½æ‰€æœ‰ç«™ç‚¹ä¿¡æ¯
 if(count($redirects)>0)
 {
 	$request_url=ltrim($_SERVER['REQUEST_URI'],'/');

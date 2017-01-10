@@ -5,8 +5,7 @@ if(!defined('RQ_ROOT')) exit('Access Denied');
 if(!isset($keywords)) $keywords=$host['keywords'];
 if(!isset($description)) $description=$host['description'];
 
-//使用内容页泛域名功能后，首页需要使用绝对地址，反之使用相对地址
-$homeurl=RQ_ALIAS&&isset($aliasname)?RQ_HTTP.$host['host'].'/':'/';
+$homeurl='/';
 
 if(!isset($rssinfo)) $rssinfo='';
 print <<<EOT

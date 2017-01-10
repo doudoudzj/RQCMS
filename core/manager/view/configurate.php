@@ -25,8 +25,7 @@ if(!$type || $type=='basic'){print <<<EOT
                     <td colspan="2">基本设置</td>
                   </tr>
                   <tr class="tablecell">
-                    <td width="60%"><b>网站名称:</b><br />
-                      如果没有设置LOGO图片，则显示文本名称</td>
+                    <td width="60%"><b>网站名称:</b></td>
                     <td><input class="formfield" type="text" name="setting[name]" size="35" maxlength="50" value="{$settings['name']}"></td>
                   </tr>
 				    <tr class="tablecell">
@@ -243,20 +242,6 @@ if(!$type || $type=='attach'){print <<<EOT
                     </td>
                   </tr>
                   <tr class="tablecell">
-                    <td width="60%"><b>图片附件生成缩略图:</b><br />
-                      如果选“是”，上传的附件为图片，尺寸大于下面的设置，就生成缩略图，以减少页面输出带宽。需要GD库支持</td>
-                    <td><select name="setting[attach_thumbs]">
-                        <option value="1" $attach_thumbs_Y>是</option>
-                        <option value="0" $attach_thumbs_N>否</option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr class="tablecell">
-                    <td width="60%"><b>附件图片缩略图大小:</b><br />
-                      如果开启了缩略图选项，请在这里定义缩略图的大小。例如：150x150</td>
-                    <td><input class="formfield" type="text" name="setting[attach_thumbs_size]" size="35" maxlength="50" value="$settings[attach_thumbs_size]"></td>
-                  </tr>
-                  <tr class="tablecell">
                     <td width="60%"><b>附件是否禁止从其他站查看:</b><br />
                       如果选“是”,就禁止直接从地址栏输入附件地址访问,也不允许从其他站点直接点击本站的附件地址访问.只能从附件所属文章点击.反之不做任何限制.</td>
                     <td><select name="setting[attachments_remote_open]">
@@ -465,11 +450,7 @@ if(!$type || $type=='rss'){print <<<EOT
                     <td width="60%"><b>RSS 订阅文章数量:</b></td>
                     <td><input class="formfield" type="text" name="setting[rss_num]" size="15" maxlength="50" value="$settings[rss_num]"></td>
                   </tr>
-                  <tr class="tablecell">
-                    <td width="60%"><b>RSS TTL(分钟):</b><br />
-                      TTL(Time to Live) 是 RSS 2.0 的一项属性，用于控制订阅内容的自动刷新时间，时间越短则资料实时性就越高，但会加重服务器负担，通常可设置为 30～180 范围内的数值默认值为60分钟,设置为0则不缓存(稍微消耗系统资源)</td>
-                    <td><input class="formfield" type="text" name="setting[rss_ttl]" size="15" maxlength="50" value="$settings[rss_ttl]"></td>
-                  </tr>          
+				  
 EOT;
 }print <<<EOT
                   <input type="hidden" name="action" value="updatesetting" />

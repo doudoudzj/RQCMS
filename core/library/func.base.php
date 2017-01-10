@@ -458,31 +458,10 @@ function urlRewrite($buffer)
 			if(is_array($args))
 			{
 				$oldfile=$Files['file'][$file];
-				if(RQ_ALIAS&&$host['friend_url']=='url')
+				foreach($left as $lf)
 				{
-					if($oldfile=='article.php')
-					{
-						foreach($left as $lf)
-						{
-							$buffer=preg_replace("/$lf=(\"|')article\.php\?url=([\.\w]+)\b/i","$lf=$1".RQ_HTTP."$2".'.'.$host['host'],$buffer);
-						}
-					}
-					else
-					{
-						foreach($left as $lf)
-						{
-							$buffer=str_ireplace("$lf='{$oldfile}","$lf='".RQ_HTTP.$host['host']."/$file",$buffer);
-							$buffer=str_ireplace("$lf=\"{$oldfile}",'$lf="'.RQ_HTTP.$host['host']."/$file",$buffer);
-						}
-					}
-				}
-				else
-				{
-					foreach($left as $lf)
-					{
-						$buffer=str_ireplace("$lf='{$oldfile}","$lf='$file",$buffer);
-						$buffer=str_ireplace("$lf=\"{$oldfile}","$lf=\"$file",$buffer);
-					}
+					$buffer=str_ireplace("$lf='{$oldfile}","$lf='$file",$buffer);
+					$buffer=str_ireplace("$lf=\"{$oldfile}","$lf=\"$file",$buffer);
 				}
 			}
 		}

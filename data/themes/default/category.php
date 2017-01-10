@@ -1,7 +1,6 @@
 ﻿<?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
-$randdata=getStickArticle(10,$cate['cid']);
-$stickcache=getStickArticle(10);
+$stickcache=getStickArticle(10);//置顶文章
 $hotcache=getHotArticle(10,$cate['cid']);
 
 include RQ_DATA."/themes/{$theme}/header.php";
@@ -32,16 +31,6 @@ EOT;
 foreach($hotcache AS $data){
 print <<<EOT
         <li><a href="article.php?$data[arg]" title="$data[title],浏览$data[views]" target="_parent">$data[title]</a></li>
-EOT;
-}print <<<EOT
-</ul></div>
-<div class=rightbox>
-<h3>随机推荐</h3>
-<ul>
-EOT;
-foreach($randdata as $data){
-print <<<EOT
-        <li><a href="article.php?{$data['arg']}" title="$data[title]" target="_parent">$data[title]</a></li>
 EOT;
 }print <<<EOT
 </ul></div>

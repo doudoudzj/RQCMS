@@ -14,7 +14,6 @@ function removeattachment($query) {
 	$delatt=array();
 	while ($att = $DB->fetch_array($query)) {
 		$delatt[]=$att['filepath'];
-		if(!empty($att['thumb_filepath'])) $delatt[]=$att['thumb_filepath'];
 	}
 
 	foreach($delatt as $delfile)

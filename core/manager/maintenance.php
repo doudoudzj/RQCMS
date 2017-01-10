@@ -19,6 +19,7 @@ if(RQ_POST)
 		vars_recache();
 		pics_recache();
 		latest_recache();
+		hot_recache();
 		redirect('所有缓存已经更新', $url);
 	}
 	else if($action == 'log') 
@@ -43,7 +44,8 @@ else
 		'tag_'.$host['host']=>'热门Tag文件',
 		'pic_'.$host['host']=>'包含图片的文章',
 		'redirect_'.$host['host']=>'自动跳转设置',
-		'latest_'.$host['host']=>'栏目最新文件');
+		'latest_'.$host['host']=>'栏目最新文件',
+		'hot_'.$host['host']=>'阅读排行文件');
 		foreach($cachefile as $cfile=>$desc)
 		{
 			$filepath = RQ_DATA.'/cache/'.$cfile.'.php';

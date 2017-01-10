@@ -2,7 +2,6 @@
 if(!defined('RQ_ROOT')) exit('Access Denied');
 $stickcache=getStickArticle(10);
 $hotcache=getHotArticle(10);
-$rndArticle=getRndArticle(10);
 include RQ_DATA."/themes/{$theme}/header.php";
 print <<<EOT
   <div id=main>
@@ -39,17 +38,6 @@ EOT;
 }print <<<EOT
         </ul>
       </div>
-    <div class=rightbox>
-      <h3>随机推荐</h3>
-      <ul>
-EOT;
-foreach($rndArticle as $data){
-print <<<EOT
-        <li><a href="article.php?$data[arg]" title="$data[title]" target="_parent">$data[title]</a></li>
-EOT;
-}print <<<EOT
-      </ul>
-    </div>
 EOT;
 }else{print <<<EOT
     <div id=fullbox>

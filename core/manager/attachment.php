@@ -21,51 +21,27 @@ if(RQ_POST)
 			}
 		break;
 		case 'dorepair':
-			$query = $DB->query("SELECT aid,filepath FROM ".DB_PREFIX."attachment");
+			$query = $DB->query("SELECT aid,articleid,filepath FROM ".DB_PREFIX."attachment");
+			$articledic=array();
 			while ($attach = $DB->fetch_array($query)) {
-				if(!file_exists(SACMS_ROOT.$options['attachments_dir'].'/'.$attach['filepath'])){
-					$DB->unbuffered_query("DELETE FROM ".DB_PREFIX."attachments WHERE attachmentid='".$attach['attachmentid']."'");
+				if(!file_exists(RQ_DATA.'/files/'.$attach['filepath'])){
+					$DB->unbuffered_query("DELETE FROM ".DB_PREFIX."attachment WHERE aid='".$attach['aid']."'");
+				}
+				else
+				{
+					$articleid=$attach['articleid'];
+					if(isset($articledic[$articleid])) $articledic[$articleid]=$articledic[$articleid]+1;
+					else $articledic[$articleid]=1;
 				}
 			}
 			unset($attach,$query);
-			$count = 0;
-			$query = $DB->query("SELECT articleid,attachments FROM ".DB_PREFIX."articles WHERE attachments <> ''");
-			while ($aids = $DB->fetch_array($query)) {
-				$attachs = unserialize(stripslashes_array($aids['attachments']));
-				if (is_array($attachs)) {
-					$update=0;
-					foreach ($attachs as $key=>$attach) {
-						if($attach['filepath'] && file_exists(SACMS_ROOT.$options['attachments_dir'].'/'.$attach['filepath'])){
-							$check = $DB->fetch_first("SELECT attachmentid FROM ".DB_PREFIX."attachments WHERE attachmentid='".$attach['attachmentid']."'");	
-							if (!$check) {
-								$count++;
-								$attach['filename'] = addslashes($attach['filename']);
-								$DB->query("INSERT INTO ".DB_PREFIX."attachments (filename, filesize, filetype, filepath, dateline, downloads, isimage, thumb_filepath, thumb_width, thumb_height) VALUES ('".addslashes($attach['filename'])."', '".addslashes($attach['filesize'])."', '".addslashes($attach['filetype'])."', '".addslashes($attach['filepath'])."', '".addslashes($attach['dateline'])."', '".addslashes($attach['downloads'])."', '".addslashes($attach['isimage'])."', '".addslashes($attach['thumb_filepath'])."', '".addslashes($attach['thumb_width'])."', '".addslashes($attach['thumb_height'])."')");
-							}
-						} else{
-							$count++;
-							$check = $DB->fetch_first("SELECT attachmentid FROM ".DB_PREFIX."attachments WHERE attachmentid='".$attach['attachmentid']."'");
-							if($check){
-								$DB->unbuffered_query("DELETE FROM ".DB_PREFIX."attachments WHERE attachmentid='".$attach['attachmentid']."'");
-							}
-							$update=1;
-							unset($attachs[$key]);
-						}
-					}
-					if($update){
-						$attachs = $attachs ? addslashes(serialize($attachs)) : '';
-						$DB->unbuffered_query("UPDATE ".DB_PREFIX."articles SET attachments='$attachs' WHERE articleid='".$aids['articleid']."'");
-					}
-				} else{
-					$count++;
-					$DB->unbuffered_query("UPDATE ".DB_PREFIX."articles SET attachments='' WHERE articleid='".$aids['articleid']."'");
-				}
+			foreach($articledic as $k=>$v)
+			{
+				$DB->query("Update ".DB_PREFIX."article set `attachments`=$v where `aid`=$k");
+			
 			}
-			// 更新首页显示的附件数
-			$attachment_count = $DB->num_rows($DB->query("SELECT att.attachmentid, art.visible FROM ".DB_PREFIX."attachments att LEFT JOIN ".DB_PREFIX."articles art ON (art.articleid = att.articleid) WHERE art.visible='1'"));
-			$DB->unbuffered_query("UPDATE ".DB_PREFIX."statistics SET attachment_count='$attachment_count'");	
-			statistics_recache();
-			redirect('成功修复'.$count.'个附件记录', 'admin.php?file=attachment&action=list');
+			
+			redirect('成功修复'.count($articledic).'个附件记录', 'admin.php?file=attachment&action=list');
 		break;
 		case 'addattachtoarticle':	//添加附件到指定文章
 			$aid = intval($_POST['aid']);
@@ -143,7 +119,6 @@ else
 
 		$attachdb = array();
 		while ($attach = $DB->fetch_array($query)) {
-			$attach['thumb'] = $attach['thumb_filepath'] ? '<a href="attachment.php?id='.$attach['aid'].'type=thumb" target="_blank"><font color=#FF0000>有</font></a>' : '无';
 			$attach['filename'] = htmlspecialchars($attach['filename']);
 			$attach['filepath'] = htmlspecialchars($attach['filepath']);
 			$attach['filesize'] = sizecount($attach['filesize']);

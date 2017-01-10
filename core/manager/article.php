@@ -51,7 +51,7 @@ if(RQ_POST)
 				$fileidarr=array();
 				foreach($attachments as $key=>$attachment)
 				{
-					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`thumb_filepath`,`thumb_width`,`thumb_height`,`isimage`,`hostid`) values ('$articleid','$dateline','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[thumb_filepath]','$attachment[thumb_width]','$attachment[thumb_height]','$attachment[isimage]','$hostid')");
+					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`isimage`,`hostid`) values ('$articleid','$dateline','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[thumb_height]','$attachment[isimage]','$hostid')");
 					$attachments[$key]['aid']=$DB->insert_id();
 					$fileidarr[$attachments[$key]['localid']]=$attachments[$key]['aid'];
 				}

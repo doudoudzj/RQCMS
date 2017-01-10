@@ -139,9 +139,12 @@ else
 	}
 	if($action=='list')
 	{
-		foreach($cates as $k=>$v)
+		$catequery=$DB->query('Select * from '.DB_PREFIX."category where hostid=$hostid order by displayorder desc");
+		while($cateinfo=$DB->fetch_array($catequery))
 		{
-			$cates[$k]['articles']=getArticleNum($hostid,$v['cid']);
+			$cid=$cateinfo['cid'];
+			$cates[$cid]=$cateinfo;
+			$cates[$cid]['articles']=getArticleNum($hostid,$cid);
 		}
 	}
 }

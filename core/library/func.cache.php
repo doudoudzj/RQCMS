@@ -112,7 +112,7 @@ function stick_recache()
 function cates_recache()
 {
 	global $DB,$host,$hostid;
-	$cquery= $DB->query('SELECT * FROM `'.DB_PREFIX."category` where hostid='$hostid'");
+	$cquery= $DB->query('SELECT * FROM `'.DB_PREFIX."category` where hostid='$hostid' order by displayorder desc");
 	$arrcates=array();
 	while($cate=$DB->fetch_array($cquery))
 	{
@@ -142,7 +142,6 @@ function pics_recache()
 	$arrvars=array();
 	while ($fs = $DB->fetch_array($var)) 
 	{
-		unset($fs['content']);
 		$arrvars[]=showArticle($fs);
 	}
 	writeCache('pic_'.$host['host'],$arrvars);
@@ -183,4 +182,17 @@ function redirect_recache()
 		$arrvars[$fs['old']]=array($fs['new'],$fs['status']);
 	}
 	writeCache('redirect_'.$host['host'],$arrvars);
+}
+
+//阅读排行的文章
+function hot_recache()
+{
+	global $DB,$host,$hostid;
+	$query=$DB->query('Select * from '.DB_PREFIX."article where hostid=$hostid and visible=1 order by views desc limit 20");
+	$cache=array();
+	while($article=$DB->fetch_array($query))
+	{
+		$cache[]=showArticle($article);
+	}
+	writeCache('hot_'.$host['host'],$cache);
 }

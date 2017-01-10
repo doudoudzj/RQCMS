@@ -147,23 +147,6 @@ function getAttach()
 			}
 			$attachments[$id]['isimage']=$isimage;
 
-			// 判断是否使用缩略图
-			if ($host['attach_thumbs']&&function_exists('gd_info')&&gd_info()) {
-				$size = explode('x', strtolower($host['attach_thumbs_size']));
-				if (($imginfo[0] > $size[0] || $imginfo[1] > $size[1]) &&$tmp_filesize < 20480000) {	
-					$thumb_filepath=$attach_dir.'/'.$fnamehash.'.thumb.'.$ext.'.file';
-					
-					//现在生成缩略图
-					$return=generate_thumbnail($attachment,$size[0],$size[1],RQ_DATA.'/files/'.$thumb_filepath,$ext);
-					if($return&&is_array($return))
-					{
-						$attachments[$id]['thumb_filepath']=$thumb_filepath;
-						$attachments[$id]['thumb_width']=$return['thumbwidth'];
-						$attachments[$id]['thumb_height']=$return['thumbheight'];
-					}
-					else redirect('生成缩略图时失败!');
-				}
-			}
 			//水印
 			$watermark_size = explode('x', strtolower($host['watermark_size']));				
 			if($isimage && $host['watermark'] && count($watermark_size)==2&&$imginfo[0] > $watermark_size[0]*2 && $imginfo[1] > $watermark_size[1]*2 && $tmp_filesize < 2048000) 
@@ -172,9 +155,6 @@ function getAttach()
 				if(file_exists($waterfile)) coreaddwatermark($attachment,$waterfile,$host['watermark_pos'],$host['watermark_trans']);
 			}
 		}
-		if(!isset($attachments[$id]['thumb_filepath'])) $attachments[$id]['thumb_filepath']='';
-		if(!isset($attachments[$id]['thumb_width'])) $attachments[$id]['thumb_width']='';
-		if(!isset($attachments[$id]['thumb_height'])) $attachments[$id]['thumb_height']='';
 		if(!isset($attachments[$id]['isimage'])) $attachments[$id]['isimage']='0';
 	}
 	return $attachments;

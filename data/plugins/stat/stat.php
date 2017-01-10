@@ -25,6 +25,7 @@ doAction('search_before_featch');搜索页搜索前检查
 doAction('search_before_view');搜索结果显示前的处理
 doAction('tag_before_view');显示tag前的处理
 doAction('js_before_view');输出js前的处理
+doAction('admin_addcss');对管理员添加css
 doAction('admin_plugin_add_item');添加插件处理菜单，要处理数组$pluginitem
 doAction('admin_plugin_setting_save');插件配置保存设置
 doAction('admin_plugin_setting_view');插件设置界面

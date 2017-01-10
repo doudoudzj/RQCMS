@@ -47,11 +47,9 @@ CREATE TABLE `rqcms_attachment` (
   `downloads` mediumint(8) NOT NULL DEFAULT '0' COMMENT '下载量',
   `filepath` varchar(255) NOT NULL DEFAULT '' COMMENT '文件地址',
   `isimage` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否图片',
-  `thumb_filepath` varchar(255) NOT NULL DEFAULT '' COMMENT '缩略图地址',
-  `thumb_width` smallint(5) NOT NULL DEFAULT '0' COMMENT '缩略图宽',
-  `thumb_height` smallint(5) NOT NULL DEFAULT '0' COMMENT '缩略图高',
   `score` smallint(5) NOT NULL DEFAULT '0' COMMENT '查看积分',
   `modified` int(10) NOT NULL COMMENT '最后修改时间',
+  `tag` smallint(5) NOT NULL DEFAULT '0' COMMENT '缩略图高',
   PRIMARY KEY (`aid`),
   KEY `attachment` (`hostid`,`articleid`,`isimage`,`dateline`,`modified`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -85,7 +83,6 @@ CREATE TABLE `rqcms_comment` (
   `content` mediumtext NOT NULL,
   `url` char(60) NOT NULL,
   `email`  char(60) NOT NULL,
-  `attachment` text NOT NULL,
   `ipaddress` varchar(16) NOT NULL DEFAULT '',
   `score` smallint(5) NOT NULL DEFAULT '0',
   `visible` tinyint(1) NOT NULL DEFAULT '1',
@@ -123,6 +120,7 @@ CREATE TABLE `rqcms_link` (
   `name` varchar(100) NOT NULL DEFAULT '',
   `url` varchar(200) NOT NULL DEFAULT '',
   `note` varchar(200) NOT NULL DEFAULT '',
+  `bak` varchar(200) NOT NULL DEFAULT '',
   `visible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`lid`),
   KEY `link` (`hostid`,`displayorder`)
@@ -192,7 +190,7 @@ CREATE TABLE `rqcms_host` (
   PRIMARY KEY (`hid`),
   KEY `host` (`host`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-INSERT INTO `rqcms_host` (`hid`, `name`, `host`, `gzipcompress`, `theme`, `password`, `keywords`, `description`, `icp`, `close`, `close_note`, `list_shownum`, `article_order`, `title_limit`, `tags_shownum`, `related_shownum`, `related_title_limit`, `related_order`, `audit_comment`, `comment_order`, `article_comment_num`, `comment_min_len`, `comment_max_len`, `commentlist_num`, `comment_post_space`, `allow_search_content`, `search_post_space`, `search_keywords_min_len`, `attach_save_dir`, `attach_thumbs`, `attach_display`, `attach_thumbs_size`, `attachments_remote_open`, `watermark`, `watermark_size`, `watermark_pos`, `watermark_trans`, `watermark_padding`, `server_timezone`, `time_article_format`, `time_comment_format`, `closereg`, `censoruser`, `banip_enable`, `ban_ip`, `spam_enable`, `spam_words`, `spam_url_num`, `js_enable`, `js_cache_life`, `js_lock_url`, `rss_enable`, `rss_num`, `rss_ttl`,`status`,`listcachenum`,`friend_url`,`guest_comment`) VALUES (1, '默认站点', 'rq.cn', 0, 'default', '', 'CMS,RQCMS', '又一个RQCMS', '1234567890', 0, '服务器检修中,稍后开放', 10, 'articleid', 0, 10, 10, 0, 'dateline', 1, 0, 10, 10, 3000, 20, 10, 1, 10, 2, 2, 0, 2, '200x200', 1, 0, 150, 4, 10, 5, '8', 'Y-m-d', 'Y-m-d', 0, 'admin', 0, '', 0, '', 0, 0, 3600, '', 1, 20, 3600,1,10,'aid','0');
+INSERT INTO `rqcms_host` (`hid`, `name`, `host`, `gzipcompress`, `theme`, `password`, `keywords`, `description`, `icp`, `close`, `close_note`, `list_shownum`, `article_order`, `title_limit`, `tags_shownum`, `related_shownum`, `related_title_limit`, `related_order`, `audit_comment`, `comment_order`, `article_comment_num`, `comment_min_len`, `comment_max_len`, `commentlist_num`, `comment_post_space`, `allow_search_content`, `search_post_space`, `search_keywords_min_len`, `attach_save_dir`, `attach_thumbs`, `attach_display`, `attach_thumbs_size`, `attachments_remote_open`, `watermark`, `watermark_size`, `watermark_pos`, `watermark_trans`, `watermark_padding`, `server_timezone`, `time_article_format`, `time_comment_format`, `closereg`, `censoruser`, `banip_enable`, `ban_ip`, `spam_enable`, `spam_words`, `spam_url_num`, `js_enable`, `js_cache_life`, `js_lock_url`, `rss_enable`, `rss_num`,`status`,`listcachenum`,`friend_url`,`guest_comment`) VALUES (1, '默认站点', 'rq.cn', 0, 'default', '', 'CMS,RQCMS', '又一个RQCMS', '1234567890', 0, '服务器检修中,稍后开放', 10, 'articleid', 0, 10, 10, 0, 'dateline', 1, 0, 10, 10, 3000, 20, 10, 1, 10, 2, 2, 0, 2, '200x200', 1, 0, 150, 4, 10, 5, '8', 'Y-m-d', 'Y-m-d', 0, 'admin', 0, '', 0, '', 0, 0, 3600, '', 1, 20,1,10,'aid','0');
 
 DROP TABLE IF EXISTS `rqcms_tag`;
 CREATE TABLE `rqcms_tag` (

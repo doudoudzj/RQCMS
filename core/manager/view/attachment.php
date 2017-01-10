@@ -79,7 +79,6 @@ print <<<EOT
             <td nowrap>附件名</td>
             <td nowrap>附件信息</td>
             <td nowrap>所在目录</td>
-            <td nowrap>缩略图</td>
             <td nowrap>上传时间</td>
             <td nowrap>下载次数</td>
             <td nowrap>文章</td>
@@ -92,7 +91,6 @@ foreach($attachdb as $key => $attach){print <<<EOT
             <td>大小:$attach[filesize]<br />
               类型:$attach[filetype]</td>
             <td>$attach[subdir]</td>
-            <td>$attach[thumb]</td>
             <td nowrap>$attach[dateline]</td>
             <td>$attach[downloads]</td>
 			<td nowrap><a title="$attach[article]" href="article.php?aid=$attach[aid]" target="_blank">查看</a></td>

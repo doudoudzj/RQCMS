@@ -1,5 +1,5 @@
 <?php
-//Ìí¼ÓË®Ó¡
+//æ·»åŠ æ°´å°
 function coreaddwatermark($sourcefile = '', $watermarkfile = '', $position = 9, $quality = 80) {
 	!isset($setting_attachimagequality) && $setting_attachimagequality = 80;
 	$sourceinfo = getimagesize($sourcefile);
@@ -68,7 +68,7 @@ function coreaddwatermark($sourcefile = '', $watermarkfile = '', $position = 9, 
 	imagejpeg($source, $sourcefile, $quality);
 }
 
-//ËõÂÔÍ¼´¦Àí
+//ç¼©ç•¥å›¾å¤„ç†
 
 function generate_thumbnail($sourcefile,$thumbswidth,$thumbsheight,$thumbfilename,$extension) {
 	$image  = '';
@@ -88,21 +88,21 @@ function generate_thumbnail($sourcefile,$thumbswidth,$thumbsheight,$thumbfilenam
 			if ($remap[$filesize[2]] == 'gif' ) {
 				if (function_exists('imagecreatefromgif')) {
 					if(!($image = @imagecreatefromgif($sourcefile))){
-						redirect($filename.'ÎÄ¼þÉú³ÉËõÂÔÍ¼Ê§°Ü');
+						redirect($filename.'æ–‡ä»¶ç”Ÿæˆç¼©ç•¥å›¾å¤±è´¥');
 					}
 					$type = 'gif';
 				}
 			} else if ($remap[$filesize[2]] == 'png') {
 				if (function_exists('imagecreatefrompng')) {
 					if(!($image = @imagecreatefrompng($sourcefile))){
-						redirect($filename.'ÎÄ¼þÉú³ÉËõÂÔÍ¼Ê§°Ü');
+						redirect($filename.'æ–‡ä»¶ç”Ÿæˆç¼©ç•¥å›¾å¤±è´¥');
 					}
 					$type = 'png';
 				}
 			} else if ($remap[$filesize[2]] == 'jpg') {
 				if (function_exists('imagecreatefromjpeg')) {
 					if(!($image = @imagecreatefromjpeg($sourcefile))){
-						redirect($filename.'ÎÄ¼þÉú³ÉËõÂÔÍ¼Ê§°Ü');
+						redirect($filename.'æ–‡ä»¶ç”Ÿæˆç¼©ç•¥å›¾å¤±è´¥');
 					}
 					$type = 'jpg';
 				}
@@ -144,7 +144,7 @@ function generate_thumbnail($sourcefile,$thumbswidth,$thumbsheight,$thumbfilenam
 }
 
 
-//¼ÆËãËõÂÔÍ¼µÄ´óÐ¡
+//è®¡ç®—ç¼©ç•¥å›¾çš„å¤§å°
 
 function scale_image($arg) {
 

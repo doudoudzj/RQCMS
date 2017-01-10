@@ -46,6 +46,7 @@ if(RQ_POST)
 			stick_recache();
 			comments_recache();
 			pics_recache();
+			hot_recache();
 			$host=$curhost;
 			$hostid=$curhostid;
 			$Files=$curFiles;
@@ -118,6 +119,7 @@ else
 				links_recache();
 				rss_recache();
 				stick_recache();
+				hot_recache();
 			}
 			$host=$curhost;
 			$hostid=$curhostid;

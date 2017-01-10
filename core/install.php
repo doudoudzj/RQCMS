@@ -44,7 +44,7 @@ else
 			file_put_contents($lockfile,md5(RQ_HOST));
 			$DB->query("update ".DB_PREFIX."host set `host`='".RQ_HOST."'");
 			$DB->query("INSERT INTO `".DB_PREFIX."article` (`aid`, `oid`, `hostid`, `cateid`, `userid`, `title`, `keywords`, `tag`, `url`, `excerpt`, `dateline`, `modified`, `views`, `comments`, `attachments`, `closed`, `visible`, `stick`, `score`, `password`, `ban`) VALUES (NULL, '1', '1', '1', '1', '感谢您使用RQCMS', '', 'rqcms', 'welcome', '','$timestamp', '$timestamp', '1', '0', '0',  '0', '1', '1', '0', '', '0')");
-			$DB->query("INSERT INTO `".DB_PREFIX."comment` (`cid`, `hostid`, `articleid`, `userid`, `username`, `dateline`, `content`, `attachment`, `ipaddress`, `score`, `visible`, `ban`) VALUES (1, 1, 1, 1, '$username', '$timestamp', '测试评论', '', '$onlineip', 0, 1, 0)");
+			$DB->query("INSERT INTO `".DB_PREFIX."comment` (`cid`, `hostid`, `articleid`, `userid`, `username`, `dateline`, `content`, `ipaddress`, `score`, `visible`, `ban`) VALUES (1, 1, 1, 1, '$username', '$timestamp', '测试评论', '$onlineip', 0, 1, 0)");
 			$DB->query('Insert into `'.DB_PREFIX."content` (`articleid`,`content`) values ('1','感谢您使用RQCMS')");
 			hosts_recache();
 			$hosts=include RQ_DATA.'/cache/hosts.php';
@@ -61,6 +61,7 @@ else
 			latest_recache();
 			comments_recache();
 			redirect_recache();
+			hot_recache();
 			echo "成功更新系统缓存<br />安装完毕,点击这里进入<a href='admin.php'>管理后台</a>";
 		}
 		else

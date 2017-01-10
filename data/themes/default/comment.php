@@ -1,6 +1,5 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
-$randdata=getRndArticle(10);
 $top10cache=getLatestArticle(10);
 $host10comments=getHotComment(10);
 
@@ -42,16 +41,6 @@ EOT;
 foreach($top10cache AS $data){
 print <<<EOT
         <li><a href="article.php?$data[arg]" title="$data[title],浏览$data[views]" target="_parent">$data[title]</a></li>
-EOT;
-}print <<<EOT
-</ul></div>
-<div class=rightbox>
-<h3>随机推荐</h3>
-<ul>
-EOT;
-foreach($randdata as $data){
-print <<<EOT
-        <li><a href="article.php?$data[arg]" title="$data[title]" target="_parent">$data[title]</a></li>
 EOT;
 }print <<<EOT
 </ul></div>

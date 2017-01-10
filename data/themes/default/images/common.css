@@ -1,4 +1,4 @@
-* {
+*{
 	margin: 0;
 	padding: 0;
 }
@@ -226,10 +226,6 @@ a: hover {
 #menu-right{
 	float:right;
 }
-
-
-
-
 .banner {
 	float: left;
 	width: 898px;
@@ -361,7 +357,7 @@ a: hover {
     height: auto;
     margin: 10px 0 10px 10px;
     min-height: 210px;
-    width: 300px;
+    width: auto;
 	float:left;
 }
 .leftbox h3 {

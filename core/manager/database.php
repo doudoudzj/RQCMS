@@ -8,6 +8,7 @@ $tables = array(
 	DB_PREFIX.'attachment',
 	DB_PREFIX.'category',
 	DB_PREFIX.'comment',
+	DB_PREFIX.'content',
 	DB_PREFIX.'link',
 	DB_PREFIX.'filemap',
 	DB_PREFIX.'host',

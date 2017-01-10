@@ -8,6 +8,7 @@ if(RQ_POST)
 		$name    = trim($_POST['name']);
 		$url     = trim($_POST['url']);
 		$note    = trim($_POST['note']);
+		$bak    = trim($_POST['bak']);
 		$visible = intval($_POST['visible']);
 		$result  = checksitename($name);
 		$result .= checkurl($url,0);
@@ -24,7 +25,7 @@ if(RQ_POST)
 		{
 			redirect('该链接在数据库中已存在', 'admin.php?file=link');
 		}
-		$DB->query("INSERT INTO ".DB_PREFIX."link (name, url, note, visible,hostid) VALUES ('$name', '$url', '$note' ,'$visible','$hostid')");
+		$DB->query("INSERT INTO ".DB_PREFIX."link (name, url, note, visible,hostid,bak) VALUES ('$name', '$url', '$note' ,'$visible','$hostid','$bak')");
 		links_recache();
 		redirect('添加链接成功', 'admin.php?file=link');
 	}
@@ -38,7 +39,7 @@ if(RQ_POST)
 		{
 			foreach($_POST['name'] as $linkid => $value) 
 			{
-				$DB->unbuffered_query("UPDATE ".DB_PREFIX."link SET displayorder='".intval($_POST['displayorder'][$linkid])."', name='".char_cv(trim($_POST['name'][$linkid]))."', url='".char_cv(trim($_POST['url'][$linkid]))."', note='".char_cv(trim($_POST['note'][$linkid]))."', visible='".intval($_POST['visible'][$linkid])."' WHERE lid='".intval($linkid)."' and `hostid`='$hostid'");
+				$DB->unbuffered_query("UPDATE ".DB_PREFIX."link SET displayorder='".intval($_POST['displayorder'][$linkid])."', name='".char_cv(trim($_POST['name'][$linkid]))."', url='".char_cv(trim($_POST['url'][$linkid]))."', note='".char_cv(trim($_POST['note'][$linkid]))."', visible='".intval($_POST['visible'][$linkid])."',bak='".$_POST['bak'][$linkid]."' WHERE lid='".intval($linkid)."' and `hostid`='$hostid'");
 			}
 		}
 		links_recache();

@@ -65,32 +65,39 @@ function getLatestComment($num,$cateid=null)
 //得到热门文章
 function getHotArticle($num,$cateid=null)
 {
-	global $DB,$hostid,$host;
-	if($cateid==null) $cate='';
-	else $cate='and cateid='.$cateid;
-	$query=$DB->query('Select * from '.DB_PREFIX."article where hostid=$hostid $cate and visible=1 order by views desc limit $num");
-	$articledb=array();
-	while($article=$DB->fetch_array($query))
-	{
-		$articledb[]=showArticle($article);
-	}
-	return $articledb;
+	global $host;
+	$hotdata=@include RQ_DATA.'/cache/hot_'.$host['host'].'.php';
+	if(!$hotdata) $hotdata=array();
+	if(count($hotdata)>$num) $hotdata=array_slice($hotdata, 0, $num); 
+	return $hotdata;
 }
 
-//得到随机文章
+/* //得到随机文章todo
 function getRndArticle($num,$cateid=null)
 {
 	global $DB,$hostid,$host;
 	if($cateid==null) $cate="";
 	else $cate=" and cateid=$cateid";
-	$query=$DB->query('Select * from '.DB_PREFIX."article a,".DB_PREFIX."content c where visible=1 and a.aid=c.articleid $cate order by rand() limit $num");
-	$articledb=array();
-	while($article=$DB->fetch_array($query))
+	//$query=$DB->query('Select aid from '.DB_PREFIX."article where visible=1 $cate order by rand() limit $num");
+	$aidarr=array();
+	for($i=0;$i<$num;$i++)
 	{
-		$articledb[]=showArticle($article);
+		$data=$DB->fetch_first('SELECT aid FROM `'.DB_PREFIX.'article` AS t1 JOIN (SELECT ROUND(RAND() aid ((SELECT MAX(aid) FROM `'.DB_PREFIX.'article`)-(SELECT MIN(aid) FROM `'.DB_PREFIX.'article`))+(SELECT MIN(aid) FROM `'.DB_PREFIX."article`)) AS id) AS t2 WHERE t1.id >= t2.id and hostid=$hostid $cate ORDER BY t1.id LIMIT $num");
+		if(is_array($data)) $aidarr[]=$data['aid'];
+	}
+	$articledb=array();
+	$aidarr=array_unique($aidarr);
+	if(count($aidarr)>0)
+	{
+		$aids=implode_ids($aidarr);
+		$query=$DB->query('Select * from '.DB_PREFIX."article where aid in ($aids)");
+		while($article=$DB->fetch_array($query))
+		{
+			$articledb[]=showArticle($article);
+		}
 	}
 	return $articledb;
-}
+}  */
 
 //得到相关文章
 function getRelatedArticle($aid,$tagarr,$num)
@@ -204,19 +211,14 @@ function getComment($aid,$page,$pagenum)
 	return $commentdb;
 }
 
-//得到热门评论文章
+//得到热门评论文章todo
 function getHotComment($num,$cateid=null)
 {
 	global $DB,$host;
 	if($cateid==null) $cate='';
 	else $cate=' where cateid='.$cateid;
 	$query=$DB->query('Select * from '.DB_PREFIX."article where visible=1 order by views desc limit $num");
-	$articledb=array();
-	while($article=$DB->fetch_array($query))
-	{
-		$articledb[]=showArticle($article);
-	}
-	return $articledb;
+	return getArticleByAid($query);
 }
 
 //按id得到附件
@@ -230,4 +232,25 @@ function getAttachById($aids)
 		$attacharr[$dds['articleid']][$dds['aid']]=$dds;
 	}
 	return $attacharr;
+}
+
+function getArticleByAid($query)
+{
+	global $DB;
+	$articledb=array();
+	$aidarr=array();
+	while($aid=$DB->fetch_array($query))
+	{
+		$aidarr[]=$aid['aid'];
+	}
+	if(count($aidarr)>0)
+	{
+		$aids=implode_ids($aidarr);
+		$query=$DB->query('Select * from '.DB_PREFIX."article where aid in ($aids)");
+		while($article=$DB->fetch_array($query))
+		{
+			$articledb[]=showArticle($article);
+		}
+	}
+	return $articledb;
 }
