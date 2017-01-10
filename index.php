@@ -1,6 +1,6 @@
 <?php
 /**
- * RQCMS 1.2   A simple,personal,multi-site cms 
+ * RQCMS       A simple,personal,multi-site cms 
  *
  * @copyright  Copyright (c) 2010-2012 RQ204
  * @license    GNU General Public License 2.0
@@ -8,8 +8,8 @@
  */
  //版权相关设置
 define('RQ_AppName','RQCMS');
-define('RQ_VERSION','1.31');
-define('RQ_RELEASE','20130417');
+define('RQ_VERSION','1.33');
+define('RQ_RELEASE','20131020');
 define('RQ_AUTHOR','RQ204');
 define('RQ_WEBSITE','http://www.rqcms.com');
 define('RQ_EMAIL','rq204@qq.com');
@@ -31,15 +31,17 @@ include RQ_CORE.'/library/func.cache.php';
 include RQ_CORE.'/library/func.data.php';
 include RQ_DATA.'/config.php';
 
-//获取请求的网址，处理部分服务器对重写的网址没有GET参数的解决办法
-if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'IIS')!==false)//IIS,如 Microsoft-IIS/6.0
+//获取请求的网址，处理部分服务器对重写的网址没有GET参数的解决办法,使用的是iirf中的U参数将请求网址保存在HTTP_X_REWRITE_URL
+if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'IIS')!==false)//IIS,如 Microsoft-IIS/6.0是HTTP_X_REWRITE_URL，7.5是REQUEST_URI
 {
 	if(!isset($_SERVER['HTTP_X_REWRITE_URL'])) exit('this iis server is not support rqcms!');
-	define('REQUEST_URI',substr($_SERVER['HTTP_X_REWRITE_URL'],1));
-	if(empty($_GET)&&strpos($_SERVER['HTTP_X_REWRITE_URL'],'?'))
+    $HTTP_X_REWRITE_URL=$_SERVER['HTTP_X_REWRITE_URL'];
+
+	define('REQUEST_URI',substr($HTTP_X_REWRITE_URL,1));
+	if(empty($_GET)&&strpos($HTTP_X_REWRITE_URL,'?'))
 	{
-		$_GET=getGetArr($_SERVER['HTTP_X_REWRITE_URL']);
-		define('QUERY_URL',$_SERVER['HTTP_X_REWRITE_URL']);
+		$_GET=getGetArr($HTTP_X_REWRITE_URL);
+		define('QUERY_URL',$HTTP_X_REWRITE_URL);
 	}
 }
 else if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'nginx')!==false)//nginx
@@ -149,8 +151,14 @@ else
 		{
 			$urlstring=substr(REQUEST_URI,0,strlen(REQUEST_URI)-strlen($urlext));
 		}
-		else if($urlext) $urlstring='';
-
+		else if($urlext)//如果是管理页面，使用不同的处理方式
+		{
+			$tempfile=ltrim(strpos(REQUEST_URI,'?')>1?substr(REQUEST_URI,0,strpos(REQUEST_URI,'?')):REQUEST_URI,'/');
+			if(substr($tempfile,0-strlen($urlext))==$urlext) $tempfile=substr($tempfile,0,strlen($tempfile)-strlen($urlext));
+			if($mapArr['file'][$tempfile]=='admin.php') define('RQ_FILE',$tempfile);
+			$urlstring='';
+		}
+		
 		if($urlstring)
 		{
 			$urlstring=trim($urlstring,'/');
@@ -161,7 +169,7 @@ else
 			if(count($urlargs)>2) $_GET['page']=$urlargs[2];
 			if(count($urlargs)>3) $_GET['more']=$urlargs[3];
 		}
-		else define('RQ_FILE','');
+		else if(!defined('RQ_FILE')) define('RQ_FILE','');
 	}
 }
 

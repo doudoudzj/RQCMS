@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS `rqcms_article`;
 CREATE TABLE `rqcms_article` (
   `aid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `hostid` tinyint(3) NOT NULL COMMENT '站点id',
-  `cateid` smallint(4) unsigned NOT NULL COMMENT '分类id',
+  `hostid` smallint(5) NOT NULL COMMENT '站点id',
+  `cateid` smallint(5) unsigned NOT NULL COMMENT '分类id',
   `userid` smallint(5) unsigned NOT NULL COMMENT '用户id',
   `title` varchar(100) NOT NULL COMMENT '标题',
   `keywords` varchar(120) NOT NULL DEFAULT '' COMMENT '关键词',
@@ -38,7 +38,7 @@ CREATE TABLE `rqcms_content` (
 DROP TABLE IF EXISTS `rqcms_attachment`;
 CREATE TABLE `rqcms_attachment` (
   `aid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT COMMENT '附件id',
-  `hostid` tinyint(3) NOT NULL COMMENT '站点id',
+  `hostid` smallint(5) NOT NULL COMMENT '站点id',
   `articleid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '文章id',
   `dateline` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '上传时间',
   `filename` varchar(100) NOT NULL DEFAULT '' COMMENT '文件名',
@@ -56,16 +56,16 @@ CREATE TABLE `rqcms_attachment` (
 
 DROP TABLE IF EXISTS `rqcms_category`;
 CREATE TABLE `rqcms_category` (
-  `cid` smallint(4) unsigned NOT NULL AUTO_INCREMENT COMMENT '栏目id',
-  `hostid` tinyint(3) NOT NULL DEFAULT '0' COMMENT '站点id',
+  `cid` smallint(5) unsigned NOT NULL AUTO_INCREMENT COMMENT '栏目id',
+  `hostid` smallint(5) NOT NULL DEFAULT '0' COMMENT '站点id',
   `name` varchar(100) NOT NULL DEFAULT '' COMMENT '栏目名称',
   `url` char(60) NOT NULL DEFAULT '' COMMENT '栏目友好网址',
-  `pid` smallint(4) NOT NULL DEFAULT '0' COMMENT '父级栏目id',
+  `pid` smallint(5) NOT NULL DEFAULT '0' COMMENT '父级栏目id',
   `style` varchar(20) NOT NULL COMMENT '栏目模板风格',
   `keywords` varchar(100) NOT NULL DEFAULT '' COMMENT '栏目关键字',
   `description` varchar(300) NOT NULL DEFAULT '' COMMENT '栏目描述',
   `visible` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否可见',
-  `displayorder` SMALLINT(5) NOT NULL DEFAULT '0' COMMENT '显示次序',
+  `displayorder` smallint(5) NOT NULL DEFAULT '0' COMMENT '显示次序',
   PRIMARY KEY (`cid`),
   KEY `category` (`hostid`,`url`,`visible`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -74,7 +74,7 @@ INSERT INTO `rqcms_category` (`cid`, `hostid`, `name`, `pid`, `style`, `keywords
 DROP TABLE IF EXISTS `rqcms_comment`;
 CREATE TABLE `rqcms_comment` (
   `cid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `hostid` tinyint(3) NOT NULL COMMENT '站点id',
+  `hostid` smallint(5) NOT NULL COMMENT '站点id',
   `articleid` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `userid` smallint(5) NOT NULL DEFAULT '0',
   `username` varchar(50) NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE `rqcms_comment` (
 
 DROP TABLE IF EXISTS `rqcms_filemap`;
 CREATE TABLE `rqcms_filemap` (
-  `hostid` tinyint(3) NOT NULL COMMENT '站点id',
+  `hostid` smallint(5) NOT NULL COMMENT '站点id',
   `original` varchar(15) NOT NULL,
   `filename` varchar(15) NOT NULL,
   `maps` varchar(1000) NOT NULL,
@@ -115,8 +115,8 @@ Insert Into `rqcms_filemap` (`hostid`,`original`,`filename`) values ('1','link.p
 
 DROP TABLE IF EXISTS `rqcms_link`;
 CREATE TABLE `rqcms_link` (
-  `lid` smallint(4) unsigned NOT NULL AUTO_INCREMENT,
-  `hostid` tinyint(3) NOT NULL COMMENT '站点id',
+  `lid` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `hostid` smallint(5) NOT NULL COMMENT '站点id',
   `displayorder` smallint(5) NOT NULL DEFAULT '0',
   `name` varchar(100) NOT NULL DEFAULT '',
   `url` varchar(200) NOT NULL DEFAULT '',
@@ -130,7 +130,7 @@ INSERT INTO `rqcms_link` (`lid`, `hostid`, `displayorder`, `name`, `url`, `note`
 
 DROP TABLE IF EXISTS `rqcms_host`;
 CREATE TABLE `rqcms_host` (
-  `hid` tinyint(3) NOT NULL AUTO_INCREMENT COMMENT '站点id',
+  `hid` smallint(5) NOT NULL AUTO_INCREMENT COMMENT '站点id',
   `name` varchar(50) NOT NULL,
   `host` varchar(50) NOT NULL,
   `host2` varchar(100) NOT NULL,
@@ -202,7 +202,7 @@ DROP TABLE IF EXISTS `rqcms_tag`;
 CREATE TABLE `rqcms_tag` (
   `tid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `tag` varchar(20) NOT NULL DEFAULT '',
-  `hostid` tinyint(3) NOT NULL COMMENT '站点id',
+  `hostid` smallint(5) NOT NULL COMMENT '站点id',
   `articleid` mediumint(8) NOT NULL,
   PRIMARY KEY (`tid`),
   KEY `tag` (`hostid`,`articleid`,`tag`)
@@ -212,7 +212,7 @@ INSERT INTO `rqcms_tag` (`tag`,`hostid`,`articleid`) values ('rqcms',1,1);
 DROP TABLE IF EXISTS `rqcms_user`;
 CREATE TABLE `rqcms_user` (
   `uid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `hostid` tinyint(3) NOT NULL COMMENT '站点id',
+  `hostid` smallint(5) NOT NULL COMMENT '站点id',
   `username` varchar(20) NOT NULL DEFAULT '',
   `password` varchar(32) NOT NULL DEFAULT '',
   `groupid` smallint(5) NOT NULL,
@@ -237,8 +237,8 @@ CREATE TABLE `rqcms_user` (
 
 DROP TABLE IF EXISTS `rqcms_plugin`;
 CREATE TABLE `rqcms_plugin` (
-	`pid` SMALLINT(5) NOT NULL AUTO_INCREMENT,
-	`hostid` TINYINT(3) NOT NULL COMMENT '站点id',
+	`pid` smallint(5) NOT NULL AUTO_INCREMENT,
+	`hostid` smallint(5) NOT NULL COMMENT '站点id',
 	`file` VARCHAR(50) NULL DEFAULT NULL,
 	`name` VARCHAR(50) NOT NULL,
 	`author` VARCHAR(50) NOT NULL,
@@ -254,7 +254,7 @@ CREATE TABLE `rqcms_plugin` (
 DROP TABLE IF EXISTS `rqcms_var`;
 CREATE TABLE `rqcms_var` (
   `vid` smallint(5) NOT NULL AUTO_INCREMENT,
-  `hostid` tinyint(3) NOT NULL COMMENT '站点id',
+  `hostid` smallint(5) NOT NULL COMMENT '站点id',
   `title` varchar(200) NOT NULL,
   `value` text NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT '1',
@@ -266,7 +266,7 @@ Insert Into `rqcms_var` (`hostid`,`title`,`value`,`visible`) values ('1','demo',
 DROP TABLE IF EXISTS `rqcms_log`;
 CREATE TABLE `rqcms_log` (
   `lid` int(10) NOT NULL AUTO_INCREMENT,
-  `hostid` tinyint(3) NOT NULL COMMENT '站点id',
+  `hostid` smallint(5) NOT NULL COMMENT '站点id',
   `user` varchar(12) NOT NULL,
   `dateline` int(10) NOT NULL,
   `useragent` varchar(200) NOT NULL,
@@ -278,8 +278,8 @@ CREATE TABLE `rqcms_log` (
 
 DROP TABLE IF EXISTS `rqcms_redirect`;
 CREATE TABLE `rqcms_redirect` (
-	`rid` MEDIUMINT(4) NOT NULL AUTO_INCREMENT,
-	`hostid` TINYINT(6) NULL COMMENT '站点id',
+	`rid` MEDIUMINT(5) NOT NULL AUTO_INCREMENT,
+	`hostid` smallint(5) NULL COMMENT '站点id',
 	`old` VARCHAR(200) NULL DEFAULT NULL,
 	`new` VARCHAR(200) NULL DEFAULT NULL,
 	`status` TINYINT(4) NULL DEFAULT '1',
@@ -291,7 +291,7 @@ Insert Into `rqcms_redirect` (`hostid`,`old`,`new`,`status`) values ('1','rqcms'
 DROP TABLE IF EXISTS `rqcms_search`;
 CREATE TABLE `rqcms_search` (
 	`sid` INT(10) NOT NULL AUTO_INCREMENT,
-	`hostid` TINYINT(6) NULL DEFAULT '0',
+	`hostid` smallint(5) NULL DEFAULT '0',
 	`keywords` VARCHAR(50) NULL DEFAULT '',
 	`ip` VARCHAR(15) NULL DEFAULT '',
 	`dateline` INT(10) NULL DEFAULT '0',

@@ -5,16 +5,16 @@ print <<<EOT
   <table border="0"  cellspacing="0" cellpadding="0" style="width:100%;">
     <tr>
       <td valign="top" style="width:150px;"><div class="tableborder">
-        <div class="tableheader">分类管理</div>
+        <div class="tableheader">地区管理</div>
         <div class="leftmenubody">
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=category&action=add">添加分类</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=category&action=list">分类管理</a></div>
+          <div class="leftmenuitem">&#8226; <a href="admin.php?file=category3&action=add">添加地区</a></div>
+          <div class="leftmenuitem">&#8226; <a href="admin.php?file=category3&action=list">地区管理</a></div>
         </div>
       </div>
       </div></td>
       <td valign="top" style="width:20px;"></td>
       <td valign="top">
-	  <form action="admin.php?file=category" method="POST"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	  <form action="admin.php?file=category3" method="POST"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 	  <tr><td class="rightmainbody"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 EOT;
 if($action == 'list'){print <<<EOT
@@ -22,7 +22,6 @@ if($action == 'list'){print <<<EOT
       <td width="10%" nowrap>排序</td>
       <td width="25%">名称</td>
 	  <td width="25%">友好网址</td>
-      <td width="20%">文章数</td>
       <td width="20%" nowrap>操作</td>
     </tr>
 EOT;
@@ -33,8 +32,7 @@ function makeCate($cate)
       <td nowrap><input class="formfield" style="text-align: center;font-size: 11px;" type="text" value="{$cate['displayorder']}" name="displayorder[{$cate['cid']}]" size="1"></td>
       <td><b>{$cate['name']}</b></td>
 	  <td><b>{$cate['url']}</b></td>
-      <td>{$cate['articles']}</td>
-      <td nowrap><a href="admin.php?file=category&action=add&pid={$cate['cid']}">添加分类</a> - <a href="admin.php?file=article&action=add&cid={$cate['cid']}">添加文章</a> - <a href="admin.php?file=category&action=mod&cid={$cate['cid']}">编辑</a> - <a href="admin.php?file=category&action=del&cid={$cate['cid']}">删除</a></td>
+      <td nowrap><a href="admin.php?file=category3&action=add&pid={$cate['cid']}">添加地区</a> - <a href="admin.php?file=article&action=add&cid={$cate['cid']}">添加文章</a> - <a href="admin.php?file=category3&action=mod&cid={$cate['cid']}">编辑</a> - <a href="admin.php?file=category3&action=del&cid={$cate['cid']}">删除</a></td>
     </tr>
 EOT;
 }
@@ -74,7 +72,7 @@ EOT;
 $self=$action=='add'?'':$cate['cid'];
 $option=getCateOption($cateArr,$cate['pid'],$self);
 $add=$action=='mod'&&$cate['pid']=='0'?' selected':'';
-$option='<option value="0"'.$add.'>顶级分类</option>'.$option;
+$option='<option value="0"'.$add.'>顶级地区</option>'.$option;
 print <<<EOT
     <input type="hidden" name="action" value="do{$action}">
     <input type="hidden" name="cid" value="$cate[cid]">
@@ -86,26 +84,18 @@ print <<<EOT
       <td><input class="formfield" type="text" name="displayorder" size="4" maxlength="50" value="$cate[displayorder]"></td>
     </tr>
     <tr class="tablecell">
-      <td>上级分类:</td>
+      <td>上级地区:</td>
       <td>
 	  <select name="pid">$option</select>
 	  </td>
     </tr>
 	<tr class="tablecell">
-      <td>分类名称:</td>
+      <td>地区名称:</td>
       <td><input class="formfield" type="text" name="name" size="35" maxlength="50" value="$cate[name]"></td>
     </tr>
 	<tr class="tablecell">
       <td>友好网址:</td>
       <td><input class="formfield" type="text" name="url" size="35" maxlength="50" value="$cate[url]"></td>
-    </tr>
-	<tr class="tablecell">
-      <td>分类关键词:</td>
-      <td><input class="formfield" type="text" name="keywords" size="35" maxlength="50" value="$cate[keywords]"></td>
-    </tr>
-		<tr class="tablecell">
-      <td>分类描述:</td>
-      <td><input class="formfield" type="text" name="description" size="35" maxlength="50" value="$cate[description]"></td>
     </tr>
     <tr class="tablecell">
       <td colspan="2" align="center">
@@ -121,8 +111,8 @@ EOT;
       <td>$subnav</td>
     </tr>
     <tr class="alertbox">
-      <td><p>您确定要删除【$cate[name]】分类吗?</p>
-	  <p><b>本操作不可恢复，并会删除该分类中的所有文章、附件、评论</b></p>
+      <td><p>您确定要删除【$cate[name]】地区吗?</p>
+	  <p><b>本操作不可恢复</b></p>
 	  <p><input type="submit" value="确认" class="formbutton"></p>
 	  </td>
     </tr>

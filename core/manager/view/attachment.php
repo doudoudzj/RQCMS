@@ -51,13 +51,12 @@ EOT;
   <input type="hidden" name="action" value="addattachtoarticle" />
   <input type="hidden" name="aid" value="$aid" />
   <tr class="tdbheader">
-	<td colspan="2">上传新附件到该文章 <a href=“javascript:void(0);” onclick="addattachfrom();">[+]</a>&nbsp;<a href=“javascript:void(0);” onclick="removeattachfrom();">[-]</a></td>
+	<td colspan="2">上传新附件到该文章</td>
   </tr>
   <tr class="tablecell">
     <td colspan="2">图片超过2M缩略图和水印均不生效.如果上传大于2M的图片请自行处理.</td>
   </tr>
-  <tbody id="attachbodyhidden" style="display:none"><tr class="tablecell"><td>附件:</td><td><input class="formfield" type="file" name="attach[]"></td></tr></tbody>
-  <tbody id="attachbody"><tr class="tablecell"><td>附件:</td><td><input class="formfield" type="file" name="attach[]"></td></tr></tbody>
+  <tbody id="attachbody"><tr class="tablecell"><td>附件:</td><td><input class="formfield" type="file" name="attach[0]"><input class="formfield" type="file" name="attach[1]"><input class="formfield" type="file" name="attach[2]"><input class="formfield" type="file" name="attach[3]"></td></tr></tbody>
   <tr class="tablecell">
     <td colspan="2" align="center"><input type="submit" class="formbutton" value="上传" /></td>
   </tr>

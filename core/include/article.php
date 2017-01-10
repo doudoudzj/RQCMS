@@ -9,7 +9,6 @@ function getDateLine()
 	$newhour     = intval($_POST['newhour']);
 	$newmin      = intval($_POST['newmin']);
 	$newsec      = intval($_POST['newsec']);
-	//$_POST['dateline']=
 	return mktime($newhour,$newmin,$newsec,$newmonth,$newday,$newyear);
 }
 
@@ -80,10 +79,11 @@ function getAttach()
 			}
 		}
 	}
+
 	foreach($attachments as $id=>$val)
 	{
 		if(empty($val['name'])) unset($attachments[$id]);
-		else $attachments[$id]['localid']=$_POST['localid'][$id];
+		else $attachments[$id]['localid']=$id;
 	}
 		
 	foreach($attachments as $id=>$val)

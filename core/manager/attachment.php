@@ -1,5 +1,6 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');if (!$action) $action = 'list';
+include RQ_CORE.'/include/attachment.php';
 
 if(RQ_POST)
 {
@@ -8,15 +9,19 @@ if(RQ_POST)
 		case 'delattachments':	//批量删除附件
 			if ($attachmentids = implode_ids($_POST['attachment'])) {
 				$nokeep = array();
-				$query  = $DB->query("SELECT attachmentid,filepath FROM ".DB_PREFIX."attachment WHERE attachmentid IN ($attachmentids)");
+				$query  = $DB->query("SELECT aid,filepath FROM ".DB_PREFIX."attachment WHERE aid IN ($attachmentids)");
 				while($attach = $DB->fetch_array($query)) {
-					$nokeep[$attach['attachmentid']] = $attach;
+					$nokeep[$attach['aid']] = $attach;
 				}
-				removeattachment($nokeep);
-				statistics_recache();
-				$articleid = intval($_POST['articleid']);
-				redirect('成功删除所选附件,如果删除数量很多.建议执行一次附件修复操作,更新文章中的附件信息以提高访问速度.', 'admin.php?file=attachment&action=list&articleid='.$articleid,'10');
-			} else {
+				removeattachment($query);
+				$articleid = intval($_POST['aid']);
+				$DB->query("Delete FROM ".DB_PREFIX."attachment WHERE aid IN ($attachmentids)");
+				$attarr=$DB->fetch_first('Select count(*) from '.DB_PREFIX."attachment WHERE articleid=$articleid");
+				$attcount=$attarr['count(*)'];
+				$DB->query("update ".DB_PREFIX."article set attachments=$attcount where aid=$articleid");
+				//redirect('成功删除所选附件,如果删除数量很多.建议执行一次附件修复操作,更新文章中的附件信息以提高访问速度.', 'admin.php?file=attachment&action=list&articleid='.$articleid,'10');
+				redirect('成功删除所选附件', 'admin.php?file=attachment&action=list&aid='.$articleid,'2');
+				} else {
 				redirect('未选择任何附件');
 			}
 		break;

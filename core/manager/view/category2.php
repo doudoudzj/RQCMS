@@ -5,16 +5,16 @@ print <<<EOT
   <table border="0"  cellspacing="0" cellpadding="0" style="width:100%;">
     <tr>
       <td valign="top" style="width:150px;"><div class="tableborder">
-        <div class="tableheader">分类管理</div>
+        <div class="tableheader">行业管理</div>
         <div class="leftmenubody">
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=category&action=add">添加分类</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=category&action=list">分类管理</a></div>
+          <div class="leftmenuitem">&#8226; <a href="admin.php?file=category2&action=add">添加行业</a></div>
+          <div class="leftmenuitem">&#8226; <a href="admin.php?file=category2&action=list">行业管理</a></div>
         </div>
       </div>
       </div></td>
       <td valign="top" style="width:20px;"></td>
       <td valign="top">
-	  <form action="admin.php?file=category" method="POST"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	  <form action="admin.php?file=category2" method="POST"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 	  <tr><td class="rightmainbody"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 EOT;
 if($action == 'list'){print <<<EOT
@@ -34,7 +34,7 @@ function makeCate($cate)
       <td><b>{$cate['name']}</b></td>
 	  <td><b>{$cate['url']}</b></td>
       <td>{$cate['articles']}</td>
-      <td nowrap><a href="admin.php?file=category&action=add&pid={$cate['cid']}">添加分类</a> - <a href="admin.php?file=article&action=add&cid={$cate['cid']}">添加文章</a> - <a href="admin.php?file=category&action=mod&cid={$cate['cid']}">编辑</a> - <a href="admin.php?file=category&action=del&cid={$cate['cid']}">删除</a></td>
+      <td nowrap><a href="admin.php?file=category2&action=add&pid={$cate['cid']}">添加行业</a> - <a href="admin.php?file=article2&action=add&cid={$cate['cid']}">添加文章</a> - <a href="admin.php?file=category2&action=mod&cid={$cate['cid']}">编辑</a> - <a href="admin.php?file=category2&action=del&cid={$cate['cid']}">删除</a></td>
     </tr>
 EOT;
 }
@@ -74,7 +74,7 @@ EOT;
 $self=$action=='add'?'':$cate['cid'];
 $option=getCateOption($cateArr,$cate['pid'],$self);
 $add=$action=='mod'&&$cate['pid']=='0'?' selected':'';
-$option='<option value="0"'.$add.'>顶级分类</option>'.$option;
+$option='<option value="0"'.$add.'>顶级行业</option>'.$option;
 print <<<EOT
     <input type="hidden" name="action" value="do{$action}">
     <input type="hidden" name="cid" value="$cate[cid]">
@@ -86,13 +86,13 @@ print <<<EOT
       <td><input class="formfield" type="text" name="displayorder" size="4" maxlength="50" value="$cate[displayorder]"></td>
     </tr>
     <tr class="tablecell">
-      <td>上级分类:</td>
+      <td>上级行业:</td>
       <td>
 	  <select name="pid">$option</select>
 	  </td>
     </tr>
 	<tr class="tablecell">
-      <td>分类名称:</td>
+      <td>行业名称:</td>
       <td><input class="formfield" type="text" name="name" size="35" maxlength="50" value="$cate[name]"></td>
     </tr>
 	<tr class="tablecell">
@@ -100,11 +100,11 @@ print <<<EOT
       <td><input class="formfield" type="text" name="url" size="35" maxlength="50" value="$cate[url]"></td>
     </tr>
 	<tr class="tablecell">
-      <td>分类关键词:</td>
+      <td>行业关键词:</td>
       <td><input class="formfield" type="text" name="keywords" size="35" maxlength="50" value="$cate[keywords]"></td>
     </tr>
 		<tr class="tablecell">
-      <td>分类描述:</td>
+      <td>行业描述:</td>
       <td><input class="formfield" type="text" name="description" size="35" maxlength="50" value="$cate[description]"></td>
     </tr>
     <tr class="tablecell">
@@ -121,8 +121,8 @@ EOT;
       <td>$subnav</td>
     </tr>
     <tr class="alertbox">
-      <td><p>您确定要删除【$cate[name]】分类吗?</p>
-	  <p><b>本操作不可恢复，并会删除该分类中的所有文章、附件、评论</b></p>
+      <td><p>您确定要删除【$cate[name]】行业吗?</p>
+	  <p><b>本操作不可恢复，并会删除该行业中的所有文章、附件、评论</b></p>
 	  <p><input type="submit" value="确认" class="formbutton"></p>
 	  </td>
     </tr>

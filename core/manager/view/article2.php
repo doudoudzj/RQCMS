@@ -33,38 +33,51 @@ $(document).ready(function(){
 })
 
 </script>
+<script type="text/javascript" src="/js/linkage.js"></script>
+<script type="text/javascript" src="admin.php?file=article2&action=area"></script>
+<link rel="stylesheet" href="/css/linkage.css" />
+<script>
+	$(function(){
+		$("#demo").linkage({
+			data:districtData,
+			return_dom:"linkage",
+			{$areainfo}
+		});		
+	})
 
+</script>
 <div class="mainbody">
   <table border="0"  cellspacing="0" cellpadding="0" style="width:100%;">
     <tr>
       <td valign="top" style="width:150px;"><div class="tableborder">
         <div class="tableheader">文章管理</div>
         <div class="leftmenubody">
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=add">添加文章</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list">编辑文章</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=search">搜索文章</a></div>
-		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list&view=hidden">草稿箱($hiddenCount)</a></div>
+          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article2&action=add">添加文章</a></div>
+          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article2&action=list">编辑文章</a></div>
+          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article2&action=search">搜索文章</a></div>
+		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=article2&action=list&view=hidden">草稿箱($hiddenCount)</a></div>
         </div>
       </div>
 	  <div class="tableborder">
         <div class="tableheader">文章分类</div>
         <div class="leftmenubody">
-		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list&view=stick">置顶文章</a></div>
+		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=article2&action=list&view=stick">置顶文章</a></div>
 EOT;
 foreach($cateArr as $key => $cate){print <<<EOT
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list&cid={$cate['cid']}">{$cate['name']}</a></div>
+          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article2&action=list&cid={$cate['cid']}">{$cate['name']}</a></div>
 EOT;
 }print <<<EOT
         </div>
       </div></td>
       <td valign="top" style="width:20px;"></td>
       <td valign="top">
-	  <form action="admin.php?file=article" enctype="multipart/form-data" method="POST" name="form1""><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	  <form action="admin.php?file=article2" enctype="multipart/form-data" method="POST" name="form1""><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 	  <tr><td class="rightmainbody"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 EOT;
 if($action == 'list'){print <<<EOT
     <tr class="tdbheader">
-      <td width="45%">标题</td>
+      <td width="40%">标题</td>
+	   <td width="5%">站点</td>
    	  <td width="12%" nowrap>时间</td>
 	  <td width="10%" nowrap>分类</td>
       <td width="6%" nowrap>查看</td>
@@ -76,9 +89,10 @@ if($action == 'list'){print <<<EOT
 EOT;
 foreach($articledb as $key => $article){print <<<EOT
     <tr class="tablecell">
-      <td><a href="admin.php?file=article&action=mod&aid=$article[aid]">$article[title]</a></td>
+      <td><a href="admin.php?file=article2&action=mod&aid=$article[aid]">$article[title]</a></td>
+	    <td nowrap>$article[hostid]</td>
 	  <td nowrap>$article[dateline]</td>
-      <td nowrap><a href="admin.php?file=article&action=list&cid=$article[cateid]">$article[cname]</a></td>
+      <td nowrap><a href="admin.php?file=article2&action=list&cid=$article[cateid]">$article[cname]</a></td>
 	  <td nowrap>$article[views]</td>
       <td nowrap>$article[comments]</td>
       <td nowrap>$article[attachment]</td>
@@ -92,30 +106,36 @@ EOT;
                   <div class="multipage">$multipage</div></td>
         </tr>
 EOT;
-} elseif (in_array($action, array('add', 'mod'))) {print <<<EOT
+} elseif (in_array($action, array('add', 'mod'))) {
+$option=getCateOption($cateArr,$article['cateid'],'');
+print <<<EOT
     <tr class="tdbheader">
       <td colspan="2">$tdtitle</td>
     </tr>
     <tr class="tablecell">
       <td>文章标题:</td>
-      <td><input class="formfield" type="text" name="title" id="title" size="70" value="$article[title]"></td>
+      <td><input class="formfield" type="text" name="title" id="title" size="50" value="$article[title]"></td>
     </tr>
     <tr class="tablecell">
-      <td valign="top">选择分类:</td>
-      <td><select name="cid" id="cid">
-          <option value="">== 选择分类 ==</option>
+      <td valign="top">站点分类:</td>
+      <td><select name="cid" id="cid">$option</select>
+	  站点： <select name="hostid" id="hostid">
 EOT;
-$i=0;
-foreach($cateArr as $key => $cate){
-$i++;
-$selected = ($cate['cid'] == $article['cateid']) ? "selected" : "";
+foreach($sitedb as $s=>$ht)
+{
+	$add=$s==$article['hostid']?' selected':'';
+	echo "<option value=\"{$ht[hid]} \"'.$add.'>{$ht[name]} - {$ht['host']}</option>";
+}
+$areatop=getAreaArr('0');
 print <<<EOT
-          <option value="{$cate['cid']}" $selected>$i. {$cate['name']}</option>
-EOT;
-}print <<<EOT
-        </select></td>
+	  </select>
+	  </td>
     </tr>
     <tr class="tablecell">
+      <td>选择地区:</td>
+      <td><div id="demo"></div></td>
+    </tr>
+	  <tr class="tablecell">
       <td>标签(Tag):</td>
       <td><input class="formfield" type="text" name="tag" size="80" maxlength="10000" value="$article[tag]">&nbsp;多个Tag用,分隔</td>
     </tr>
@@ -195,7 +215,7 @@ EOT;
         <br>
 EOT;
 foreach($articledb as $key => $article){print <<<EOT
-        <li><a href="admin.php?file=article&action=mod&aid=$article[aid]">$article[title]</a><input type="hidden" name="aids[]" value="$article[aid]"></li>
+        <li><a href="admin.php?file=article2&action=mod&aid=$article[aid]">$article[title]</a><input type="hidden" name="aids[]" value="$article[aid]"></li>
 EOT;
 }print <<<EOT
       </ol></p>
@@ -224,7 +244,7 @@ EOT;
 	  <p><ol>
 EOT;
 foreach($articledb as $key => $article){print <<<EOT
-        <li><a href="admin.php?file=article&action=mod&aid=$article[aid]">$article[title]</a><input type="hidden" name="aids[]" value="$article[aid]"></li>
+        <li><a href="admin.php?file=article2&action=mod&aid=$article[aid]">$article[title]</a><input type="hidden" name="aids[]" value="$article[aid]"></li>
 EOT;
 }print <<<EOT
       </ol></p>

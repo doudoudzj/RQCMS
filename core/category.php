@@ -11,7 +11,7 @@ if(empty($cate)) message('不存在的栏目', '/');
 
 $page=isset($_GET['page'])?intval($_GET['page']):1;
 $pagenums=1;
-$articledb=getCateArticle($cate['cid'],$page);
+$articledb=getCateArticle($cate['child'],$page);
 $total=count($articledb);
 $multipage='';
 

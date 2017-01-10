@@ -45,11 +45,38 @@ function getPicArticle($num)
 //得到置顶的$num条$cateid分类文章
 function getStickArticle($num,$cateid=null)
 {
-	global $host;
+	global $host,$DB;
 	$stickdata=@include RQ_DATA.'/cache/stick_'.$host['host'].'.php';
 	if(!$stickdata) $stickdata=array();
-	if(count($stickdata)>$num) $stickdata=array_slice($stickdata, 0, $num); 
-	return $stickdata;
+	$arrdata=array();
+	if($cateid==null)
+	{
+		$arrdata=$stickdata;
+	}
+	else
+	{
+		foreach($stickdata as $sdata)
+		{
+			if($sdata['cateid']==$cateid) $arrdata[]=$sdata;
+		}
+		if(count($arrdata)<$num) //少于的话还是查询一下数据库为好
+		{	
+			$arrdata=array();
+			$files= $DB->query('SELECT * FROM `'.DB_PREFIX.'article` where stick=1 and hostid='.$host['hid']." and cateid=$cateid and visible=1 ORDER BY aid DESC limit $num");
+			while ($fs = $DB->fetch_array($files)) 
+			{
+				unset($fs['content']);
+				$arrdata[]=showArticle($fs);
+			}
+		}
+	}
+	
+	if(count($arrdata)>$num) 
+	{
+		$arrdata=array_slice($arrdata, 0, $num);
+	}
+	
+	return $arrdata;
 }
 
 //得到最新的$num条$cateid分类文章评论
@@ -65,11 +92,36 @@ function getLatestComment($num,$cateid=null)
 //得到热门文章
 function getHotArticle($num,$cateid=null)
 {
-	global $host;
+	global $host,$DB;
 	$hotdata=@include RQ_DATA.'/cache/hot_'.$host['host'].'.php';
 	if(!$hotdata) $hotdata=array();
-	if(count($hotdata)>$num) $hotdata=array_slice($hotdata, 0, $num); 
-	return $hotdata;
+	$arrdata=array();
+	if($cateid==null)
+	{
+		$arrdata=$hotdata;
+	}
+	else
+	{
+		foreach($hotdata as $sdata)
+		{
+			if($sdata['cateid']==$cateid) $arrdata[]=$sdata;
+		}
+		if(count($arrdata)<$num) //少于的话还是查询一下数据库为好
+		{	
+			$arrdata=array();
+			$files= $DB->query('SELECT * FROM `'.DB_PREFIX.'article` where hostid='.$host['hid']." and cateid=$cateid and visible=1 ORDER BY views desc  limit $num");
+			while ($fs = $DB->fetch_array($files)) 
+			{
+				unset($fs['content']);
+				$arrdata[]=showArticle($fs);
+			}
+		}
+	}
+	if(count($arrdata)>$num) 
+	{
+		$arrdata=array_slice($arrdata, 0, $num);
+	}
+	return $arrdata;
 }
 
 //得到相关文章
@@ -97,12 +149,12 @@ function getRelatedArticle($aid,$tagarr,$num)
 }
 
 //得到某个分类的文章列表
-function getCateArticle($cateid,$page)
+function getCateArticle($cateids,$page)
 {
 	global $DB,$hostid,$host,$cateArr;
 	$pagenum = intval($host['list_shownum']);
 	$start_limit = ($page - 1) * $pagenum;
-	$catesql=$cateid==0?'':" and `cateid`=$cateid";
+	$catesql=$cateids==0?'':" and `cateid` in ($cateids)";
 	$sql = "SELECT * FROM ".DB_PREFIX."article WHERE hostid=$hostid $catesql and visible=1 ORDER BY aid DESC LIMIT $start_limit, ".$pagenum;//exit($sql);
 	$articledb=array();
 	$query=$DB->query($sql);
