@@ -92,6 +92,7 @@ else
 			comments_recache();
 			redirect_recache();
 			hot_recache();
+			search_recache();
 			echo "成功更新系统缓存<br />安装完毕,点击这里进入<a href='admin.php'>管理后台</a>";
 		}
 		else

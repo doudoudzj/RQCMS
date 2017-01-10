@@ -36,7 +36,7 @@ $homeurl='/';
 <meta name="keywords" content="<?php echo $keywords; ?>">
 <meta name="description" content="<?php echo $description; ?>">
 <meta content="text/html; charset=utf-8" http-equiv=Content-Type>
-<base href="<?php echo $hosturl; ?>">
+<base href="<?php echo $host_url; ?>">
 <link title="<?php echo $host['name']; ?>" rel=alternate type=application/rss+xml href="<?php echo $rss_url; ?>">
 <link rel=stylesheet type=text/css href="images/common.css">
 <script type="text/javascript">

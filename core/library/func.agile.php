@@ -86,19 +86,25 @@ function mkUrl($file,$url,$page=0)
 								return $nfile.'?'.$aurl.'='.$url;
 							else return $nfile.'?'.$aurl.'='.$url.'&'.$purl.'='.$page;
 						break;
-						case 'profile.php':
 						case 'search.php':
+							if($page<2)
+							{
+								if(!$url) return $nfile;
+								else return $nfile.'?'.$aurl.'='.$url;
+							}							
+							else return $nfile.'?'.$aurl.'='.$url.'&'.$purl.'='.$page;
+						case 'profile.php':
 						case 'tag.php':
 						case 'comment.php':
 						case 'admin.php':
 						case 'rss.php':
 							if($url=='') return $nfile;
-							else return $nfile.'?'.$aurl.'='.$url;;
+							else return $nfile.'?'.$aurl.'='.$url;
 						default:
 							return $nfile.'?'.$aurl.'='.$url;
 					}
 				}
-				else
+				else//纯静态的，默认三个参数url,page,more
 				{
 					$add=!$host['url_ext']?'':'.'.$host['url_ext'];
 					$fs= array_flip($mapArr['arg'][$nfile]);
@@ -108,10 +114,17 @@ function mkUrl($file,$url,$page=0)
 						case 'article.php':
 							if($page<2) 
 									return $nfile.'/'.$url.$add;
-								else return $nfile.'/'.$url.'/'.$purl.'/'.$page.$add;
+								else return $nfile.'/'.$url.'/'.$page.$add;
 						break;
-						case 'profile.php':
 						case 'search.php':
+							if($url)
+							{
+								if($page<2) 
+										return $nfile.'/'.$url.$add;
+									else return $nfile.'/'.$url.'/'.$page.$add;
+							}
+							else return $nfile.$add;
+						case 'profile.php':
 						case 'tag.php':
 						case 'comment.php':
 						case 'admin.php':

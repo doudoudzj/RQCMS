@@ -200,11 +200,21 @@ if(!$type || $type=='search'){print <<<EOT
                       使用搜索功能的时间间隔，设为“0”则不限制</td>
                     <td><input class="formfield" type="text" name="setting[search_post_space]" size="15" maxlength="50" value="$settings[search_post_space]"></td>
                   </tr>
-                  <tr class="tablecell">
+				  <tr class="tablecell">
                     <td width="60%"><b>搜索关键字的最少字节数:</b><br />
                       至少输入多少个字节才可以进行搜索，设为“0”则不限制</td>
                     <td><input class="formfield" type="text" name="setting[search_keywords_min_len]" size="15" maxlength="50" value="$settings[search_keywords_min_len]"></td>
-                  </tr>              
+                  </tr> 
+                  <tr class="tablecell">
+                    <td width="60%"><b>指定搜索字段:</b><br />
+                      默认是tag,keywords,title,excerpt</td>
+                    <td><input class="formfield" type="text" name="setting[search_field_allow]" size="35" maxlength="100" value="$settings[search_field_allow]"></td>
+                  </tr> 
+				<tr class="tablecell">
+                    <td width="60%"><b>搜索结果最多显示数量:</b><br />
+                      默认是0，即全部显示</td>
+                    <td><input class="formfield" type="text" name="setting[search_max_num]" size="15" maxlength="50" value="$settings[search_max_num]"></td>
+                  </tr> 				  
 EOT;
 }
 if(!$type || $type=='attach'){print <<<EOT
@@ -223,18 +233,17 @@ if(!$type || $type=='attach'){print <<<EOT
                     </td>
                   </tr>
 				   <tr class="tablecell">
-                    <td width="60%"><b>文章列表的附件显示方式:</b><br />
-                      选择一个合适你模板的显示方式</td>
+                    <td width="60%"><b>附件的下载处理方式:</b><br />
+                      直接下载文件的要自己设置附件页attachment.php模板</td>
                     <td><select name="setting[attach_display]">
-                        <option value="0" $attach_display[0]>显示全部附件</option>
-                        <option value="1" $attach_display[1]>提示该文章有附件</option>
-                        <option value="2" $attach_display[2]>不显示也不提示</option>
+                        <option value="0" $attach_display[0]>直接下载该文件</option>
+                        <option value="1" $attach_display[1]>显示下载页面后再下载</option>
                       </select>
                     </td>
                   </tr>
                   <tr class="tablecell">
                     <td width="60%"><b>附件是否禁止从其他站查看:</b><br />
-                      如果选“是”,就禁止直接从地址栏输入附件地址访问,也不允许从其他站点直接点击本站的附件地址访问.只能从附件所属文章点击.反之不做任何限制.</td>
+                      如果选了直接下载文件的话，该选项起效。选是的话，用户将不能从别的网站上直接下载文件</td>
                     <td><select name="setting[attachments_remote_open]">
                         <option value="1" $attachments_remote_open_Y>是</option>
                         <option value="0" $attachments_remote_open_N>否</option>

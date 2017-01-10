@@ -10,7 +10,6 @@ print <<<EOT
         <div class="leftmenubody">
           <div class="leftmenuitem">&#8226; <a href="admin.php?file=seo&action=taglist">标签管理</a></div>
         </div>
-      </div>
 	  <div class="tableborder">
         <div class="tableheader">网址链接</div>
         <div class="leftmenubody">
@@ -53,7 +52,8 @@ EOT;
       </td>
     </tr>
 EOT;
-} elseif ($action == 'modtag') {print <<<EOT
+}
+elseif ($action == 'modtag') {print <<<EOT
     <input type="hidden" name="oldtag" value="$tag">
     <input type="hidden" name="action" value="modtag">
     <tr class="tdbheader">

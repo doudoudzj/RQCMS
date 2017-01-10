@@ -68,6 +68,7 @@ if(RQ_POST)
 			comments_recache();
 			pics_recache();
 			hot_recache();
+			search_recache()
 			$host=$curhost;
 			$hostid=$curhostid;
 			$mapArr=$curmapArr;
@@ -108,6 +109,7 @@ if(RQ_POST)
 			pics_recache();
 			stick_recache();
 			hot_recache();
+			search_recache()
 			if($curhostid!=$hid)
 			{
 				$host=$curhost;
@@ -145,6 +147,7 @@ else
 				comments_recache();
 				links_recache();
 				rss_recache();
+				search_recache()
 				stick_recache();
 				hot_recache();
 			}

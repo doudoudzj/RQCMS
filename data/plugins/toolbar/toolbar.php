@@ -50,7 +50,7 @@ function toolbar_footer_add()
 	
 	$cssstr=<<<EOT
 <style type="text/css">
-body{ margin:0px; padding:0px; background:url(notfound) fixed;}
+body{ margin:0px; padding:0px;}
 .fixfooter {
  color:#fff;
     bottom: 0;

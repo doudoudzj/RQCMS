@@ -103,7 +103,7 @@ EOT;
     </tr>
     <tr class="tablecell">
       <td>文章标题:</td>
-      <td><input class="formfield" type="text" name="title" id="title" size="35" value="$article[title]"></td>
+      <td><input class="formfield" type="text" name="title" id="title" size="50" value="$article[title]"></td>
     </tr>
     <tr class="tablecell">
       <td valign="top">选择分类:</td>
@@ -138,11 +138,11 @@ EOT;
     </tr>
     <tr class="tablecell">
       <td>阅读密码:</td>
-      <td><input class="formfield" type="text" name="password" size="20" maxlength="20" value="$article[password]"> 20个字符以内</td>
+      <td><input class="formfield" type="text" name="password" size="50" maxlength="20" value="$article[password]"> 20个字符以内</td>
     </tr>
 	 <tr class="tablecell">
       <td>友好网址:</td>
-      <td><input class="formfield" type="text" name="url" size="20" maxlength="20" value="$article[url]"> 60个字符以内</td>
+      <td><input class="formfield" type="text" name="url" size="50" maxlength="255" value="$article[url]"> 255个字符以内</td>
     </tr>
 EOT;
 print <<<EOT

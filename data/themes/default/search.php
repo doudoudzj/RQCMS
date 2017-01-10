@@ -2,14 +2,16 @@
 if(!defined('RQ_ROOT')) exit('Access Denied');
 $stickcache=getStickArticle(10);
 $hotcache=getHotArticle(10);
+$searchlist=getLatestSearch(100);
 include RQ_DATA."/themes/{$theme}/header.php";
+
 ?>
   <div id=main>
 <?php
-if (isset($articledb)&&$keywords) {?>
+if (isset($articledb)&&$searchd) {?>
     <div id=left>
       <div class=leftbox>
-        <h3>关键字&gt;&gt;<?php echo $keywords;?></h3>
+        <h3>关键字&gt;&gt;<?php echo $searchd;?></h3>
 <?php
 require RQ_DATA."/themes/{$theme}/list.php";
 ?>
@@ -48,6 +50,15 @@ foreach($hotcache AS $data){
       <input type="text" name="keywords" id="keywords" type="text" value="" onmouseover="this.focus()"  autocomplete="off" style=" width:220px; height:22px; line-height:22px;"/> <input style="margin-left:8px; height:30px;" type="submit" id="go" value="搜 &nbsp; 索" /></form>
     </div>
 <?php
+if(!empty($searchlist))
+{
+	foreach($searchlist as $kv)
+	{
+		$surl=mkUrl('search.php',$kv);
+		echo "<p align=center><a href=\"$surl\">$kv</a></p>";
+	}
+}
+
 }?>
   </div>
 <?php

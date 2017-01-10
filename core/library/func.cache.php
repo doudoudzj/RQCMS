@@ -137,6 +137,10 @@ function cates_recache()
 	while($cate=$DB->fetch_array($cquery))
 	{
 		$cate['curl']=mkUrl('category.php',$cate['url'],0);
+		$count='0';
+		$countarr=$DB->fetch_first('SELECT count(*) as ct FROM `'.DB_PREFIX."article` where cateid='{$cate['cid']}'");
+		if(is_array($countarr)) $count=$countarr['ct'];
+		$cate['count']=$count;
 		$arrcates[$cate['cid']]=$cate;
 	}
 	writeCache('cate_'.$host['host'],$arrcates);
@@ -219,4 +223,17 @@ function hot_recache()
 		$cache[]=showArticle($article);
 	}
 	writeCache('hot_'.$host['host'],$cache);
+}
+
+//最新100条搜索内容
+function search_recache()
+{
+	global $DB,$host,$hostid;
+	$query=$DB->query('Select distinct keywords from '.DB_PREFIX."search where hostid=$hostid order by dateline desc limit 100");
+	$cache=array();
+	while($data=$DB->fetch_array($query))
+	{
+		$cache[]=$data[keywords];
+	}
+	writeCache('search_'.$host['host'],$cache);
 }

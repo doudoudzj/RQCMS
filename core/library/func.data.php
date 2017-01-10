@@ -248,3 +248,15 @@ function getArticleByAid($query)
 	}
 	return $articledb;
 }
+
+//得到最新$num条搜索的记录
+function getLatestSearch($num)
+{
+	global $host;
+	$latestarray=@include RQ_DATA.'/cache/search_'.$host['host'].'.php';
+	if(!empty($latestarray))
+	{
+		if(count($latestarray)>$num) $latestarray=array_slice($latestarray, 0, $num); 
+	}
+	return $latestarray;
+}

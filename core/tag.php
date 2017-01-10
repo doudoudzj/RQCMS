@@ -11,6 +11,7 @@ if ($item)
 	$shownum=$host['list_shownum'];
 	$start_limit = ($page - 1) * $shownum;
 	$query_sql = "SELECT articleid from ".DB_PREFIX."tag where tag='$item' and hostid='$hostid' order by tid desc limit $start_limit, $shownum";
+	doAction('tag_change_sql');
 	$query=$DB->query($query_sql);
 	$selectnum=$DB->num_rows($query);
 	if($selectnum)

@@ -9,7 +9,7 @@ Author URL: http://www.rqcms.com
 
 !defined('RQ_DATA') && exit('access deined!');
 
-function honey_404_before_output()
+function honeypot_404_before_output()
 {
 	$ziparr=array('zip','rar','mdb','db','asa','bak','exe');
 	$head=$_SERVER['REQUEST_METHOD']=='HEAD';
@@ -72,4 +72,4 @@ function endsWith($haystack, $needle)
 }
 
 
-addAction('404_before_output','honey_404_before_output');
+addAction('404_before_output','honeypot_404_before_output');

@@ -10,6 +10,7 @@ foreach($cateArr as $ct)
 if(empty($cate)) message('不存在的栏目', '/');
 
 $page=isset($_GET['page'])?intval($_GET['page']):1;
+$pagenums=1;
 $articledb=getCateArticle($cate['cid'],$page);
 $total=count($articledb);
 $multipage='';
@@ -19,7 +20,7 @@ if($total>0)
 {
 	$arr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article WHERE hostid=$hostid and visible=1 and cateid={$cate['cid']}");
 	if(!empty($arr)) $allcount=$arr['count(*)'];
-	$allpage=@ceil($allcount/$host['list_shownum']);
+	$pagenums=@ceil($allcount/$host['list_shownum']);
 }
 
 $title=$cate['name'];

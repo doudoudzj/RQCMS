@@ -56,24 +56,25 @@ EOT;
     <tr class="tdbheader">
       <td colspan="3">$subnav</td>
     </tr>
-  <tr class="tablecell">
-      <td>上级分类:</td>
-      <td><select name="pid">
-     <option value="0" selected>顶级分类</option>
-     </select>
-</td>
-    </tr>
     <tr class="tablecell">
       <td>排序:</td>
       <td><input class="formfield" type="text" name="displayorder" size="4" maxlength="50" value="$cate[displayorder]"></td>
     </tr>
     <tr class="tablecell">
-      <td>名称:</td>
+      <td>分类名称:</td>
       <td><input class="formfield" type="text" name="name" size="35" maxlength="50" value="$cate[name]"></td>
     </tr>
 	<tr class="tablecell">
       <td>友好网址:</td>
       <td><input class="formfield" type="text" name="url" size="35" maxlength="50" value="$cate[url]"></td>
+    </tr>
+	<tr class="tablecell">
+      <td>分类关键词:</td>
+      <td><input class="formfield" type="text" name="keywords" size="35" maxlength="50" value="$cate[keywords]"></td>
+    </tr>
+		<tr class="tablecell">
+      <td>分类描述:</td>
+      <td><input class="formfield" type="text" name="description" size="35" maxlength="50" value="$cate[description]"></td>
     </tr>
     <tr class="tablecell">
       <td colspan="2" align="center">

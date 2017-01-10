@@ -9,7 +9,7 @@
  //版权相关设置
 define('RQ_AppName','RQCMS');
 define('RQ_VERSION','1.3');
-define('RQ_RELEASE','20130114');
+define('RQ_RELEASE','20130330');
 define('RQ_AUTHOR','RQ204');
 define('RQ_WEBSITE','http://www.rqcms.com');
 define('RQ_EMAIL','rq204@qq.com');
@@ -36,12 +36,17 @@ if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'IIS')
 {
 	if(!isset($_SERVER['HTTP_X_REWRITE_URL'])) exit('this iis server is not support rqcms!');
 	define('REQUEST_URI',substr($_SERVER['HTTP_X_REWRITE_URL'],1));
-	if(empty($_GET)&&strpos($_SERVER['HTTP_X_REWRITE_URL'],'?')) $_GET=getGetArr($_SERVER['HTTP_X_REWRITE_URL']);
+	if(empty($_GET)&&strpos($_SERVER['HTTP_X_REWRITE_URL'],'?'))
+	{
+		$_GET=getGetArr($_SERVER['HTTP_X_REWRITE_URL']);
+		define('QUERY_URL',$_SERVER['HTTP_X_REWRITE_URL']);
+	}
 }
 else if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'nginx')!==false)//nginx
 {
 	if(!isset($_SERVER['REQUEST_URI'])) exit('this nginx server is not support rqcms!');
 	define('REQUEST_URI',substr($_SERVER['REQUEST_URI'],1));
+	define('QUERY_URL',$_SERVER['HTTP_X_REWRITE_URL']);
 }
 else
 {
@@ -49,7 +54,9 @@ else
 	{
 		if(isset($_SERVER[$rqfile]))
 		{	
-			define('REQUEST_URI',substr($_SERVER[$rqfile],1));break;
+			define('REQUEST_URI',substr($_SERVER[$rqfile],1));
+			define('QUERY_URL',$_SERVER['REQUEST_URI']);
+			break;
 		}
 	}
 	if(!defined('REQUEST_URI')) exit('this http server is not support rqcms!');
@@ -74,7 +81,6 @@ ob_start();
 //IP地址和User-Agent
 $onlineip=getIp();
 $useragent=isset($_SERVER['HTTP_USER_AGENT'])?addslashesDeep($_SERVER['HTTP_USER_AGENT']):'';
-$hosturl=RQ_HTTP.RQ_HOST;
 
 //时区的设置
 date_default_timezone_set('Asia/Shanghai');
@@ -102,7 +108,7 @@ $DB->connect(DB_HOST,DB_USER,DB_PASSWORD,DB_DATABASE,0);
 if(!isset($host))//没找到任何站点时，403或是安装
 {
 	if(is_array($HostArr)&&count($HostArr)>0) include_once RQ_CORE.'/404.php';
-	else if(REQUEST_URI!='install.php') exit("<p ><a href='/install.php'>install rqcms</a>");
+	else if(REQUEST_URI!='install.php') exit("<p ><a href='/install.php'>install RQCMS</a>");
 	else include_once RQ_CORE.'/install.php';
 	exit();
 }
@@ -137,21 +143,25 @@ else
 	}
 	else//静态网址
 	{
-		$urlstring=trim(REQUEST_URI,'/');
-		$urlargs=explode('/',trim(REQUEST_URI,'/'));
+		$urlstring=REQUEST_URI;
 		$urlext=!$host['url_ext']?'':('.'.$host['url_ext']);
-
-		if($urlext&&count($urlargs)==1&&substr($urlargs[0],0-strlen($urlext))==$urlext) $urlargs[0]=substr($urlargs[0],0,0-strlen($urlext));
-		else if($urlext&&count($urlargs)==1&&substr($urlargs[0],0-strlen($urlext))!=$urlext) $urlargs[0]='';
-		define('RQ_FILE',$urlargs[0]);
-		if(count($urlargs)%2==1) $urlargs[]='';
-		if($urlext&&strlen($urlargs[1])>strlen($urlext)&&substr($urlargs[1],0-strlen($urlext))==$urlext) $urlargs[1]=substr($urlargs[1],0,0-strlen($urlext));
-		$_GET['url']=$urlargs[1];
-		
-		for($i=2;$i<count($urlargs)-1;$i++)
+		if($urlext&&substr(REQUEST_URI,0-strlen($urlext))==$urlext)
 		{
-			if($i%2==0) $_GET[$urlargs[$i]]=$urlargs[$i+1];
+			$urlstring=substr(REQUEST_URI,0,strlen(REQUEST_URI)-strlen($urlext));
 		}
+		else if($urlext) $urlstring='';
+
+		if($urlstring)
+		{
+			$urlstring=trim($urlstring,'/');
+			$urlargs=explode('/',$urlstring);
+			
+			define('RQ_FILE',$urlargs[0]);
+			$_GET['url']=count($urlargs)>1?$urlargs[1]:'';
+			if(count($urlargs)>2) $_GET['page']=$urlargs[2];
+			if(count($urlargs)>3) $_GET['more']=$urlargs[3];
+		}
+		else define('RQ_FILE','');
 	}
 }
 
@@ -213,6 +223,9 @@ if ($pluginArr && is_array($pluginArr))
 }
 
 //特别几个网址的处理
+$host_url=RQ_HTTP.RQ_HOST;
+$page_url=RQ_HTTP.RQ_HOST.QUERY_URL;
+$refer_url=isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'';
 $login_url=mkUrl('profile.php','login');
 $logout_url=mkUrl('profile.php','logout');
 $register_url=mkUrl('profile.php','register');
@@ -228,6 +241,7 @@ include_once $coreView;
 include_once $tempView;
 //输出前处理,输出ContentType,网址重写，插件处理，网页压缩
 header($contentType);
+header('Cache-Control:max-age=0');//缓存的处理http://blog.csdn.net/nashuiliang/article/details/7854633
 $output=ob_get_contents();
 ob_end_clean();
 $output=adminRewrite($output);

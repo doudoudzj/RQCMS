@@ -7,7 +7,7 @@ $imgurl=mkUrl('captcha.php','');
 <div class=full>
 <h2 class="title">登陆</h2>
 <p>登陆后, 可以使用您的专署名字发表评论<br />系统在您发表评论时自动填写个人信息.</p>
-<form action="profile.php" method="post" onsubmit="return checkloginform();">
+<form action="<?php echo $profile_url;?>" method="post" onsubmit="return checkloginform();">
 <input type="hidden" name="action" value="dologin" />
 <input type="hidden" name="formhash" value="$formhash" />
 <div class="formbox">

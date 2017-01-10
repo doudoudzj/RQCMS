@@ -15,6 +15,7 @@ $settingsmenu = array(
 $type=isset($_GET['type'])?$_GET['type']:(isset($_POST['type'])?$_POST['type']:'');
 if(RQ_POST&&isset($_POST['action'])&&$_POST['action'] == 'updatesetting')
 {
+	if(isset($_POST['setting']['search_field_allow'])&&!$_POST['setting']['search_field_allow']) redirect('搜索字段不得为空', 'admin.php?file=configurate&type='.$type);
 	if(isset($_POST['host'])) unset($_POST['host']);
 	$sql='Update '.DB_PREFIX.'host set ';
 	foreach($_POST['setting'] AS $key => $val)

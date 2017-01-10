@@ -13,6 +13,8 @@ $hiddenCount=$hidden['ct'];
 if(RQ_POST)
 {	
 	$view=isset($_POST['view'])?'hidden':'';
+	$fieldadd1=$fieldadd2=$fieldupdateadd='';
+
 	if(in_array($action,array('add','mod')))
 	{
 		$title       = trim($_POST['title']);
@@ -27,6 +29,17 @@ if(RQ_POST)
 		$visible     = isset($_POST['visible'])?intval($_POST['visible']):0;
 		$stick       = isset($_POST['stick'])?intval($_POST['stick']):0;
 		$dateline    = isset($_POST['edittime'])?getDateLine():time();
+
+		if(isset($_POST['field'])&&is_array($_POST['field']))
+		{
+			foreach($_POST['field'] as $fkey=>$fvalue)
+			{
+				$fieldadd1.=',`'.$fkey.'`';
+				$fieldadd2.=",'".$fvalue."'";
+				$fieldupdateadd.=",`$fkey`='$fvalue'";
+			}
+		}
+
 		$attachments = '';//一个序列化的结果,附件名,Id,大小
 		$attachInfo=array();//
 		$tag=!empty($tags)?implode(',',$tags):'';
@@ -38,11 +51,13 @@ if(RQ_POST)
 		case 'add':
 			if(empty($title)) redirect('标题不得为空','admin.php?file=article&action=add');
 			if(empty($content)) redirect('内容不得为空','admin.php?file=article&action=add');
+
 			
 			// 插入数据部分
 			$attachments=getAttach();
 			$attcount=count($attachments);
-			$DB->query("INSERT INTO ".DB_PREFIX."article (hostid,cateid, userid, title, excerpt, keywords,tag, dateline,modified, closed, visible, stick, password,url,attachments) VALUES ('$hostid','$cateid', '$uid', '$title', '$excerpt', '$keywords','$tag', '$dateline','$dateline','$closed', '$visible', '$stick', '$password','$url','$attcount')");
+			
+			$DB->query("INSERT INTO ".DB_PREFIX."article (hostid,cateid, userid, title, excerpt, keywords,tag, dateline,modified, closed, visible, stick, password,url,attachments{$fieldadd1}) VALUES ('$hostid','$cateid', '$uid', '$title', '$excerpt', '$keywords','$tag', '$dateline','$dateline','$closed', '$visible', '$stick', '$password','$url','$attcount'{$fieldadd2})");
 			$articleid = $DB->insert_id();
 			if(!$url) $DB->query('update '.DB_PREFIX."article set url='$articleid' where aid=$articleid");
 			if($attachments&&is_array($attachments))
@@ -165,7 +180,7 @@ if(RQ_POST)
 			$attach=$DB->fetch_first('select count(*) from '.DB_PREFIX."attachment where articleid=$aid");
 			$attcount=$attach['count(*)'];
 			// 插入数据部分
-			$DB->query("Update ".DB_PREFIX."article set `cateid`='$cateid',`title`='$title',`excerpt`='$excerpt',`keywords`='$keywords',`tag`='$tag',`modified`='$timestamp',`attachments`='$attcount',`closed`='$closed',`visible`='$visible',`stick`='$stick',`password`='$password',`url`='$url' where aid=$aid");
+			$DB->query("Update ".DB_PREFIX."article set `cateid`='$cateid',`title`='$title',`excerpt`='$excerpt',`keywords`='$keywords',`tag`='$tag',`modified`='$timestamp',`attachments`='$attcount',`closed`='$closed',`visible`='$visible',`stick`='$stick',`password`='$password',`url`='$url'{$fieldupdateadd} where aid=$aid");
 			$DB->query("Update ".DB_PREFIX."content set `content`='$content' where `articleid`='$aid'");
 			//添加tags
 			$DB->query('delete from '.DB_PREFIX."tag where articleid='$aid' and hostid='$hostid'");

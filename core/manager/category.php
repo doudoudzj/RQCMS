@@ -11,6 +11,8 @@ if(RQ_POST)
 			$name   = trim($_POST['name']);
 			$displayorder = intval($_POST['displayorder']);
 			$url=trim($_POST['url']);
+			$keywords=trim($_POST['keywords']);
+			$description=trim($_POST['description']);
 			$result = checkname($name);
 			if($result)
 			{
@@ -28,7 +30,7 @@ if(RQ_POST)
 			{
 				redirect('该友好网址在数据库中已存在');
 			}
-			$DB->query("INSERT INTO ".DB_PREFIX."category (name,displayorder,url,hostid) VALUES ('$name','$displayorder','$url','$hostid')");
+			$DB->query("INSERT INTO ".DB_PREFIX."category (name,displayorder,url,hostid,keywords,description) VALUES ('$name','$displayorder','$url','$hostid','$keywords','$description')");
 			cates_recache();
 			latest_recache();
 			redirect('添加新分类成功', 'admin.php?file=category');
@@ -39,6 +41,8 @@ if(RQ_POST)
 			$url   = trim($_POST['url']);
 			$cid    = intval($_POST['cid']);
 			$displayorder=intval($_POST['displayorder']);
+			$keywords=trim($_POST['keywords']);
+			$description=trim($_POST['description']);
 			$result = checkname($name);
 			if($result) redirect($result);
 			$name = char_cv($name);
@@ -52,7 +56,7 @@ if(RQ_POST)
 				redirect('已经有其他友好网址使用【'.$url.'】这个名称');
 			}
 			// 更新分类
-			$DB->unbuffered_query("UPDATE ".DB_PREFIX."category SET name='$name',displayorder='$displayorder',url='$url' WHERE cid='$cid'");
+			$DB->unbuffered_query("UPDATE ".DB_PREFIX."category SET name='$name',displayorder='$displayorder',url='$url',keywords='$keywords',description='$description' WHERE cid='$cid'");
 			cates_recache();
 			stick_recache();
 			rss_recache();
@@ -148,7 +152,7 @@ else
 			$cate['displayorder']=0;
 		} else {
 			$cate = $DB->fetch_first("SELECT * FROM ".DB_PREFIX."category WHERE cid='".intval($_GET['cid'])."' and hostid='$hostid'");
-			if($action == 'modcate') {
+			if($action == 'mod') {
 				$subnav = '修改分类';
 			} else {
 				$subnav = '删除分类';

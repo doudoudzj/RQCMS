@@ -20,6 +20,7 @@ if(RQ_POST)
 		pics_recache();
 		latest_recache();
 		hot_recache();
+		search_recache();
 		redirect('所有缓存已经更新', $url);
 	}
 	else if($action == 'log') 
@@ -45,6 +46,7 @@ else
 		'pic_'.$host['host']=>'包含图片的文章',
 		'redirect_'.$host['host']=>'自动跳转设置',
 		'latest_'.$host['host']=>'栏目最新文件',
+		'search_'.$host['host']=>'最新搜索的100条记录',
 		'hot_'.$host['host']=>'阅读排行文件');
 		foreach($cachefile as $cfile=>$desc)
 		{

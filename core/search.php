@@ -1,20 +1,25 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
-$keywords = isset($_POST['keywords'])?$_POST['keywords']:'';
+$searchd = isset($_POST['keywords'])?$_POST['keywords']:'';
+if(!$searchd&&isset($_GET['url'])) $searchd = $_GET['url'];
+$searchkey=$searchd;
+
 $articledb=array();
 $searchurl='search.php';
-if(RQ_POST)
+$total = $allcount = $ids = 0; 
+$pagenums=1;
+$page=isset($_GET['page'])?intval($_GET['page']):1;
+
+if($searchkey)
 {
-	if(empty($keywords)) message('搜索内容为空', $searchurl);
-	
 	//过滤及检测
-	if(strlen($keywords) < $host['search_keywords_min_len']) 
+	if(strlen($searchkey) < $host['search_keywords_min_len']) 
 	{
 		message('关键字不能少于'.$host['search_keywords_min_len'].'个字节.', 'search.php');
 	}
 	if($groupid<2&&$host['search_post_space']>0)//时间间隔处理
 	{
-		$history=$DB->fetch_first('Select max(dateline) as time from '.DB_PREFIX."log where `type`='s' and `ip`='$onlineip'");
+		$history=$DB->fetch_first('Select max(dateline) as time from '.DB_PREFIX."search where `ip`='$onlineip'");
 		if($history&&$timestamp-$history['time']<$host['search_post_space'])
 		{
 			message('对不起,您在 '.$options['search_post_space'].' 秒内只能进行一次搜索.', $searchurl);
@@ -22,46 +27,53 @@ if(RQ_POST)
 	}
 
 	//写入搜索日志
-	$DB->query('Insert into '.DB_PREFIX."log (`hostid`,`user`,`dateline`,`type`,`useragent`,`ip`,`content`) values ('$hostid','$username','$timestamp','s','$useragent','$onlineip','$keywords')"); 
-	$keywords = str_replace("_","\_",$keywords);
-	$keywords = str_replace("%","\%",$keywords);
-	
+	$DB->query('Insert into '.DB_PREFIX."search (`hostid`,`dateline`,`ip`,`keywords`) values ('$hostid','$timestamp','$onlineip','$searchkey')"); 
+	$searchkey = str_replace("_","\_",$searchkey);
+	$searchkey = str_replace("%","\%",$searchkey);
+
 	doAction('search_before_featch');
 	
-	if(preg_match("(AND|\+|&|\s)", $keywords) && !preg_match("(OR|\|)", $keywords)) {
+	if(preg_match("(AND|\+|&|\s)", $searchkey) && !preg_match("(OR|\|)", $searchkey)) {
 		$andor = ' AND ';
 		$sqltxtsrch = '1';
-		$keywords = preg_replace("/( AND |&| )/is", "+", $keywords);
+		$searchkey = preg_replace("/( AND |&| )/is", "+", $searchkey);
 	} else {
 		$andor = ' OR ';
 		$sqltxtsrch = '0';
-		$keywords = preg_replace("/( OR |\|)/is", "+", $keywords);
+		$searchkey = preg_replace("/( OR |\|)/is", "+", $searchkey);
 	}
-	$keywords = str_replace('*', '%', addcslashes($keywords, '%_'));
-	foreach(explode("+", $keywords) AS $text) {
+	$searchkey = str_replace('*', '%', addcslashes($searchkey, '%_'));
+	foreach(explode("+", $searchkey) AS $text) {
 		$text = trim($text);
+		$searchfield=explode(',',$host['search_field_allow']);
 		if($text) {
-			$sqltxtsrch .= $andor;
-			$sqltxtsrch .= "(keywords LIKE '%".str_replace('_', '\_', $text)."%' OR title LIKE '%".$text."%' OR excerpt LIKE '%".$text."%')" ;
+			$sqltxtsrch .= $andor.'(';
+			foreach($searchfield as $sfield)
+			{
+				$sqltxtsrch .= "`$sfield` LIKE '%".str_replace('_', '\_', $text)."%' OR ";//title LIKE '%".$text."%' OR excerpt LIKE '%".$text."%' OR tag LIKE '%".$text."%')" ;
+			}
+			$sqltxtsrch=substr($sqltxtsrch,0,strlen($sqltxtsrch)-4).')';
 		}
 	}
 	//搜索文章
 
 	$sortby = 'dateline';
 	$orderby = 'desc';
-	$query_sql = "SELECT * FROM ".DB_PREFIX."article WHERE visible='1' and hostid=$hostid AND ($sqltxtsrch) ORDER BY dateline desc limit 100";
-	$totals = $ids = 0;
+	$start=($page-1)*$host['list_shownum'];
+	$allarr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article WHERE visible='1' and hostid=$hostid AND ($sqltxtsrch)");
+	$allcount=$allarr['count(*)'];
+	$query_sql = "SELECT * FROM ".DB_PREFIX."article WHERE visible='1' and hostid=$hostid AND ($sqltxtsrch) ORDER BY dateline desc limit $start,{$host['list_shownum']}";
 	$query = $DB->query($query_sql);
 	while($article = $DB->fetch_array($query)) 
 	{
 		$articledb[]=showArticle($article);
 	}
 	$total=count($articledb);
-	//插入日志
-	$DB->query('insert into `'.DB_PREFIX."log` (`user`,`dateline`,`type`,`useragent`,`ip`,`content`) values ('$username','$timestamp','search','$useragent','$onlineip','$keywords')");
+	
+	if($total) $pagenums=@ceil($allcount/$host['list_shownum']);
 	
 	$multipage='';
-	$title=$keywords;
+	$title=$searchd;
 }
 else
 {
