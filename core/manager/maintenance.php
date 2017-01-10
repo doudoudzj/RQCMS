@@ -28,6 +28,7 @@ if(RQ_POST)
 }
 else
 {
+	if($action=='log'&&!in_array($do,array('login','search','dberror'))) $do='login';
 	if($action == 'log') 
 	{
 		include RQ_CORE.'/manager/log.php';
@@ -57,4 +58,3 @@ else
 		}
 	}
 }
-

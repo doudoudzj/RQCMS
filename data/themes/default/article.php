@@ -29,7 +29,7 @@ if($article['attachments'])
 		if($image['isimage'])
 		{
 			print <<<EOT
-			<p class="attach">{$image['filename']}<br /><a href="attachment.php?id={$image['aid']}" target="_blank"><img src="attachment.php?id={$image['aid']}" border="0" alt="大小: {$image['size']}KB&#13;尺寸: {$image['thumb_width']} x {$image['thumb_height']}&#13;浏览: {$image['downloads']} 次&#13;点击打开新窗口浏览全图" width="{$image['thumb_width']}" height="{$image['thumb_height']}" /></a></p>
+			<p class="attach">{$image['filename']}<br /><a href="attachment.php?{$image['arg']}" target="_blank"><img src="attachment.php?{$image['arg']}}" border="0" alt="大小: {$image['filesize']}KB&#13;尺寸: {$image['thumb_width']} x {$image['thumb_height']}&#13;浏览: {$image['downloads']} 次&#13;点击打开新窗口浏览全图" width="{$image['thumb_width']}" height="{$image['thumb_height']}" /></a></p>
 EOT;
 		}
 	}
@@ -38,7 +38,7 @@ EOT;
 		if(!$attach['isimage']) 
 		{
 			print <<<EOT
-			<p class="attach"><strong>附件: </strong><a href="attachment.php?id={$attach['aid']}" target="_blank">{$attach['filename']}</a> ({$attach['size']}KB, 下载次数:{$attach['downloads']})</p>
+			<p class="attach"><strong>附件: </strong><a href="attachment.php?{$attach['arg']}" target="_blank">{$attach['filename']}</a> ({$attach['filesize']}KB, 下载次数:{$attach['downloads']})</p>
 EOT;
 		}
 	}
@@ -70,8 +70,8 @@ print <<<EOT
       <div id=comments>
 EOT;
 }
-if ($article['comment']) {print <<<EOT
-<span style="FLOAT:right;padding-bottom: 2px;font-size: 12px;">{$article['comment']}条记录</span>访客评论
+if ($article['comments']) {print <<<EOT
+<span style="FLOAT:right;padding-bottom: 2px;font-size: 12px;">{$article['comments']}条记录</span>访客评论
 EOT;
 foreach($commentdb as $key => $comment){print <<<EOT
 <div class=cbox><a name="cm{$comment['cid']}"></a><p class="lesscontent" id="comm_$comment[cid]">$comment[content]</p>
@@ -136,10 +136,11 @@ EOT;
         <h3>相关文章</h3>
         <ul>
 EOT;
+if(isset($likedata)){
 foreach($likedata as $key => $title){print <<<EOT
           <li><a href="article.php?{$title['arg']}" title="$title[title],浏览$title[views]">$title[title]</a></li>
 EOT;
-}print <<<EOT
+}}print <<<EOT
         </ul>
       </div>
       <div class=rightbox>

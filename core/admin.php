@@ -73,7 +73,7 @@ $other=array('css','login','special','main','xmlrpc','database');
 if(!in_array($incfile,$other)&&!array_key_exists($incfile,$adminitem)) redirect('未定义操作','admin.php?file=main');
 if($groupid!=4&&$incfile=='special') redirect('您无权限访问多站点设置','admin.php?file=main');
 if($groupid<3&&$incfile=='tag') redirect('您无权限编辑tag设置','admin.php?file=main');
-
+if($groupid!=4&&$incfile=='database') redirect('您无权限操作数据库设置','admin.php?file=main');
 
 //这里对域名进行重新判断,查找cookie里的参数,设置对应的站点信息,包含
 //$Plugins = array();//插件文件数组

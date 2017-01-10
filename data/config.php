@@ -8,5 +8,5 @@ define('DB_PASSWORD','rq204');//密码
 
 //参数开关
 define('RQ_DEBUG',True);//是否开启调试模式
-define('RQ_ALIAS',True);//是否开启泛域名解析,可以实现内容页单独域名功能
+define('RQ_ALIAS',False);//是否开启泛域名解析,可以实现内容页单独域名功能
 define('RQ_CACHE',True);//对内容页是否启用自动缓存。

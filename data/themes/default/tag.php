@@ -12,7 +12,7 @@ print <<<EOT
 EOT;
 if($articledb){
 require RQ_DATA."/themes/{$theme}/list.php";
-}else{
+}else if($tagdb){
 foreach($tagdb as $key => $tag){
 print <<<EOT
 <span style="line-height:160%;font-size:$tag[fontsize]px;margin-right:10px;"><a href="tag.php?item=$tag[url]" title="使用次数: $tag[usenum]">$tag[item]</a></span>

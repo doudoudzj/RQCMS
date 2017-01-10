@@ -41,17 +41,20 @@ if(is_readable($filepath))
 {
 	ob_end_clean();
 	$ua = $_SERVER["HTTP_USER_AGENT"];
-	$filename=urlencode($attachinfo['filename']);
-	$filename=str_replace("+", "%20", $filename);
+	$filename=$attachinfo['filename'];
+	$encoded_filename = urlencode($filename);
+    $encoded_filename = str_replace("+", "%20", $encoded_filename);
+	//参考 http://www.fising.cn/2012/05/php-%E6%8F%90%E4%BE%9B%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E4%B8%AD%E6%96%87%E6%96%87%E4%BB%B6%E5%90%8D.shtml
+    if (preg_match("/MSIE/", $ua)) {
+     header('Content-Disposition: attachment; filename="' . $encoded_filename . '"');
+    } else if (preg_match("/Firefox/", $ua)) {
+     header("Content-Disposition: attachment; filename*=\"utf8''" . $filename . '"');
+    } else {
+     header('Content-Disposition: attachment; filename="' . $filename . '"');
+    } 
 	
-	if (preg_match("/MSIE/", $ua)) {
-		header('Content-Disposition: '.$attachment.'; filename="' . $filename . '"');
-	} else {
-		header('Content-Disposition: '.$attachment.'; filename="' . $filename . '"');
-	}
 	header('Cache-control: max-age=31536000');
 	header('Expires: ' . gmdate('D, d M Y H:i:s',$timestamp+31536000) . ' GMT');
-	//header('Last-Modified: ' . gmdate('D, d M Y H:i:s',$attachinfo['dateline']) . ' GMT');
 	header('Content-Encoding: none');
 	header('Content-type: '.$attachinfo['filetype']);
 	header('Content-Length: '.filesize($filepath));

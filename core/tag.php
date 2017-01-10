@@ -5,6 +5,7 @@ $item=isset($_GET['item'])?$_GET['item']:'';
 $articledb=array();
 $multipage ='';
 $title='';
+$tagdb=array();
 if ($item) 
 {
 	$shownum=$host['list_shownum'];
@@ -43,8 +44,7 @@ else
 	$start_limit = ($page - 1) * $shownum;
 	$multipage='';
 	//$multipage = multi(100, $shownum, $page, 'tag.php');
-	$tagdb=array();
-	$query = $DB->query("SELECT count(*) as usenum,tag FROM ".DB_PREFIX."tag group by tag ORDER BY tid DESC LIMIT $start_limit, ".$shownum);
+	$query = $DB->query("SELECT count(*) as usenum,tag FROM ".DB_PREFIX."tag where hostid='$hostid' group by tag ORDER BY tid DESC LIMIT $start_limit, ".$shownum);
 	while ($tag = $DB->fetch_array($query)) {
 		$tag['fontsize'] = 12 + $tag['usenum'] / 2;
 		$tag['url'] = urlencode($tag['tag']);

@@ -19,8 +19,8 @@ include RQ_DATA."/themes/$theme/header.php";
 print <<<EOT
   <div id=main>
     <div id=left>
+      <h3>最新文章</h3>
       <div class=leftbox>
-        <h3>最新文章</h3>
         <div id=focus><dl><dt>
 EOT;
 foreach($picscache as $k=>$v){
@@ -31,10 +31,11 @@ EOT;
 <dd>
 EOT;
 foreach($picscache as $k=>$v){print <<<EOT
-<img src="attachment.php?aid={$v['did']}" id="pic{$v['aid']}" />
+<img src="attachment.php?{$v['arg']}" id="pic{$v['aid']}" />
 EOT;
 }print <<<EOT
 </dd></dl></div>
+        </div>
         <div id=focist>
           <ul>
 EOT;
@@ -45,7 +46,6 @@ EOT;
 }print <<<EOT
           </ul>
         </div>
-      </div>
 EOT;
 if(!empty($listcache)){
 foreach($listcache AS $key=>$value){
@@ -106,7 +106,8 @@ EOT;
       </div>
     </div>
   </div>
-  <div class=links>友情链接:
+  <div class=links>
+	<h3>友情链接:</h3>
     <ul>
 EOT;
 if($linkarr){
@@ -118,4 +119,5 @@ EOT;
     </ul>
   </div>
 EOT;
+include RQ_DATA."/themes/$theme/footer.php";
 ?>

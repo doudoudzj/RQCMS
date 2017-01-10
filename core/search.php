@@ -14,13 +14,15 @@ if(RQ_POST)
 	}
 	if($groupid<2&&$host['search_post_space']>0)//时间间隔处理
 	{
-		$history=$DB->fetch_first('Select max(dateline) as time from '.DB_PREFIX."log where `type`='search' and `ip`='$onlineip'");
+		$history=$DB->fetch_first('Select max(dateline) as time from '.DB_PREFIX."log where `type`='s' and `ip`='$onlineip'");
 		if($history&&$timestamp-$history['time']<$host['search_post_space'])
 		{
 			message('对不起,您在 '.$options['search_post_space'].' 秒内只能进行一次搜索.', $searchurl);
 		}
 	}
 
+	//写入搜索日志
+	$DB->query('Insert into '.DB_PREFIX."log (`hostid`,`user`,`dateline`,`type`,`useragent`,`ip`,`content`) values ('$hostid','$username','$timestamp','s','$useragent','$onlineip','$keywords')"); 
 	$keywords = str_replace("_","\_",$keywords);
 	$keywords = str_replace("%","\%",$keywords);
 	
@@ -40,8 +42,7 @@ if(RQ_POST)
 		$text = trim($text);
 		if($text) {
 			$sqltxtsrch .= $andor;
-			$contenadd=$host['allow_search_content']?" OR content LIKE '%".$text."%'":'';
-			$sqltxtsrch .= "(keywords LIKE '%".str_replace('_', '\_', $text)."%' OR title LIKE '%".$text."%' OR excerpt LIKE '%".$text."%'$contenadd)" ;
+			$sqltxtsrch .= "(keywords LIKE '%".str_replace('_', '\_', $text)."%' OR title LIKE '%".$text."%' OR excerpt LIKE '%".$text."%')" ;
 		}
 	}
 	//搜索文章
@@ -56,6 +57,9 @@ if(RQ_POST)
 		$articledb[]=showArticle($article);
 	}
 	$tatol=count($articledb);
+	//插入日志
+	$DB->query('insert into `'.DB_PREFIX."log` (`user`,`dateline`,`type`,`useragent`,`ip`,`content`) values ('$username','$timestamp','search','$useragent','$onlineip','$keywords')");
+	
 	$multipage='';
 	$title=$keywords;
 }

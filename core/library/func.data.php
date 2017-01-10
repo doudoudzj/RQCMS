@@ -81,9 +81,9 @@ function getHotArticle($num,$cateid=null)
 function getRndArticle($num,$cateid=null)
 {
 	global $DB,$hostid,$host;
-	if($cateid==null) $cate=" where hostid=$hostid";
-	else $cate=" where hostid=$hostid and cateid=$cateid";
-	$query=$DB->query('Select * from '.DB_PREFIX."article $cate and visible=1 order by rand() limit $num");
+	if($cateid==null) $cate="";
+	else $cate=" and cateid=$cateid";
+	$query=$DB->query('Select * from '.DB_PREFIX."article a,".DB_PREFIX."content c where visible=1 and a.aid=c.articleid $cate order by rand() limit $num");
 	$articledb=array();
 	while($article=$DB->fetch_array($query))
 	{
@@ -122,7 +122,7 @@ function getCateArticle($expr,$page)
 	global $DB,$hostid,$host;
 	$pagenum = intval($host['list_shownum']);
 	$start_limit = ($page - 1) * $pagenum;
-	$sql = "SELECT a.*,c.name,c.cid,c.url as curl FROM ".DB_PREFIX."article a,".DB_PREFIX."category c WHERE c.hostid=$hostid and a.visible='1' and c.cid=a.cateid And $expr ORDER BY aid DESC LIMIT $start_limit, ".$pagenum;
+	$sql = "SELECT a.*,c.cid,c.url as curl FROM ".DB_PREFIX."article a,".DB_PREFIX."category c WHERE $expr And c.hostid=$hostid and a.visible=1 and c.cid=a.cateid ORDER BY aid DESC LIMIT $start_limit, ".$pagenum;//exit($sql);
 	$articledb=array();
 	$query=$DB->query($sql);
 	$arg1=$arg2=$host['friend_url'];
@@ -140,33 +140,24 @@ function getCateArticle($expr,$page)
 function getArticle($expr)
 {
 	global $DB,$hostid,$host;
-	$sql = "SELECT * FROM ".DB_PREFIX."article WHERE visible='1' and hostid=$hostid And $expr limit 1";
+	$sql = "SELECT * FROM ".DB_PREFIX."article a,".DB_PREFIX."content c WHERE $expr and visible='1' and hostid=$hostid and a.aid=c.articleid limit 1";
 	$article=$DB->fetch_first($sql);
 	if(!empty($article))
 	{
 		$article=showArticle($article);
+		$articleid=$article['aid'];
 		//处理附件
-		if (!empty($article['attachments'])) 
+		if ($article['attachments']) 
 		{
-			if (is_array($article['attachments'])) 
+			$attachs=getAttachById($articleid);
+			if (isset($attachs[$articleid])&&is_array($attachs[$articleid])) 
 			{
-				$aidarr=array();
-				foreach($article['attachments'] as $k=>$v)
+				$article['attachments']=array();
+				foreach($attachs[$articleid] as $aid=>$attach)
 				{
-					$aidarr[]=$v['aid'];
-				}
-				$aids=implode_ids($aidarr);	
-				$downloads=$DB->query('select aid,downloads from '.DB_PREFIX."attachment where aid in (".$aids.')');
-				while($dds=$DB->fetch_array($downloads))
-				{
-					$attacharr[$dds['aid']]=$dds['downloads'];
-				}
-
-				foreach($article['attachments'] as $k=>$attach)
-				{
-					$aid=$attach['aid'];
-					$article['attachments'][$k]['downloads']=$attacharr[$aid];
-					$article['attachments'][$k]['filesize']=(int)($article['attachments'][$k]['filesize']/1024);
+					$article['attachments'][$aid]=$attach;
+					$article['attachments'][$aid]['downloads']=$attach['downloads'];
+					$article['attachments'][$aid]['filesize']=(int)($attach['filesize']/1024);
 					$arg=argUrlRewrite('attachment.php','aid');
 					if($attach['isimage'])
 					{
@@ -180,13 +171,14 @@ function getArticle($expr)
 					if(strpos($article['content'],"[attach=$aid]")!==false)
 					{
 						$article['content']=str_replace("[attach=$aid]",$file,$article['content']);
-						unset($article['attachments'][$k]);//加在文章中后就不用在后边显示了.
+						unset($article['attachments'][$aid]);//加在文章中后就不用在后边显示了.
 					}
 					else
 					{
-						$article['attachments'][$k]['arg']=$arg.'='.$aid;
+						$article['attachments'][$aid]['arg']=$arg.'='.$aid;
 					}
 				}
+				//print_r($article['attachments']);exit;
 			}
 		}
 		if(!empty($article['tag'])) $article['tag']=explode(',',$article['tag']);
@@ -225,4 +217,17 @@ function getHotComment($num,$cateid=null)
 		$articledb[]=showArticle($article);
 	}
 	return $articledb;
+}
+
+//按id得到附件
+function getAttachById($aids)
+{
+	global $DB,$host;
+	$attacharr=array();
+	$downloads=$DB->query('select * from '.DB_PREFIX."attachment where articleid in (".$aids.')');
+	while($dds=$DB->fetch_array($downloads))
+	{
+		$attacharr[$dds['articleid']][$dds['aid']]=$dds;
+	}
+	return $attacharr;
 }

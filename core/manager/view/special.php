@@ -9,7 +9,10 @@ print <<<EOT
           <div class="leftmenubody">
             <div class="leftmenuitem">&#8226; <a href="admin.php?file=special&action=list">站点列表</a></div>
 			 <div class="leftmenuitem">&#8226; <a href="admin.php?file=special&action=add">添加站点</a></div>
-            <div class="leftmenuitem">&#8226; <a href="admin.php?file=special&action=user">用户管理</a></div>
+          </div>
+        </div><div class="tableborder">
+          <div class="tableheader">其它操作</div>
+          <div class="leftmenubody">
 			<div class="leftmenuitem">&#8226; <a href="admin.php?file=database&action=backup">备份数据</a></div>
 			<div class="leftmenuitem">&#8226; <a href="admin.php?file=special&action=cacheall">更新缓存</a></div>
           </div>
@@ -97,11 +100,6 @@ print <<<EOT
 				    <td><input class="formfield" type="text" name="args[admin.php]" size="35" maxlength="200" value="{$args['admin.php']}"></td>
                 </tr>		
 				<tr class="tablecell">
-                  <td width="200">安装页(install.php):</td>
-                  <td><input class="formfield" type="text" name="maps[install.php]" size="35" maxlength="50" value="{$info['install.php']}"></td>
-				    <td><input class="formfield" type="text" name="args[install.php]" size="35" maxlength="200" value="{$args['install.php']}"></td>
-                </tr>
-				<tr class="tablecell">
                   <td width="200">RSS页(rss.php):</td>
                   <td><input class="formfield" type="text" name="maps[rss.php]" size="35" maxlength="50" value="{$info['rss.php']}"></td>
 				    <td><input class="formfield" type="text" name="args[rss.php]" size="35" maxlength="200" value="{$args['rss.php']}"></td>
@@ -112,7 +110,7 @@ print <<<EOT
 				    <td><input class="formfield" type="text" name="args[captcha.php]" size="35" maxlength="200" value="{$args['captcha.php']}"></td>
                 </tr>
 				<tr class="tablecell">
-                  <td width="200">Js页(captcha.php):</td>
+                  <td width="200">Js页(js.php):</td>
                   <td><input class="formfield" type="text" name="maps[js.php]" size="35" maxlength="50" value="{$info['js.php']}"></td>
 				    <td><input class="formfield" type="text" name="args[js.php]" size="35" maxlength="200" value="{$args['js.php']}"></td>
                 </tr>
@@ -121,12 +119,8 @@ print <<<EOT
                       <input type="reset" value="重置" class="formbutton">
                     </td>
                   </tr>
-              </table></td>
+              </form></table></td>
           </tr>
-          <tr>
-            <td height="20"></td>
-        </table></td>
-    </tr>
 EOT;
 }else if($action=='list') {
 print <<<EOT
@@ -151,12 +145,9 @@ foreach($sitedb as $site) {print <<<EOT
 		  <td nowrap><input type="checkbox" name="hids" value="{$site['hid']}"></td>
 		</tr>
 EOT;
-}
+}}
 print <<<EOT
-  </table>
+  </form></table>
 </div>
 EOT;
-}
-print '</form>';
-
 ?>

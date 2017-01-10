@@ -7,7 +7,7 @@
  */
 
 /**
- * 去除多余的转义字符
+ * 增加转义字符
  *
  */
 function doStripslashes(){
@@ -20,7 +20,7 @@ function doStripslashes(){
 }
 
 /**
- * 递归去除转义字符
+ * 递归增加转义字符
  *
  * @param unknown_type $value
  * @return unknown
@@ -446,32 +446,43 @@ function writeCache($cacheFile,$cacheArray)
 	return $strlen;
 }
 
-//网址重写,只能是相对地址,以'或"后就是地址,如<a href="admin.php或<a href='admin.php
+//网址重写,重写的只是文件名,只能是相对地址,以'或"后就是地址,如<a href="admin.php或<a href='admin.php
 function urlRewrite($buffer)
 {
 	global $Files,$host;
 	if(is_array($Files))
 	{
-		foreach($Files as $file=>$args)
+		$left=array('action','href','url');
+		foreach($Files['arg'] as $file=>$args)
 		{
 			if(is_array($args))
 			{
+				$oldfile=$Files['file'][$file];
 				if(RQ_ALIAS&&$host['friend_url']=='url')
 				{
-					if($args[0]=='article.php')
+					if($oldfile=='article.php')
 					{
-						$buffer=preg_replace("/(\"|')article\.php\?url=([\.\w]+)\b/","$1".RQ_HTTP."$2".'.'.$host['host'],$buffer);
+						foreach($left as $lf)
+						{
+							$buffer=preg_replace("/$lf=(\"|')article\.php\?url=([\.\w]+)\b/i","$lf=$1".RQ_HTTP."$2".'.'.$host['host'],$buffer);
+						}
 					}
 					else
 					{
-						$buffer=str_replace("'{$args[0]}","'".RQ_HTTP.$host['host']."/$file",$buffer);
-						$buffer=str_replace("\"{$args[0]}",'"'.RQ_HTTP.$host['host']."/$file",$buffer);
+						foreach($left as $lf)
+						{
+							$buffer=str_ireplace("$lf='{$oldfile}","$lf='".RQ_HTTP.$host['host']."/$file",$buffer);
+							$buffer=str_ireplace("$lf=\"{$oldfile}",'$lf="'.RQ_HTTP.$host['host']."/$file",$buffer);
+						}
 					}
 				}
 				else
 				{
-					$buffer=str_replace("'{$args[0]}","'$file",$buffer);
-					$buffer=str_replace("\"{$args[0]}","\"$file",$buffer);
+					foreach($left as $lf)
+					{
+						$buffer=str_ireplace("$lf='{$oldfile}","$lf='$file",$buffer);
+						$buffer=str_ireplace("$lf=\"{$oldfile}","$lf=\"$file",$buffer);
+					}
 				}
 			}
 		}
@@ -479,13 +490,13 @@ function urlRewrite($buffer)
 	return $buffer;
 }
 
-//参数重写,除后台的不写外
+//参数重写，将浏览器传过来的参数写在程序可以识别的参数,除后台的不写外
 function argRewrite()
 {
 	global $Files;
-	if(is_array($Files)&&isset($Files[RQ_FILE])&&is_array($Files[RQ_FILE])&&$Files[RQ_FILE][0]!='admin.php'&&!empty($Files[RQ_FILE][1]))
+	if(is_array($Files)&&isset($Files['file'][RQ_FILE])&&$Files['file'][RQ_FILE]!='admin.php'&&is_array($Files['arg'][RQ_FILE]))
 	{
-		foreach($Files[RQ_FILE][1] as $new=>$old)
+		foreach($Files['arg'][RQ_FILE] as $new=>$old)
 		{
 			if(isset($_GET[$old])) unset($_GET[$old]);
 			if(isset($_GET[$new]))
@@ -497,19 +508,20 @@ function argRewrite()
 	}
 }
 
+//对某个文件的参数进行重写，如aid重写成id,注意每次只写一个
 function argUrlRewrite($filename,$arg)
 {
 	global $Files;
 	if(is_array($Files)&&!empty($Files))
 	{	
-		$ofs=array_values($Files);
-		foreach($ofs as $k=>$v)
+		foreach($Files['file'] as $nfile=>$ofile)
 		{
-			if($v[0]==$filename&&!empty($v[1]))
+			if($ofile==$filename&&!empty($Files['arg'][$nfile]))
 			{
-				$fs= array_flip($v[1]);
+				$fs= array_flip($Files['arg'][$nfile]);
 				if(isset($fs[$arg])) return $fs[$arg];
 			}
+		
 		}
 	}
 	return $arg;
@@ -545,7 +557,7 @@ function showArticle($article)
 	$article['modified']=date($host['time_article_format'], $article['modified']);
 	$arg=argUrlRewrite('article.php',$host['friend_url']);
 	$article['arg'] = $arg.'='.$article[$host['friend_url']];
-	$article['attachments']=unserialize($article['attachments']);
+	$article['attachments']=$article['attachments'];
 	return $article;
 }
 

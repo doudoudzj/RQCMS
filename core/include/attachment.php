@@ -1,12 +1,5 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
-
-// 获取附件大小
-
-
-
-
-
 // 获得文件扩展名
 
 function getextension($filename) {
@@ -33,5 +26,4 @@ function removeattachment($query) {
 		}
 	}
 }
-
 ?>

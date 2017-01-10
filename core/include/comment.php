@@ -4,7 +4,7 @@ function SaveComment($aid,$content,$username,$uid)
 	global $DB,$timestamp,$onlineip,$hostid;
 	$sql="Insert into ".DB_PREFIX."comment (`hostid`,`articleid`,`userid`,`username`,`dateline`,`content`,`ipaddress`) values ('$hostid','$aid','$uid','$username','$timestamp','$content','$onlineip')";
 	$DB->query($sql);
-	$DB->query("update ".DB_PREFIX."article set comment=comment+1 where aid=$aid and hostid=$hostid");
+	$DB->query("update ".DB_PREFIX."article set comments=comments+1,dateline=dateline+1 where aid=$aid and hostid=$hostid");
 }
 
 function getAllComment($page)

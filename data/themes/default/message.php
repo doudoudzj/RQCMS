@@ -13,7 +13,8 @@ print <<<EOT
 <meta name="author" content="rq204" />
 <link rel="stylesheet" href="images/common.css" type="text/css" media="all"  />
 EOT;
-if ($returnurl) {print <<<EOT
+if ($returnurl) {
+print <<<EOT
 <meta http-equiv="REFRESH" content="3;URL=$returnurl">
 EOT;
 }print <<<EOT

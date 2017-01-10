@@ -12,6 +12,8 @@ print <<<EOT
         </div>
       </div><div class="tableborder">
         <div class="tableheader">插件菜单</div>
+EOT;
+if(count($pluginitem)>0){ print <<<EOT
         <div class="leftmenubody">
 EOT;
 foreach($pluginitem as $itemk=>$itemv){print <<<EOT
@@ -19,6 +21,8 @@ foreach($pluginitem as $itemk=>$itemv){print <<<EOT
 EOT;
 }print <<<EOT
         </div>
+EOT;
+}print <<<EOT
       </div></td>
       <td valign="top" style="width:20px;"></td>
       <td valign="top">

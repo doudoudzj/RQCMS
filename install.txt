@@ -1,0 +1,28 @@
+1.环境要求
+a.PHP5及更高版本.
+b.支持UrlRewrite,支持.htaccess
+
+2.安装方法
+
+注意:请使用editplus或是notepad++修改PHP文件，千万不要使用记事本修改。如果使用其它编辑器，请注意保存时要选utf-8无bom编码方式。
+  notepad++下载地址：http://notepad-plus-plus.org/downloads
+
+a.设置数据库链接
+ RQCMS因为其特殊设置，所以必须手工配置数据库。请打开data/config.php文件，修改里边的数据库链接信息。
+b.修改data,core目录名
+ 您可以不用修改这两个目录名。如果您需要隐藏网站，可以修改这两个目录的名子。如果您修改了，请同时修改 index.php 里的配置信息，如将core改名为admin,data改为hide
+ define('RQ_CORE',RQ_ROOT.'/core');   ->  define('RQ_CORE',RQ_ROOT.'/admin');
+ define('RQ_DATA',RQ_ROOT.'/data');   ->  define('RQ_DATA',RQ_ROOT.'/hide');
+c.上传index.php,.htaccess,data目录，core目录到网站根目录下。（如果您修改了data和core的目录，请上传对应的目录）.
+d.假定本次我们我们用 http://rq.cn 访问网站.请直接访问 http://rq.cn/install.php进行安装。如果没有出现管理员帐号密码设置界面，请检查是否配置有误。
+e.安装完成后，即可以通过默认的 http://rq.cn/admin.php来管理网站了。
+
+
+官方500人QQ群:149855485
+
+论坛地址：http://bbs.rqcms.com
+
+示例站点: http://www.caijibbs.com , http://www.rqcms.com/ , http://www.sourcecsharp.com/
+
+演示站点：http://demo1.caijibbs.com ,用户名 demo,密码 demo 
+

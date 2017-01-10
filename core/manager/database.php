@@ -16,7 +16,7 @@ $tables = array(
 	DB_PREFIX.'user',
 	DB_PREFIX.'var',
 	DB_PREFIX.'log',
-	DB_PREFIX.'redirct'
+	DB_PREFIX.'redirect'
 );
 
 //下载备份文件

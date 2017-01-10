@@ -2,13 +2,14 @@
 /**
  * RQCMS 1.0   A simple,personal,multi-site cms 
  *
- * @copyright  Copyright (c) 2010-2011 RQ204
+ * @copyright  Copyright (c) 2010-2012 RQ204
  * @license    GNU General Public License 2.0
+ * @t          http://t.qq.com/winslow
  */
  //版权相关设置
 define('RQ_AppName','RQCMS');
-define('RQ_VERSION','0.93');
-define('RQ_RELEASE','20120513');
+define('RQ_VERSION','0.98');
+define('RQ_RELEASE','20120617');
 define('RQ_AUTHOR','RQ204');
 define('RQ_WEBSITE','http://www.rqcms.com');
 define('RQ_EMAIL','rq204@qq.com');
@@ -56,6 +57,7 @@ if(RQ_DEBUG)
 else error_reporting(0);
 ob_start();
 doStripslashes();
+if(get_magic_quotes_runtime()) set_magic_quotes_runtime(false);
 
 //数据库实例化
 $DB=new DB_MySQL();
@@ -101,10 +103,15 @@ if(isset($host))
 	$var=@include RQ_DATA.'/cache/var_'.$host['host'].'.php';
 	$Plugins = @include RQ_DATA.'/cache/plugins.php';
 	if(!$cates) $cates=array();
-	if($Plugins&&is_array($Plugins))
+	if(isset($Plugins)&&!empty($Plugins))
 	{
-		$PluginsConfig=$Plugins['data'][$host['host']];
-		$Plugins=$Plugins[$host['host']];
+		foreach($Plugins as $pluginHost=>$pluginNameValue)
+		{
+			if($host['host']==$pluginHost)
+			{
+				$Plugins=$Plugins[$pluginHost];
+			}
+		}
 	}
 }
 
@@ -119,7 +126,7 @@ $useragent=addslashesDeep($_SERVER['HTTP_USER_AGENT']);
 //设置运行的文件
 if(!$Files||!is_array($Files))
 {
-	$Files=array('install.php'=>array('install.php',array()));
+	$Files=array('file'=>array('install.php'=>'install.php'),'arg'=>array());
 }
 else //权限判定
 {
@@ -161,9 +168,9 @@ argRewrite();
 $constant = get_defined_constants();
 if(!isset($theme)) $theme='default';
 //加载执行文件和模板
-$views=isset($Files[RQ_FILE])?$Files[RQ_FILE][0]:"404.php";
+$views=isset($Files['file'][RQ_FILE])?$Files['file'][RQ_FILE]:"404.php";
 if(RQ_FILE=='index.php'&&isset($host)) $views='index.php';
-if(isset($host['close'])&&$host['close']&&isset($Files[RQ_FILE][0])&&$Files[RQ_FILE][0]!='admin.php') exit($host['close_note']);
+if(isset($host['close'])&&$host['close']&&isset($Files['file'][RQ_FILE])&&$Files['file'][RQ_FILE]!='admin.php') exit($host['close_note']);
 if(RQ_ALIAS&&isset($aliasname)&&$views=="index.php")//只对文章页面进行二级域名处理，如果需要对其它页面进行处理，请插件实现
 { 
 	$views='article.php';
@@ -177,11 +184,11 @@ $ContentType='Content-Type: text/html; charset=UTF-8';
 //加载插件，插件目录和插件文件名应保持一致
 if ($Plugins && is_array($Plugins))
 {
-	foreach($Plugins as $plugin)
+	foreach($Plugins as $pluginName=>$pluginData)
 	{
-		if(file_exists(RQ_DATA.'/plugins/'.$plugin.'/'.$plugin.'.php'))
+		if(file_exists(RQ_DATA.'/plugins/'.$pluginName.'/'.$pluginName.'.php'))
 		{
-			include RQ_DATA.'/plugins/'.$plugin.'/'.$plugin.'.php';
+			include RQ_DATA.'/plugins/'.$pluginName.'/'.$pluginName.'.php';
 		}
 	}
 }

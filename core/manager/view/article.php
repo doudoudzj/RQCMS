@@ -48,7 +48,7 @@ function addattach(attachid){
 		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list&view=stick">置顶文章</a></div>
 EOT;
 foreach($cates as $key => $cate){print <<<EOT
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list&id={$cate['cid']}">{$cate['name']}</a></div>
+          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list&cid={$cate['cid']}">{$cate['name']}</a></div>
 EOT;
 }print <<<EOT
         </div>
@@ -117,7 +117,7 @@ EOT;
     </tr>
 	 <tr class="tablecell">
       <td>关键字:</td>
-      <td><input class="formfield" type="text" name="keywords" size="50" maxlength="110" value="$article[keywords]">自动提取关键字的图片    多个关键字用,分隔</td>
+      <td><input class="formfield" type="text" name="keywords" size="50" maxlength="110" value="$article[keywords]">多个关键字用,分隔</td>
     </tr>
     <tr class="tablecell">
       <td valign="top">文章描述:</td>

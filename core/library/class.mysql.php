@@ -119,8 +119,8 @@ class DB_MySQL  {
 		global $username,$timestamp,$onlineip;
 
 		if ($sql) {
-			@$fp = fopen(RQ_DATA.'/logs/dberrorlog.php', 'a');
-			@fwrite($fp, "<?PHP exit('Access Denied'); ?>\t$username\t$timestamp\t$onlineip\t".basename(RQ_FILE)."\t".htmlspecialchars($this->geterrdesc())."\t".str_replace(array("\r", "\n", "\t"), array(' ', ' ', ' '), trim(htmlspecialchars($sql)))."\n");
+			@$fp = fopen(RQ_DATA.'/logs/dberror.php', 'a');
+			@fwrite($fp, "$username\t$timestamp\t$onlineip\t".basename(RQ_FILE)."\t".htmlspecialchars($this->geterrdesc())."\t".str_replace(array("\r", "\n", "\t"), array(' ', ' ', ' '), trim(htmlspecialchars(str_replace("\t",'',$sql))))."\n");
 			@fclose($fp);
 		}
 
@@ -137,6 +137,7 @@ class DB_MySQL  {
 		$message .= "<p>数据库出错:</p><pre><b>".htmlspecialchars($msg)."</b></pre>\n";
 		$message .= "<b>Mysql error description</b>: ".htmlspecialchars($this->geterrdesc())."\n<br />";
 		$message .= "<b>Mysql error number</b>: ".$this->geterrno()."\n<br />";
+		$message .= "<b>Mysql error sql</b>: ".htmlspecialchars($sql)."\n<br />";
 		$message .= "<b>Date</b>: ".date("Y-m-d @ H:i")."\n<br />";
 		$message .= "<b>Script</b>: http://".$_SERVER['HTTP_HOST'].getenv("REQUEST_URI")."\n<br />";
 

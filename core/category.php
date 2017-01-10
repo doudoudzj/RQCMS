@@ -17,19 +17,19 @@ $articledb=getCateArticle($expr,$page);
 $tatol=count($articledb);
 $multipage='';
 $catekey=$catearg;
-if(is_array($Files[RQ_FILE][1])&&!empty($Files[RQ_FILE][1]))
+if(is_array($Files['arg'][RQ_FILE])&&!empty($Files['arg'][RQ_FILE]))
 {
-	$cidkeys=array_keys($Files[RQ_FILE][1]);
+	$cidkeys=array_keys($Files['arg'][RQ_FILE]);
 	$catekey=$cidkeys[0];
 }
 
 $allcount=1;
 if($tatol>0)
 {
-	$arr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article WHERE hostid=$hostid and visible='1' and cateid={$cate['cid']}");
+	$arr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article WHERE hostid=$hostid and visible=1 and cateid={$cate['cid']}");
 	if(!empty($arr)) $allcount=$arr['count(*)'];
 	$allpage=@ceil($allcount/$host['list_shownum']);
-	$multpage=pagination($allcount,$host['list_shownum'],$page,'category.php?'.$catekey.'='.$_GET[$catearg].'&page');
+	$multipage=pagination($allcount,$host['list_shownum'],$page,'category.php?'.$catekey.'='.$_GET[$catearg].'&page');
 }
 
 $title=$cate['name'];

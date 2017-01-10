@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: 访问统计
+Plugin Name: 单页面
 Version: 1.0
-Description: 这是世界上第一个RQCMS插件，通过它我们可以很方便的添加统计代码。
+Description: 该插件可以方便我们添加单个网页。
 Author: RQ204
 Author URL: http://www.rqcms.com
 */
@@ -33,31 +33,46 @@ doAction('admin_plugin_setting_view');插件设置界面
 !defined('RQ_DATA') && exit('access deined!');
 
 //添加一个菜单在插件菜单中
-function stat_add_item()
+function page_add_item()
 {
-	global $pluginitem;
-	$pluginitem['添加统计']='stat';
+	global $pluginitem,$DB;
+	$pluginitem['单页管理']='page';
+	
+	//如果数据库不存在则创建添加数据库
+	$table=DB_PREFIX.'page';
+	$sql=<<<EOT
+	 CREATE TABLE IF NOT EXISTS `{$table}` (
+	`pid` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`hostid` TINYINT(3) NOT NULL,
+	`userid` SMALLINT(5) UNSIGNED NOT NULL,
+	`username` VARCHAR(50) NOT NULL,
+	`title` VARCHAR(100) NOT NULL DEFAULT '',
+	`keywords` VARCHAR(120) NOT NULL DEFAULT '',
+	`url` CHAR(60) NOT NULL,
+	`excerpt` VARCHAR(255) NOT NULL,
+	`content` LONGTEXT NOT NULL,
+	`dateline` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+	`modified` INT(10) NOT NULL,
+	`views` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+	`visible` TINYINT(1) NOT NULL DEFAULT '1',
+	PRIMARY KEY (`pid`),
+	INDEX `hostid` (`hostid`),
+	INDEX `userid` (`userid`),
+	INDEX `url` (`url`),
+	INDEX `dateline` (`dateline`),
+	INDEX `visible` (`visible`),
+	INDEX `modified` (`modified`),
+	INDEX `views` (`views`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+EOT;
+	$DB->query($sql);
 }
-addAction('admin_plugin_add_item','stat_add_item');
+addAction('admin_plugin_add_item','page_add_item');
 
-function stat_footer_add($output)
+function page_404_before_output()
 {
 	global $host,$Plugins,$Files;
-	$pos=strrpos($output,'</body>');
-	if($pos&&$Files['file'][RQ_FILE]!='admin.php')
-	{
-		$output=substr($output,0,$pos).$Plugins['stat'].substr($output,$pos);
-		if($host['gzipcompress']&& function_exists('ob_gzhandler'))
-		{
-			ob_start('ob_gzhandler');
-		}
-		else
-		{
-			ob_start();
-		}
-		echo $output;
-		ob_flush();
-		exit;
-	}
+	//没有找到文章时，查询一下缓存文件
 }
-addAction('before_output','stat_footer_add');
+
+addAction('404_before_output','page_404_before_output');

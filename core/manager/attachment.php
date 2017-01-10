@@ -76,10 +76,6 @@ if(RQ_POST)
 			}
 
 			// 修改附件
-			$oldattach = array();	
-			if ($article['attachments']){
-				$oldattach = unserialize($article['attachments']);
-			}
 			$attachment_count=0;
 			$attachments=getAttach();
 			if($attachments&&is_array($attachments))
@@ -90,12 +86,11 @@ if(RQ_POST)
 					$attachments[$key]['aid']=$DB->insert_id();
 					unset($attachments[$key]['filepath']);
 					unset($attachments[$key]['thumb_filepath']);
-					$oldattach[]=$attachments[$key];
 					$attachment_count++;
 				}
 			}
 			$attachstr=addslashes(serialize($oldattach));
-			$DB->query('update '.DB_PREFIX."article set attachments='$attachstr' where aid='$aid'");
+			$DB->query('update '.DB_PREFIX."article set `attachments`=`attachments`+$attachment_count where aid='$aid'");
 			redirect('成功上传了'.$attachment_count.'个附件到《'.$article['title'].'》', 'admin.php?file=attachment&action=list&aid='.$aid);
 			break;
 	}

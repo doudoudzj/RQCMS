@@ -15,8 +15,11 @@ print <<<EOT
         <div class="leftmenubody">
           <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=login">登陆日志</a></div>
           <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=search">站内搜索</a></div>
-		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=spider">搜索引擎</a></div>
-		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=dberror">MySql错误</a></div>
+EOT;
+if($groupid==4){print <<<EOT
+		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=dberror">MySql</a></div>
+EOT;
+}print <<<EOT
         </div>
       </div>
 	  </td>
@@ -51,14 +54,14 @@ EOT;
     </tr>
   </form>
 EOT;
-} elseif ($action == 'log'&&$do='search') {print <<<EOT
+} elseif ($action == 'log') {print <<<EOT
 <form action="admin.php?file=maintenance"  method="POST">
     <tr class="tdbheader">
-      <td width="20%"><b>用户名</b></td>
-      <td width="20%"><b>时间</b></td>
-      <td width="20%"><b>IP地址</b></td>
-      <td width="20%"><b>浏览器</b></td>
-	  <td width="20%"><b>结果</b></td>
+      <td width="10%"><b>用户名</b></td>
+      <td width="10%"><b>时间</b></td>
+      <td width="10%"><b>IP地址</b></td>
+      <td width="50%"><b>$browser</b></td>
+	  <td width="20%"><b>$result</b></td>
     </tr>
 EOT;
 foreach($searchdb as $key => $search){print <<<EOT
@@ -66,7 +69,7 @@ foreach($searchdb as $key => $search){print <<<EOT
           <td nowrap="nowrap">$search[user]</td>
           <td nowrap="nowrap">$search[dateline]</td>
           <td nowrap="nowrap">$search[ip]</td>
-          <td nowrap="nowrap">$search[useragent]</td>
+          <td>$search[useragent]</td>
           <td nowrap="nowrap">$search[content]</td>
         </tr>
 EOT;
@@ -75,9 +78,10 @@ EOT;
           <td colspan="6" nowrap="nowrap"><div class="records">记录:$tatol</div>
                   <div class="multipage">$multipage</div></td>
         </tr>
-    <input type="hidden" name="action" value="delsearchlog">
+    <input type="hidden" name="action" value="log">
+	<input type="hidden" name="do" value="$do">
     <tr class="tablecell">
-      <td colspan="6" align="center"><input type="submit" value="清空所有搜索记录" class="formbutton">
+      <td colspan="6" align="center"><input type="submit" value="保留最新500条日志记录" class="formbutton">
       </td>
     </tr>
   </form>

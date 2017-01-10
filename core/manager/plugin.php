@@ -5,7 +5,8 @@ $plugindb=array();
 while($arr=$DB->fetch_array($pluginsquery))
 {
 	$pluginfile=RQ_DATA.'/plugins/'.$arr['file'].'/'.$arr['file'].'.php';
-	if(file_exists($pluginfile))
+	$settingfile=RQ_DATA.'/plugins/'.$arr['file'].'/'.$arr['file'].'_setting.php';
+	if(file_exists($pluginfile)&&file_exists($settingfile))
 	{
 		$plugindb[$arr['file']]=$arr;
 	}
@@ -18,7 +19,7 @@ $needrecache=false;
 foreach($pluginfile as $filename=>$fileinfo)
 {
 	if(!isset($plugindb[$filename])){
-		$pluginarr=$DB->fetch_first('Select * from `'.DB_PREFIX."plugin` where `file`='$filename'");
+		$pluginarr=$DB->fetch_first('Select * from `'.DB_PREFIX."plugin` where `file`='$filename' and hostid=$hostid");
 		if(empty($pluginarr)){
 		$DB->query("Insert into `".DB_PREFIX."plugin` (`hostid`,`file`,`name`,`author`,`version`,`description`,`url`,`active`) values ('$hostid','$filename','$fileinfo[name]','$fileinfo[author]','$fileinfo[version]','$fileinfo[description]','$fileinfo[url]','0')");
 		$fileinfo['active']=0;
@@ -30,7 +31,10 @@ foreach($pluginfile as $filename=>$fileinfo)
 		$needrecache=true;
 	}
 }
+
 if($needrecache) plugins_recache();
+$curentPlugin=isset($_GET['plugin'])?$_GET['plugin']:(isset($_POST['plugin'])?$_POST['plugin']:'');//当前设置的插件
+if(!isset($plugindb[$curentPlugin])) $curentPlugin='';
 
 if(RQ_POST)
 {
@@ -54,8 +58,14 @@ if(RQ_POST)
 		}
 		else redirect($ret,$url);
 	}
-	else if($action=='setting'){//插件的保存设置
-	doAction('admin_plugin_setting_save');
+	else if($action=='setting')
+	{//插件的保存设置
+		if($curentPlugin)
+		{
+			include RQ_DATA."/plugins/{$curentPlugin}/{$curentPlugin}_setting.php";
+			doAction('admin_plugin_setting_save');
+			exit;
+		}
 	}
 }
 else
@@ -70,18 +80,31 @@ else
 	plugins_recache();
 	redirect("插件状态更新成功",'admin.php?file=plugin');
 	}
-	else if($action=='delete'){
-	if($groupid!=4) redirect("您无权删除插件",'admin.php?file=plugin');
-	$pid=$_GET['pid'];
-	$arr=$DB->fetch_first('select * from '.DB_PREFIX."plugin where hostid=$hostid and pid=$pid");
-	if(!empty($arr)){
-	$DB->query('delete from '.DB_PREFIX."plugin where hostid=$hostid and pid=$pid");
-	if(rmdir(RQ_DATA.'/plugins/'.$arr['file'])){
-	plugins_recache();
-	redirect("插件删除成功",'admin.php?file=plugin');
+	else if($action=='delete')
+	{
+		if($groupid!=4) redirect("您无权删除插件",'admin.php?file=plugin');
+		$pid=$_GET['pid'];
+		$arr=$DB->fetch_first('select * from '.DB_PREFIX."plugin where hostid=$hostid and pid=$pid");
+		if(!empty($arr))
+		{
+			$DB->query('delete from '.DB_PREFIX."plugin where hostid=$hostid and pid=$pid");
+			if(rmdir(RQ_DATA.'/plugins/'.$arr['file'])){
+			plugins_recache();
+			redirect("插件删除成功",'admin.php?file=plugin');
+			}
+			redirect("删除删除失败",'admin.php?file=plugin');
+		}
 	}
-	redirect("删除删除失败",'admin.php?file=plugin');
-	}
+	else if($action=='setting')
+	{
+		if($curentPlugin)
+		{
+			include RQ_DATA."/plugins/{$curentPlugin}/{$curentPlugin}_setting.php";
+		}
+		else
+		{
+			redirect("不存在的插件",'admin.php?file=plugin');
+		}
 	}
 }
 
@@ -165,3 +188,10 @@ function getPluginData($pluginFile) {
 	);
 }
 
+function dataFrom($plugin)
+{
+	$pluginName=isset($_GET['plugin'])?$_GET['plugin']:'';
+	if(!$pluginName) $pluginName=isset($_POST['plugin'])?$_POST['plugin']:'';
+	if($plugin==$pluginName) return true;
+	return false;
+}

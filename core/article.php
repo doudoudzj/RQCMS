@@ -33,7 +33,7 @@ if (!empty($article['readpassword']) &&(isset($_POST['readpassword'])&&$_POST['r
 else 
 {
 	$article['allowread'] = true;
-	$DB->unbuffered_query("UPDATE ".DB_PREFIX."article SET views=views+1 WHERE aid='$aid'");
+	$DB->unbuffered_query("UPDATE ".DB_PREFIX."article SET views=views+1 WHERE aid=$aid");
 
 	//处理PHP高亮
 	$article['content'] = preg_replace("/\s*\[php\](.+?)\[\/php\]\s*/ies", "phphighlite('\\1')", $article['content']);
