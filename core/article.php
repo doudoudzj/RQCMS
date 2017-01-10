@@ -24,11 +24,17 @@ $description=str_replace("</p>","",$description);
 $aid=$article['aid'];
 
 //内容分页的处理
+$pagecount=0;
 if(strpos($article['content'],'[page]'))
 {
 	$articleArr=explode('[page]',$article['content']);
-	if(count($articleArr)>=$page&&$page>0) $article['content']=$articleArr[$page-1];
-	else $article['content']=$articleArr[0];
+	$pagecount=count($articleArr);
+	if($pagecount>=$page&&$page>0) $article['content']=$articleArr[$page-1];
+	else
+	{
+		$page=0;
+		$article['content']=$articleArr[0];
+	}
 }
 
 //隐藏变量,方便那些做模板可以单独显示月份和号数的的朋友.

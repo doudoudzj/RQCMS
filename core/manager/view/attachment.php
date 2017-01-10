@@ -51,7 +51,7 @@ EOT;
   <input type="hidden" name="action" value="addattachtoarticle" />
   <input type="hidden" name="aid" value="$aid" />
   <tr class="tdbheader">
-	<td colspan="2">上传新附件到该文章 <a href="###" onclick="addattachfrom();">[+]</a>&nbsp;<a href="###" onclick="removeattachfrom();">[-]</a></td>
+	<td colspan="2">上传新附件到该文章 <a href=“javascript:void(0);” onclick="addattachfrom();">[+]</a>&nbsp;<a href=“javascript:void(0);” onclick="removeattachfrom();">[-]</a></td>
   </tr>
   <tr class="tablecell">
     <td colspan="2">图片超过2M缩略图和水印均不生效.如果上传大于2M的图片请自行处理.</td>
@@ -87,6 +87,7 @@ print <<<EOT
 EOT;
 foreach($attachdb as $key => $attach){
 $atturl=mkUrl('attachment.php',$attach['aid']);
+$arturl='admin.php?file=article&action=mod&aid='.$attach['articleid'];
 print <<<EOT
           <tr class="tablecell">
             <td><a href="{$atturl}" target="_blank" title="$attach[filepath]">$attach[filename]</a></td>
@@ -95,7 +96,7 @@ print <<<EOT
             <td>$attach[subdir]</td>
             <td nowrap>$attach[dateline]</td>
             <td>$attach[downloads]</td>
-			<td nowrap><a title="$attach[article]" href="article.php?aid=$attach[aid]" target="_blank">查看</a></td>
+			<td nowrap><a title="$attach[article]" href="{$arturl}" target="_blank">查看</a></td>
             <td nowrap><input type="checkbox" name="attachment[]" value="$attach[aid]" /></td>
           </tr>
 EOT;

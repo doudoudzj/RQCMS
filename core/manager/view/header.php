@@ -10,7 +10,6 @@ print <<<EOT
 <meta name="author" content="RQ204" />
 <title>{$host['name']} - RQCMS {$constant['RQ_VERSION']}</title>
 <link rel="stylesheet" href="{$cssfile}" type="text/css">
-<script type="text/javascript" src="{$cssdir}global.js"></script>
 <script type="text/javascript" src="{$editordir}jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="{$editordir}xheditor-1.1.14-zh-cn.min.js"></script>
 
@@ -23,6 +22,15 @@ print <<<EOT
 -->
 </style>
 <script type="text/javascript">
+
+function checkall(form) {
+	for (var i=0;i<form.elements.length;i++) {
+		var e = form.elements[i];
+		if (e.name != 'chkall')
+		e.checked = form.chkall.checked;
+    }
+}
+
 var editor;
 $(pageInit);
 function pageInit()
@@ -41,7 +49,7 @@ function pageInit()
 		_this.showDialog(jCode);
 	}}
 	};
-	editor=$('#content').xheditor({plugins:allPlugin,tools:'Cut,Copy,Paste,Pastetext,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,SelectAll,Removeformat,Align,List,Outdent,Indent,Link,Unlink,Anchor,Img,Flash,Media,Hr,Table,Code,|,Source,Preview,Print,Fullscreen,About'});
+	editor=$('#content').xheditor({plugins:allPlugin,tools:'Cut,Copy,Paste,Pastetext,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,SelectAll,Removeformat,Align,List,Outdent,Indent,Link,Unlink,Anchor,Img,Flash,Media,Hr,Table,Code,|,Source,Preview,Print,Fullscreen,About',upLinkExt:"zip,rar,txt",upImgUrl:"admin.php?file=upload",upImgExt:"jpg,jpeg,gif,png",upFlashUrl:"admin.php?file=upload",upFlashExt:"swf",upMediaUrl:"admin.php?file=upload",upMediaExt:"avi,rmvb,mkv,mp4,wmv,wma,mid"});
 }
 </script>
 
@@ -74,7 +82,7 @@ EOT;
 EOT;
 foreach ($adminitem AS $link => $title)	{
 print <<<EOT
-         <td width="9%" class="navcell" onMouseover="document.getElementById('$link').className='cpnavmenuHover'" onMouseout="document.getElementById('{$link}').className='cpnavmenu'"><div class="cpnavmenu" id="{$link}"><a href="admin.php?file={$link}">{$title}</a></div></td>
+         <td width="9%" class="navcell" onMouseover="$('$link').className='cpnavmenuHover'" onMouseout="$('{$link}').className='cpnavmenu'"><div class="cpnavmenu" id="{$link}"><a href="admin.php?file={$link}">{$title}</a></div></td>
 EOT;
 }print <<<EOT
           <td>&nbsp;</td>

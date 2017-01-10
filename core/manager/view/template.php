@@ -116,7 +116,7 @@ foreach($stylevardb as $stylevar){print <<<EOT
                   <tr class="tablecell">
 				    <td nowrap="nowrap"><select name="visible[$stylevar[vid]]">$stylevar[visible]</select></td>
                     <td nowrap="nowrap"><b>\$varArr[$stylevar[title]]</b></td>
-                    <td nowrap="nowrap"><textarea id="varid_$stylevar[vid]" class="formarea" name="stylevar[$stylevar[vid]]" style="width:400px;height:30px;">$stylevar[value]</textarea> <b><a href="###" onclick="resizeup('varid_$stylevar[vid]');">[+]</a> <a href="###" onclick="resizedown('varid_$stylevar[vid]');">[-]</a></b></td>
+                    <td nowrap="nowrap"><textarea id="varid_$stylevar[vid]" class="formarea" name="stylevar[$stylevar[vid]]" style="width:400px;height:30px;">$stylevar[value]</textarea> <b><a href=“javascript:void(0);” onclick="resizeup('varid_$stylevar[vid]');">[+]</a> <a href=“javascript:void(0);” onclick="resizedown('varid_$stylevar[vid]');">[-]</a></b></td>
                     <td nowrap><input type="checkbox" name="delete[]" value="$stylevar[vid]"></td>
                   </tr>                
 EOT;
@@ -150,7 +150,7 @@ EOT;
                   </tr>
                   <tr class="tablecell">
                     <td><b>变量内容:</b></td>
-                    <td valign="top"><textarea id="addvar" class="formarea" type="text" name="value" style="width:400px;height:50px;"></textarea> <b><a href="###" onclick="resizeup('addvar');">[+]</a> <a href="###" onclick="resizedown('addvar');">[-]</a></b></td>
+                    <td valign="top"><textarea id="addvar" class="formarea" type="text" name="value" style="width:400px;height:50px;"></textarea> <b><a href=“javascript:void(0);” onclick="resizeup('addvar');">[+]</a> <a href=“javascript:void(0);” onclick="resizedown('addvar');">[-]</a></b></td>
                   </tr>
                   <tr class="tablecell">
                     <td colspan="2" align="center"><input type="submit" value="添加" class="formbutton"></td>
@@ -202,7 +202,7 @@ EOT;
                       <input type="hidden" name="file" value="$file"><input type="hidden" name="ext" value="$ext"></td>
                   </tr>
                   <tr class="tablecell">
-                    <td width="20%" valign="top"><b>模板内容:</b><br /><b><a href="###" onclick="resizeup('filecontent');">[+]</a> <a href="###" onclick="resizedown('filecontent');">[-]</a></b></td>
+                    <td width="20%" valign="top"><b>模板内容:</b><br /><b><a href=“javascript:void(0);” onclick="resizeup('filecontent');">[+]</a> <a href=“javascript:void(0);” onclick="resizedown('filecontent');">[-]</a></b></td>
                     <td width="80%"><textarea id="filecontent" class="formarea" cols="85" rows="25" name="content" style="width:95%;height:400px;font:12px'Courier New';">$contents</textarea></td>
                   </tr>
                   <tr nowrap class="tablecell">

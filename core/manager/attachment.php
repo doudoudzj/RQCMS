@@ -8,7 +8,7 @@ if(RQ_POST)
 		case 'delattachments':	//批量删除附件
 			if ($attachmentids = implode_ids($_POST['attachment'])) {
 				$nokeep = array();
-				$query  = $DB->query("SELECT attachmentid,filepath,thumb_filepath FROM ".DB_PREFIX."attachments WHERE attachmentid IN ($attachmentids)");
+				$query  = $DB->query("SELECT attachmentid,filepath FROM ".DB_PREFIX."attachment WHERE attachmentid IN ($attachmentids)");
 				while($attach = $DB->fetch_array($query)) {
 					$nokeep[$attach['attachmentid']] = $attach;
 				}
@@ -58,7 +58,7 @@ if(RQ_POST)
 			{
 				foreach($attachments as $key=>$attachment)
 				{
-					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`thumb_filepath`,`thumb_width`,`thumb_height`,`isimage`,`hostid`) values ('$aid','$timestamp','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[thumb_filepath]','$attachment[thumb_width]','$attachment[thumb_height]','$attachment[isimage]','$hostid')");
+					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`isimage`,`hostid`) values ('$aid','$timestamp','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[isimage]','$hostid')");
 					$attachments[$key]['aid']=$DB->insert_id();
 					unset($attachments[$key]['filepath']);
 					unset($attachments[$key]['thumb_filepath']);
@@ -132,6 +132,7 @@ else
 			else $attach['subdir']='';
 			$attachdb[] = $attach;
 		}
+
 		$title=$attach['article'];
 		unset($attach);
 		$DB->free_result($query);

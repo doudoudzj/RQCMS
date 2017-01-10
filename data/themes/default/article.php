@@ -3,6 +3,19 @@ if(!defined('RQ_ROOT')) exit('Access Denied');
 $hotdata=getHotArticle(10,$article['cateid']);
 if(is_array($article['tag'])) $likedata=getRelatedArticle($article['aid'],$article['tag'],10);
 
+if($pagecount>0)
+{
+	for ($i = 1;$i <=$pagecount;$i++)
+	{
+		if ($i == $page){
+			$multipage .= " <span>$i</span> ";
+		} else {
+			$curl=mkUrl('article.php',$_GET['url'],$i);
+			$multipage .= " <a href=\"$curl\">$i</a> ";
+		}
+	}
+}
+
 include RQ_DATA."/themes/{$theme}/header.php";
 print <<<EOT
   <div id=main>
@@ -21,7 +34,10 @@ else
 {print <<<EOT
 $article[content]<BR /> 
 EOT;
-if($article['attachments'])
+if($multipage){print <<<EOT
+<div id="ArtPLink">$multipage</div>
+EOT;
+}if($article['attachments'])
 {
 	foreach($article['attachments'] as $image)
 	{

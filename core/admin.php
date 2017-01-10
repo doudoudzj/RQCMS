@@ -35,7 +35,7 @@ switch($groupid)
 {
 	case 2:
 		$adminitem = array(
-		'article' => '文章管理'
+		'article' => '文章管理',
 	);
 	break;
 	case 3:
@@ -69,7 +69,7 @@ switch($groupid)
 	break;
 }
 
-$other=array('css','login','special','main','xmlrpc','database');
+$other=array('css','login','special','main','xmlrpc','database','upload');
 if(!in_array($incfile,$other)&&!array_key_exists($incfile,$adminitem)) redirect('未定义操作','admin.php?file=main');
 if($groupid!=4&&$incfile=='special') redirect('您无权限访问多站点设置','admin.php?file=main');
 if($groupid<3&&$incfile=='tag') redirect('您无权限编辑tag设置','admin.php?file=main');

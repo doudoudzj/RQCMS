@@ -2,36 +2,40 @@
 if(!defined('RQ_ROOT')) exit('Access Denied');
 print <<<EOT
 <script type="text/javascript">
-function popnew(url,title,width,height){
-	var w = 1024;
-	var h = 768;
-	if (document.all || document.layers){
-		w = screen.availWidth;
-		h = screen.availHeight;
-	}
-	var leftPos = (w/2-width/2);
-	var topPos = (h/2-height/2);
-	window.open(url,title,"width="+width+",height="+height+",top="+topPos+",left="+leftPos+",scrollbars=no,resizable=no,status=no");
-}
-function checkform() {
-	if ($('title') && $('title').value == "") {
-		alert("请输入标题.");
+
+function checkform()
+{
+	if ($("#title").val()=='') 
+	{
+		alert("请输入标题");
 		return false;
 	}
-	if ($('cid') && $('cid').value == "")	{
-		alert("请选择分类.");
+	if ($("#cid").val()==0)	
+	{
+		alert("请选择分类");
 		return false;
 	}
-	$('submit').disabled = true;
+	if ($("#content").val()==0)	
+	{
+		alert("内容不得为空");
+		return false;
+	}
 	return true;
 }
 
-
+$(document).ready(function(){
+    $('#cid').change(function(){
+		var upurl="admin.php?file=upload&cid="+$(this).children('option:selected').val(); 
+        editor.settings.upImgUrl=upurl;
+		editor.settings.upFlashUrl=upurl;
+		editor.settings.upMediaUrl=upurl;
+    });
+})
 
 
 //插入上传附件
 function addattach(attachid){
-	addhtml('[attach=' + attachid + ']');
+	editor.pasteHTML('[attach=' + attachid + ']');
 }
 </script>
 
@@ -60,7 +64,7 @@ EOT;
       </div></td>
       <td valign="top" style="width:20px;"></td>
       <td valign="top">
-	  <form action="admin.php?file=article" enctype="multipart/form-data" method="POST" name="form" onsubmit="return checkform();"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	  <form action="admin.php?file=article" enctype="multipart/form-data" method="POST" name="form1""><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 	  <tr><td class="rightmainbody"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 EOT;
 if($action == 'list'){print <<<EOT
@@ -118,18 +122,18 @@ EOT;
     </tr>
     <tr class="tablecell">
       <td>标签(Tag):</td>
-      <td><input class="formfield" type="text" name="tag" size="50" maxlength="110" value="$article[tag]"> <img src="{$cssdir}/insert.gif" alt="插入已经使用的Tag" onclick="popnew('admin.php?file=category&action=getalltags','tag',250,330)" style="cursor:pointer" />    多个Tag用,分隔</td>
+      <td><input class="formfield" type="text" name="tag" size="50" maxlength="110" value="$article[tag]">&nbsp;多个Tag用,分隔</td>
     </tr>
 	 <tr class="tablecell">
       <td>关键字:</td>
-      <td><input class="formfield" type="text" name="keywords" size="50" maxlength="110" value="$article[keywords]">多个关键字用,分隔</td>
+      <td><input class="formfield" type="text" name="keywords" size="50" maxlength="110" value="$article[keywords]">&nbsp;多个关键字用,分隔</td>
     </tr>
     <tr class="tablecell">
       <td valign="top">文章描述:</td>
       <td><textarea name="excerpt" style="width:100%; height:100px;">{$article['excerpt']}</textarea></td>
     </tr>
     <tr class="tablecell">
-      <td valign="top">文章内容:<br /><br />手动分页符<br />[page]</td>
+      <td valign="top">文章内容:<br /><br />手动分页符<br /><a href="javascript:void(0);" onClick="editor.pasteHTML('[page]');">[page]</a></td>
       <td><textarea name="content" id="content" style="width:100%; height:400px;">{$article['content']}</textarea></td>
     </tr>
     <tr class="tablecell">
@@ -160,8 +164,10 @@ if(count($attachdb) > 0){print <<<EOT
       <td valign="top">已上传的附件:</td>
       <td>
 EOT;
-foreach($attachdb as $key => $attach){print <<<EOT
-<input type="checkbox" name="keep[]" value="$attach[aid]" checked> 保留 <a href="../attachment.php?aid=$attach[aid]" target="_blank"><b>$attach[filename]</b></a> ($attach[dateline], $attach[filesize]) <b> <a href="###" onclick="addattach('$attach[aid]')">插入文章</a></b><br />
+foreach($attachdb as $key => $attach){
+$atturl=mkUrl('attachment.php',$attach['aid']);
+print <<<EOT
+<input type="checkbox" name="keep[]" value="$attach[aid]" checked> 保留 <a href="$atturl" target="_blank"><b>$attach[filename]</b></a> ($attach[dateline], $attach[filesize]) <b> <a href="javascript:void(0);" onClick="addattach('{$attach['aid']}');">插入文章</a></b><br />
 EOT;
 }print <<<EOT
 </td>
@@ -170,19 +176,20 @@ EOT;
 }print <<<EOT
     <tr class="tablecell">
       <td valign="top">上传新附件:</td>
-      <td style="padding-top:5px;"><table cellspacing="0" cellpadding="6" border="0" class="celltable">
+      <td style="padding-top:5px;">
+<table cellspacing="0" cellpadding="6" border="0" class="celltable">
   <tr><td>图片超过2M缩略图和水印均不生效.如果上传大于2M的图片请自行处理.</td></tr>
   <tbody id="attachbodyhidden" style="display:none"><tr><td><input type="file" name="attach[]" class="formfield" /><span id="localfile[]"></span><input type="hidden" name="localid[]" /></td></tr></tbody>
   <tbody id="attachbody"></tbody>
   </table>
-   <script type="text/javascript" src="{$cssdir}attachment.js"></script><script type="text/javascript" src="{$cssdir}editor.js"></script>
+   <script type="text/javascript" src="{$cssdir}attachment.js"></script>
   </td>
     </tr>
     <input type="hidden" name="action" value="$action">
     <input type="hidden" name="aid" value="$aid">
     <input type="hidden" name="oldtags" value="$article[keywords]">
     <tr class="tablecell">
-      <td colspan="2" align="center"><input type="submit" name="submit" id="submit" value="提交" class="formbutton">
+      <td colspan="2" align="center"><input type="submit" name="submit" id="submit" value="提交" class="formbutton" onclick="return checkform();">
         <input type="reset" value="重置" class="formbutton"></td>
     </tr>
 EOT;

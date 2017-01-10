@@ -1,12 +1,20 @@
 var aid = 1;
 
+function addattachfrom() {
+	var newnode = document.getElementById('attachbodyhidden').firstChild.cloneNode(true);
+	document.getElementById('attachbody').appendChild(newnode);
+}
+function removeattachfrom() {
+	document.getElementById('attachbody').childNodes.length > 1 && document.getElementById('attachbody').lastChild ? document.getElementById('attachbody').removeChild(document.getElementById('attachbody').lastChild) : 0;
+}
+
 function delAttach(id) {
-	$('attachbody').removeChild($('attach_' + id).parentNode.parentNode);
-	$('attachbody').innerHTML == '' && addAttach();
+	document.getElementById('attachbody').removeChild(document.getElementById('attach_' + id).parentNode.parentNode);
+	document.getElementById('attachbody').innerHTML == '' && addAttach();
 }
 
 function addAttach() {
-	newnode = $('attachbodyhidden').firstChild.cloneNode(true);
+	newnode = document.getElementById('attachbodyhidden').firstChild.cloneNode(true);
 	var id = aid;
 	var tags;
 	tags = newnode.getElementsByTagName('input');
@@ -27,24 +35,24 @@ function addAttach() {
 		}
 	}
 	aid++;
-	$('attachbody').appendChild(newnode);
+	document.getElementById('attachbody').appendChild(newnode);
 }
 
 addAttach();
 
 function insertAttach(id) {
-	var path = $('attach_' + id).value;
-	var localfile = $('attach_' + id).value.substr($('attach_' + id).value.replace(/\\/g, '/').lastIndexOf('/') + 1);
+	var path = document.getElementById('attach_' + id).value;
+	var localfile = document.getElementById('attach_' + id).value.substr(document.getElementById('attach_' + id).value.replace(/\\/g, '/').lastIndexOf('/') + 1);
 
 	if(path == '') {
 		return;
 	}
-	$('localfile_' + id).innerHTML = '[<a href="javascript:delAttach(' + id + ');">删除</a>] [<a href="###" onclick="insertAttachtext(' + id + ');return false;">插入</a>] [' + id + '] ' + localfile;
-	$('attach_' + id).style.display = 'none';
+	document.getElementById('localfile_' + id).innerHTML = '[<a href="javascript:delAttach(' + id + ');">删除</a>] [<a href="###" onclick="insertAttachtext(' + id + ');return false;">插入</a>] [' + id + '] ' + localfile;
+	document.getElementById('attach_' + id).style.display = 'none';
 
 	addAttach();
 }
 
 function insertAttachtext(id) {
-	addhtml('[localfile=' + id + ']');
+	editor.pasteHTML('[localfile=' + id + ']');
 }

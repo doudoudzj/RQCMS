@@ -47,7 +47,7 @@ else
 	$query = $DB->query("SELECT count(*) as usenum,tag FROM ".DB_PREFIX."tag where hostid='$hostid' group by tag ORDER BY tid DESC LIMIT $start_limit, ".$shownum);
 	while ($tag = $DB->fetch_array($query)) {
 		$tag['fontsize'] = 12 + $tag['usenum'] / 2;
-		$tag['url'] = urlencode($tag['tag']);
+		$tag['url'] = $tag['tag'];
 		$tag['usenum'] = intval($tag['usenum']);
 		$tag['item'] = $tag['tag'];
 		$tagdb[]=$tag;

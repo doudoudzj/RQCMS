@@ -81,6 +81,7 @@ function mkUrl($file,$url,$page=0)
 					switch($file)
 					{
 						case 'category.php':
+						case 'article.php':
 							if($page<2) 
 								return $nfile.'?'.$aurl.'='.$url;
 							else return $nfile.'?'.$aurl.'='.$url.'&'.$purl.'='.$page;
@@ -104,6 +105,7 @@ function mkUrl($file,$url,$page=0)
 					switch($file)
 					{
 						case 'category.php':
+						case 'article.php':
 							if($page<2) 
 									return $nfile.'/'.$url.$add;
 								else return $nfile.'/'.$url.'/'.$purl.'/'.$page.$add;

@@ -45,7 +45,7 @@ if(!$type || $type=='basic'){print <<<EOT
                   <tr class="tablecell">
                     <td valign="top"><b>关闭的原因:</b><br />
                       关闭网站的原因</td>
-                    <td><textarea id="close_note" class="formarea" type="text" name="setting[close_note]" style="width:300px;height:80px;">{$settings['close_note']}</textarea> <b><a href="###" onclick="resizeup('close_note');">[+]</a> <a href="###" onclick="resizedown('close_note');">[-]</a></b></td>
+                    <td><textarea id="close_note" class="formarea" type="text" name="setting[close_note]" style="width:300px;height:80px;">{$settings['close_note']}</textarea> <b><a href=“javascript:void(0);” onclick="resizeup('close_note');">[+]</a> <a href=“javascript:void(0);” onclick="resizedown('close_note');">[-]</a></b></td>
                   </tr>
                   <tr class="tablecell">
                     <td width="60%"><b>页面Gzip压缩:</b><br />
@@ -358,7 +358,7 @@ if(!$type || $type=='user'){print <<<EOT
                     <td valign="top"><b>注册的用户名保留关键字:</b><br />
                       注册的用户名中无法使用这些关键字。每个关键字用半角逗号隔开，如 angel,4ngel<br />
                       <u><b>访客同样无法使用这些关键字作为用户名发表评论。</b></u></td>
-                    <td><textarea id="censoruser" class="formarea" type="text" name="setting[censoruser]" style="width:300px;height:80px;">$settings[censoruser]</textarea> <b><a href="###" onclick="resizeup('censoruser');">[+]</a> <a href="###" onclick="resizedown('censoruser');">[-]</a></b></td>
+                    <td><textarea id="censoruser" class="formarea" type="text" name="setting[censoruser]" style="width:300px;height:80px;">$settings[censoruser]</textarea> <b><a href=“javascript:void(0);” onclick="resizeup('censoruser');">[+]</a> <a href=“javascript:void(0);” onclick="resizedown('censoruser');">[-]</a></b></td>
                   </tr>    
 EOT;
 }
@@ -378,7 +378,7 @@ if(!$type || $type=='ban'){print <<<EOT
                   <tr class="tablecell">
                     <td valign="top"><b>禁止IP:</b><br />
                       输入禁止发表评论的IP地址,可以使用"*"作为通配符禁止某段地址,用","格开.</td>
-                    <td><textarea id="ban_ip" class="formarea" type="text" name="setting[ban_ip]" style="width:300px;height:80px;">$settings[ban_ip]</textarea> <b><a href="###" onclick="resizeup('ban_ip');">[+]</a> <a href="###" onclick="resizedown('ban_ip');">[-]</a></b></td>
+                    <td><textarea id="ban_ip" class="formarea" type="text" name="setting[ban_ip]" style="width:300px;height:80px;">$settings[ban_ip]</textarea> <b><a href=“javascript:void(0);” onclick="resizeup('ban_ip');">[+]</a> <a href=“javascript:void(0);” onclick="resizedown('ban_ip');">[-]</a></b></td>
                   </tr>
                   <tr class="tablecell">
                     <td width="60%"><b>开启Spam机制:</b><br />
@@ -392,7 +392,7 @@ if(!$type || $type=='ban'){print <<<EOT
                   <tr class="tablecell">
                     <td valign="top"><b>垃圾词语特征:</b><br />
                       开启Spam机制后,系统将用这里设置的词语匹配,不管程序还是人工发表,如果包含了则表示有可能是垃圾信息,需要人工审核.用","格开.设置的垃圾词语在开启Spam机制后,应用在评论、Trackback的内容中.</td>
-                    <td><textarea id="spam_words" class="formarea" type="text" name="setting[spam_words]" style="width:300px;height:80px;">$settings[spam_words]</textarea> <b><a href="###" onclick="resizeup('spam_words');">[+]</a> <a href="###" onclick="resizedown('spam_words');">[-]</a></b></td>
+                    <td><textarea id="spam_words" class="formarea" type="text" name="setting[spam_words]" style="width:300px;height:80px;">$settings[spam_words]</textarea> <b><a href=“javascript:void(0);” onclick="resizeup('spam_words');">[+]</a> <a href=“javascript:void(0);” onclick="resizedown('spam_words');">[-]</a></b></td>
                   </tr>
                   <tr class="tablecell">
                     <td width="60%"><b>评论中允许出现的链接次数:</b><br />
@@ -422,7 +422,7 @@ if(!$type || $type=='js'){print <<<EOT
                   <tr class="tablecell">
                     <td valign="top"><b>JS来路限制:</b><br />
                       只允许列表中的域名才可以使用JS调用功能,每个域名一行,请勿包含 http:// 或其他非域名内容,留空为不限制来路,即任何网站均可调用.但是多网站调用会加重您的服务器负担.</td>
-                    <td><textarea id="js_lock_url" class="formarea" type="text" name="setting[js_lock_url]" style="width:300px;height:80px;">$settings[js_lock_url]</textarea> <b><a href="###" onclick="resizeup('js_lock_url');">[+]</a> <a href="###" onclick="resizedown('js_lock_url');">[-]</a></b></td>
+                    <td><textarea id="js_lock_url" class="formarea" type="text" name="setting[js_lock_url]" style="width:300px;height:80px;">$settings[js_lock_url]</textarea> <b><a href=“javascript:void(0);” onclick="resizeup('js_lock_url');">[+]</a> <a href=“javascript:void(0);” onclick="resizedown('js_lock_url');">[-]</a></b></td>
                   </tr>          
 EOT;
 }
