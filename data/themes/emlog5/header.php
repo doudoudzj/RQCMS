@@ -17,11 +17,11 @@ if(!defined('RQ_ROOT')) exit('Access Denied');
 <div id="wrap">
   <div id="header">
     <h1><a href="/"><?php echo $host['name']; ?></a></h1>
-    <h3><?php echo $description; ?></h3>
+    <h3><?php echo $host['description']; ?></h3>
   </div>
   <div id="banner"><a href="<?php echo RQ_HTTP.$host['host']?>"><img src="/images/default.jpg" height="134" width="960" /></a></div>
   <div id="nav">	<ul>
-			<li class="current"><a href="<?php echo RQ_HTTP.$host['host']?>" >首页</a></li>
+			<li class="common"><a href="<?php echo RQ_HTTP.$host['host']?>" >首页</a></li>
 			<?php
 if ($uid) {
 ?>

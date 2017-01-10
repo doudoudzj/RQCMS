@@ -1,6 +1,6 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
-$top10cache=getLatestArticle(10);
+$articledb=getLatestArticle(10);
 $stickcache=getStickArticle(10);
 $picscache=getPicArticle(5);
 $commentdata=getLatestComment(10);
@@ -17,6 +17,8 @@ if($latestarray)
 }
 
 include RQ_DATA."/themes/$theme/header.php";
+
+
 //获取置顶和前几篇文章
 include RQ_DATA."/themes/$theme/list.php";
 

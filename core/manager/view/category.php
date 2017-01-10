@@ -26,16 +26,22 @@ if($action == 'list'){print <<<EOT
       <td width="20%" nowrap>操作</td>
     </tr>
 EOT;
-foreach($cateArr as $key => $cate){print <<<EOT
+for($i=0;$i<$maxcid;$i++)
+{
+if(isset($cateArr[$i])){
+$cate=$cateArr[$i];
+$catename=$cate['level']>0?str_pad('-',$cate['level']).$cate['name']:$cate['name'];
+print <<<EOT
     <tr class="tablecell">
       <td nowrap><input class="formfield" style="text-align: center;font-size: 11px;" type="text" value="$cate[displayorder]" name="displayorder[{$cate['cid']}]" size="1"></td>
-      <td><b>{$cate['name']}</b></td>
+      <td><b>{$catename}</b></td>
 	  <td><b>{$cate['url']}</b></td>
       <td>{$cate['articles']}</td>
       <td nowrap><a href="admin.php?file=article&action=add&cid={$cate['cid']}">添加文章</a> - <a href="admin.php?file=category&action=mod&cid={$cate['cid']}">编辑</a> - <a href="admin.php?file=category&action=del&cid={$cate['cid']}">删除</a></td>
     </tr>
 EOT;
-}print <<<EOT
+}}
+print <<<EOT
     <tr class="tablecell">
       <td colspan="5" align="center">
         <input type="hidden" name="action" value="updatedisplayorder">
@@ -49,14 +55,14 @@ EOT;
     <input type="hidden" name="cid" value="$cate[cid]">
     <tr class="tdbheader">
       <td colspan="3">$subnav</td>
-    </tr><!--
+    </tr>
   <tr class="tablecell">
       <td>上级分类:</td>
       <td><select name="pid">
-     <option value="0" selected>0级分类</option>
+     <option value="0" selected>顶级分类</option>
      </select>
 </td>
-    </tr>-->
+    </tr>
     <tr class="tablecell">
       <td>排序:</td>
       <td><input class="formfield" type="text" name="displayorder" size="4" maxlength="50" value="$cate[displayorder]"></td>

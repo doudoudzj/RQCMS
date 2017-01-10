@@ -436,15 +436,3 @@ function getGetArr($string)
 	}
 	return $getArr;
 }
-
-function getRequestFile($string)
-{
-	$def_request_url=substr($string,1);
-	if(strpos($def_request_url,'?'))
-	{
-		$var_get_arr=explode('?',$def_request_url);
-		$def_request_url=$var_get_arr[0];
-	}
-	if(!$def_request_url) $def_request_url='index.php';
-	return $def_request_url;
-}

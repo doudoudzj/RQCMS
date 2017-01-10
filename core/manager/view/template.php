@@ -15,6 +15,7 @@ function really(d,m,n) {
           <div class="tableheader">模板管理</div>
           <div class="leftmenubody">
             <div class="leftmenuitem">&#8226; <a href="admin.php?file=template&action=template">模板管理</a></div>
+			<div class="leftmenuitem">&#8226; <a href="admin.php?file=template&action=tool">模板工具</a></div>
           </div>
         </div>
         <div class="tableborder">

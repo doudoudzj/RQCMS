@@ -79,7 +79,7 @@ $onlines=array();//在线后台用户
 if($incfile!='css') include RQ_CORE.'/manager/view/header.php';
 include RQ_CORE.'/manager/'.$incfile.'.php';
 include RQ_CORE.'/manager/view/'.$incfile.'.php';
-include RQ_CORE.'/manager/view/footer.php';
+if($incfile!='css') include RQ_CORE.'/manager/view/footer.php';
 
 // 检查链接URL是否符合逻辑
 function checkurl($url,$allownull=1) 

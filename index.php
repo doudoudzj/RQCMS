@@ -8,8 +8,8 @@
  */
  //版权相关设置
 define('RQ_AppName','RQCMS');
-define('RQ_VERSION','1.2');
-define('RQ_RELEASE','20121121');
+define('RQ_VERSION','1.3');
+define('RQ_RELEASE','20130114');
 define('RQ_AUTHOR','RQ204');
 define('RQ_WEBSITE','http://www.rqcms.com');
 define('RQ_EMAIL','rq204@qq.com');
@@ -35,15 +35,13 @@ include RQ_DATA.'/config.php';
 if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'IIS')!==false)//IIS,如 Microsoft-IIS/6.0
 {
 	if(!isset($_SERVER['HTTP_X_REWRITE_URL'])) exit('this iis server is not support rqcms!');
-	$def_request_url=getRequestFile($_SERVER['HTTP_X_REWRITE_URL']);
-	define('REQUEST_URI',$def_request_url);
+	define('REQUEST_URI',substr($_SERVER['HTTP_X_REWRITE_URL'],1));
 	if(empty($_GET)&&strpos($_SERVER['HTTP_X_REWRITE_URL'],'?')) $_GET=getGetArr($_SERVER['HTTP_X_REWRITE_URL']);
 }
 else if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'nginx')!==false)//nginx
 {
 	if(!isset($_SERVER['REQUEST_URI'])) exit('this nginx server is not support rqcms!');
-	$def_request_url=getRequestFile($_SERVER['REQUEST_URI']);
-	define('REQUEST_URI',$def_request_url);
+	define('REQUEST_URI',substr($_SERVER['REQUEST_URI'],1));
 }
 else
 {

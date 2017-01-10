@@ -122,8 +122,26 @@ else
 {
 	if(empty($action)) $action='list';
 	$catenav = '分类管理';
+	
+	$catequery=$DB->query('Select * from '.DB_PREFIX."category where hostid=$hostid order by displayorder desc");
+	while($cateinfo=$DB->fetch_array($catequery))
+	{
+		$cid=$cateinfo['cid'];
+		$cateArr[$cid]=$cateinfo;
+	}
+	
+	foreach($cateArr as $cid=>$cateinfo)
+	{
+		$cateArr[$cid]['childArr']=getChildArr($cid,$cateArr);
+		$cateArr[$cid]['level']=getChildLevel($cid,$cateArr);
+	}
+	
+	$maxcid=getMaxCid($cateArr);
 	//分类操作
 	if (in_array($action, array('add', 'mod', 'del'))) {
+	 //先得到所有
+	
+	
 		if ($action == 'add') {
 			$subnav = '添加分类';
 			$cate['cid']=$cate['name']=$cate['url']='';
@@ -139,11 +157,8 @@ else
 	}
 	if($action=='list')
 	{
-		$catequery=$DB->query('Select * from '.DB_PREFIX."category where hostid=$hostid order by displayorder desc");
-		while($cateinfo=$DB->fetch_array($catequery))
+		foreach($cateArr as $cid=>$cateinf)
 		{
-			$cid=$cateinfo['cid'];
-			$cateArr[$cid]=$cateinfo;
 			$cateArr[$cid]['articles']=getArticleNum($hostid,$cid);
 		}
 	}

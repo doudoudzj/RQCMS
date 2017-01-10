@@ -34,3 +34,38 @@ function removetag($item,$tagid) {
 }
 
 
+function getChildArr($cid,$cateArr)
+{
+	$childidArr[]=$cid;
+	foreach($cateArr as $id=>$cateinfo)
+	{
+		if($cateinfo['pid']==$cid)
+		{
+			$childidArr[]=getChild($id,$cateArr);
+		}
+	}
+	return $childidArr;
+}
+
+function getChildLevel($cid,$cateArr)
+{
+	$level=0;
+	foreach($cateArr as $id=>$cateinfo)
+	{
+		if($cateinfo['pid']==$cid)
+		{
+			$level=$level+getChildLevel($id,$cateArr);
+		}
+	}
+	return $level;
+}
+
+function getMaxCid($cateArr)
+{
+	sort($cateArr);
+	$a=end($cateArr);
+	return $a['cid'];
+}
+
+
+	
