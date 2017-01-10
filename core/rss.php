@@ -1,25 +1,28 @@
 <?php
 $tempView=$coreView;
-$rssfile = RQ_DATA.'/cache/rss_'.$host['host'].'.php';
-$rssdb=@include($rssfile);
-if(!$rssdb) $rssdb=array();//rss数据
+$rssdb=array();//rss数据
 
-if(isset($_GET['url'])&&$_GET['url'])
+if(isset($_GET['url1'])&&$_GET['url1'])
 {
 	$rssdb=array();
-	$cate=array();
-	foreach($cateArr as $ct)
+	foreach($category as $ct)
 	{
-		if($ct['url']==$_GET['url']) $cate=$ct;
+		if($ct['url']==$_GET['url1']) $cate=$ct;
 	}
-	if(!empty($cate)) 
+}
+if($host['rss_num']>20)
+{
+	$cateadd=isset($cate)?" where cateid={$cate['cid']}":'';
+	$rquery= $DB->query('SELECT * FROM `'.DB_PREFIX.'article` '.$cateadd.' ORDER BY aid DESC limit '.$host['rss_num']);
+	while($article=$DB->fetch_array($rquery))
 	{
-		$rquery= $DB->query('SELECT * FROM `'.DB_PREFIX.'article` where hostid='.$hostid.' and cateid='.$cate['cid'].' ORDER BY aid DESC limit '.$host['rss_num']);
-		while($article=$DB->fetch_array($rquery))
-		{
-			$rssdb[]=showArticle($article);
-		}
+		$rssdb[]=showArticle($article);
 	}
+}
+else
+{
+	$rssdb=getLatestArticle($host['rss_num']);
+	if(isset($cate)) $rssdb=getLatestArticle($host['rss_num'],$cate['cid']);
 }
 
 doAction('rss_before_output',$rssdb);

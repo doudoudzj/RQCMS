@@ -6,26 +6,26 @@ print <<<EOT
       <td valign="top" style="width:150px;"><div class="tableborder">
           <div class="tableheader">快捷链接</div>
           <div class="leftmenubody">
-            <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=add">添加文章</a></div>
-			 <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list">编辑文章</a></div>
-            <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=search">搜索文章</a></div>
+            <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=add">添加文章</a></div>
+			 <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=list">编辑文章</a></div>
+            <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=search">搜索文章</a></div>
 EOT;
 if ($groupid>2) 
 {
 	print <<<EOT
-            <div class="leftmenuitem">&#8226; <a href="admin.php?file=category&action=addcate">添加分类</a></div>
-            <div class="leftmenuitem">&#8226; <a href="admin.php?file=link&action=add">添加链接</a></div>
-            <div class="leftmenuitem">&#8226; <a href="admin.php?file=attachment&action=repair">附件修复</a></div>
-            <div class="leftmenuitem">&#8226; <a href="admin.php?file=attachment&action=clear">附件清理</a></div>
-            <div class="leftmenuitem">&#8226; <a href="admin.php?file=category&action=tagclear">标签整理</a></div>
-            <div class="leftmenuitem">&#8226; <a href="admin.php?file=cache&action=rebuild">重建数据</a></div>
+            <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=category&action=addcate">添加分类</a></div>
+            <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=link&action=add">添加链接</a></div>
+            <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=attachment&action=repair">附件修复</a></div>
+            <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=attachment&action=clear">附件清理</a></div>
+            <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=category&action=tagclear">标签整理</a></div>
+            <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=cache&action=rebuild">重建数据</a></div>
 EOT;
 }
 if($groupid==4){
 print <<<EOT
-  <div class="leftmenuitem">&#8226; <a href="admin.php?file=database&action=backup">数据库备份</a></div>
-            <div class="leftmenuitem">&#8226; <a href="admin.php?file=database&action=tools">数据库维护</a></div>
-			<div class="leftmenuitem">&#8226; <a href="admin.php?file=special">多站点管理</a></div>
+  <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=database&action=backup">数据库备份</a></div>
+            <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=database&action=tools">数据库维护</a></div>
+			<div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=special">多站点管理</a></div>
 EOT;
 }
 print <<<EOT

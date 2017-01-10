@@ -1,125 +1,78 @@
 <?php
 /**
- * 日历
- * @copyright (c) Emlog All Rights Reserved
+ * 仿dedecms的日历
  */
 
-function genJsHeader()
+function calendar($date, $rewrite_fix = '?', $nomax = true)
 {
-	$calendar ="<table class=\"calendartop\" cellspacing=\"0\"><tr>
-	<td><a href=\"javascript:void(0);\" onclick=\"sendinfo('$url','calendar');\"> &laquo; </a>$n_year2<a href=\"javascript:void(0);\" onclick=\"sendinfo('$url2','calendar');\"> &raquo; </a></td>
-	<td><a href=\"javascript:void(0);\" onclick=\"sendinfo('$url3','calendar');\"> &laquo; </a>$n_month<a href=\"javascript:void(0);\" onclick=\"sendinfo('$url4','calendar');\"> &raquo; </a></td>
-	</tr></table>";
+	$curtime = time();
+	//获得时间戳
+	if(empty($date)){
+		$timestamp = $curtime;
+	}else{
+		$timestamp = $date;
+	}
 	
-	//建立日志时间写入数组
-	$query = $DB->query("SELECT date FROM ".DB_PREFIX."blog WHERE hide='n' and type='blog'");
-	while ($date = $DB->fetch_array($query)){
-		$logdate[] = gmdate("Ymd", $date['date']);
+	$selectedyear = date('Y',$timestamp);
+	$selectedmonth = date('n',$timestamp);
+	$selectedday = date('d',$timestamp);
+	//给定月份第一天星期几
+	$firstday = date('w',mktime(0,0,0,$selectedmonth,1,$selectedyear));
+	////给定月份所应有的天数
+	$lastday = date('t',$timestamp);//给定月份所应有的天数
+	
+	$preyear = date('Y',mktime(0,0,0,$selectedmonth,0,$selectedyear));
+	$nextyear = date('Y',mktime(0,0,0,$selectedmonth,$lastday+1,$selectedyear));
+	$premonth = date('n',mktime(0,0,0,$selectedmonth,0,$selectedyear));
+	$nextmonth = date('n',mktime(0,0,0,$selectedmonth,$lastday+1,$selectedyear));
+	$premonthdays = date('t',mktime(0,0,0,$selectedmonth,0,$selectedyear));
+	$nextmonthdays = date('t',mktime(0,0,0,$selectedmonth,$lastday+1,$selectedyear));
+	$preday = min($selectedday,$premonthdays);
+	$nextday = min($selectedday,$nextmonthdays);
+	
+	
+	//显示日历头
+	$days = array("SUN","MON","TUE","WED","THU","FRI","SAT");
+	$months = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
+	$monthName = $months[$selectedmonth-1];
+	
+	$str = "<table bgcolor=\"#F0F9EE\">";
+	$str .= "<caption valign=\"center\"><a href=\"{$rewrite_fix}{$preyear}-{$premonth}-{$preday}.html\"><<</a> <b> {$selectedyear}  {$monthName}</b> ";
+	if($nomax && mktime(0,0,0,$nextmonth,1,$nextyear) > $curtime){
+		$str .= ">></caption>";
+	}else{
+		$str .= "<a href=\"{$rewrite_fix}{$nextyear}-{$nextmonth}-{$nextday}.html\">>></a></caption>";
 	}
-}
- 
- 
-/**
- * 生成日历
- */
-function generate($timestamp,$logdate) 
-{	
-	$n_year  = gmdate("Y", $timestamp);
-	$n_year2 = gmdate("Y", $timestamp);
-	$n_month = gmdate("m", $timestamp);
-	$n_day   = gmdate("d", $timestamp);
-	$time    = gmdate("Ymd", $timestamp);
-	$year_month = gmdate("Ym", $timestamp);
-
-	//年月跳转连接
-	$m  = $n_month - 1;
-	$mj = $n_month + 1;
-
-	$m  = ($m < 10) ? '0' . $m : $m;
-	$mj = ($mj < 10) ? '0' . $mj : $mj;
-
-	$year_up = $n_year;
-	$year_down = $n_year;
-
-	if ($mj > 12){
-		$mj = '01';
-		$year_up = $n_year + 1;
+	$str .= "<tr>";
+	for($i=0;$i<7;$i++){
+	$str .= "<td width=10%>{$days[$i]}</td>";
 	}
-	if ( $m < 1){
-		$m = '12';
-		$year_down = $n_year - 1;
+	$str .= "</tr>";
+	//空出当月第一天的位置
+	$i = 0;
+	while($i < $firstday){
+		$str .= "<td></td>";
+		$i++;
 	}
-	$url = DYNAMIC_BLOGURL.'?action=cal&record=' . ($n_year - 1) . $n_month;//上一年份
-	$url2 = DYNAMIC_BLOGURL.'?action=cal&record=' . ($n_year + 1) . $n_month;//下一年份
-	$url3 = DYNAMIC_BLOGURL.'?action=cal&record=' . $year_down . $m;//上一月份
-	$url4 = DYNAMIC_BLOGURL.'?action=cal&record=' . $year_up . $mj;//下一月份
-
-	$calendar ="<table class=\"calendartop\" cellspacing=\"0\"><tr>
-	<td><a href=\"javascript:void(0);\" onclick=\"sendinfo('$url','calendar');\"> &laquo; </a>$n_year2<a href=\"javascript:void(0);\" onclick=\"sendinfo('$url2','calendar');\"> &raquo; </a></td>
-	<td><a href=\"javascript:void(0);\" onclick=\"sendinfo('$url3','calendar');\"> &laquo; </a>$n_month<a href=\"javascript:void(0);\" onclick=\"sendinfo('$url4','calendar');\"> &raquo; </a></td>
-	</tr></table>
-	<table class=\"calendar\" cellspacing=\"0\">
-	<tr><td class=\"week\">一</td><td class=\"week\">二</td><td class=\"week\">三</td><td class=\"week\">四</td><td class=\"week\">五</td><td class=\"week\">六</td><td class=\"sun\">日</td></tr>";
-
-	//获取给定年月的第一天是星期几
-	$week = @gmdate("w",gmmktime(0,0,0,$n_month,1,$n_year));
-	//获取给定年月的天数
-	$lastday = @gmdate("t",gmmktime(0,0,0,$n_month,1,$n_year));
-	//获取给定年月的最后一天是星期几
-	$lastweek = @gmdate("w",gmmktime(0,0,0,$n_month,$lastday,$n_year));
-	if ( $week == 0){
-		$week = 7;
-	}
-	$j = 1;
-	$w = 7;
-	$isend = false;
-	//外循环生成行
-	for ($i = 1;$i <= 6;$i++){
-		if ($isend || ($i == 6 && $lastweek==0)){
-			break;
+	$day = 0;
+	while($day < $lastday){
+		if(($i % 7) == 0){
+			$str .= "</tr><tr>";
 		}
-		$calendar .= '<tr>';
-		//内循环生成列
-		for($j ; $j <= $w; $j++){
-			if ($j < $week){
-				$calendar.= '<td>&nbsp;</td>';
-			} elseif ( $j <= 7 ) {
-				$r = $j - $week + 1;
-				//如果该日有日志就显示url样式
-				$n_time = $n_year . $n_month . '0' . $r;
-				//有日志且为当天
-				if (@in_array($n_time,$logdate) && $n_time == $time){
-					$calendar .= '<td class="day"><a href="'.Url::record($n_time).'">'. $r .'</a></td>';
-				} elseif (@in_array($n_time,$logdate)) {
-					$calendar .= '<td class="day2"><a href="'.Url::record($n_time).'">'. $r .'</a></td>';
-				} elseif ($n_time == $time){
-					$calendar .= '<td class="day">'. $r .'</td>';
-				} else {
-					$calendar.= '<td>'. $r .'</td>';
-				}
+		$day++;
+		$i++;
+		//当天用红色表示
+		if($day == $selectedday){
+			$str .= "<td style=\"COLOR: #fff; BACKGROUND-COLOR: #f00;\" align=\"center\"><font color=#ffffff>{$day}</font></td>";
+		}else {
+			if($nomax && mktime(0,0,0,$selectedmonth,$day,$selectedyear) > $curtime){
+				$str .= "<td>$day</td>";
 			}else{
-				$t = $j - ($week - 1);
-				if ($t > $lastday){
-					$isend = true;
-					$calendar .= '<td>&nbsp;</td>';
-				} else {
-					//如果该日有日志就显示url样式
-					$t < 10 ? $n_time = $n_year . $n_month . '0' . $t : $n_time = $n_year . $n_month . $t;
-					if (@in_array($n_time,$logdate) && $n_time == $time){
-						$calendar .= '<td class="day"><a href="'.Url::record($n_time).'">'. $t .'</a></td>';
-					} elseif(@in_array($n_time,$logdate)){
-						$calendar .= '<td class="day2"><a href="'.Url::record($n_time).'">'. $t .'</a></td>';
-					} elseif($n_time == $time) {
-						$calendar .= '<td class="day">'. $t .'</td>';
-					} else {
-						$calendar .= '<td>'.$t.'</td>';
-					}
-				}
+				$str .= "<td><a href=\"{$rewrite_fix}{$selectedyear}-{$selectedmonth}-{$day}.html\">{$day}</a></td>";
 			}
-		}//内循环结束
-		$calendar .= '</tr>';
-		$w += 7;
-	}//外循环结束
-	$calendar .= '</table>';
-	return $calendar;
+		}
+		
+	}
+	$str .= "</tr></table>";
+	return $str;
 }

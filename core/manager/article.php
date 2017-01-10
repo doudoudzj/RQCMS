@@ -1,22 +1,18 @@
 <?php
 include RQ_CORE.'/include/article.php';
+include RQ_CORE.'/include/tag.php';
+include RQ_CORE.'/library/func.convert.php';
 if(empty($action)) $action='list';
 
-$uquery = '';
-if ($groupid < 3) {
-	$uquery = " AND a.userid='$uid'";
-}
-
-$hidden=$DB->fetch_first("SELECT count(*) as ct FROM ".DB_PREFIX."article a WHERE a.visible=0 and a.hostid=$hostid".$uquery);
+$hidden=$DB->fetch_first("SELECT count(*) as ct FROM ".DB_PREFIX."article WHERE visible=0");
 $hiddenCount=$hidden['ct'];
+
 if(RQ_POST)
 {	
 	$view=isset($_POST['view'])?'hidden':'';
 	$article=isset($_POST['article'])?$_POST['article']:array();
 	$content=isset($_POST['content'])?$_POST['content']:array();
 	
-	$article['hostid']=$hostid;
-	$article['userid']=$uid;
 	$article['modified']=$timestamp;
 	
     $attachments=getAttach();
@@ -28,11 +24,10 @@ if(RQ_POST)
 		$article['title'] = trim($article['title']);
 		$article['cateid'] = intval($article['cateid']);
 		$article['keywords'] = trim($article['keywords']);
-		$article['closed'] = isset($article['closed'])? intval($article['closed']):0;
 		$article['visible'] = isset($article['visible'])?intval($article['visible']):0;
 		$article['stick'] = isset($article['stick'])?intval($article['stick']):0;
 		$article['dateline'] = isset($article['edittime'])?getDateLine():$timestamp;
-		
+		$visible=$article['visible'];
 		$tags        = getTagArr(trim($article['tag']));
 		$attachments = '';//一个序列化的结果,附件名,Id,大小
 		$attachInfo=array();//
@@ -43,14 +38,12 @@ if(RQ_POST)
 	switch($action)
 	{
 		case 'add':
-			if(empty($article['title'])) redirect('标题不得为空','admin.php?file=article&action=add');
-			if(empty($content['content'])) redirect('内容不得为空','admin.php?file=article&action=add');
+			if(empty($article['title'])) redirect('标题不得为空',$admin_url.'?file=article&action=add');
+			if(empty($content['content'])) redirect('内容不得为空',$admin_url.'?file=article&action=add');
 
 			// 插入数据部分
-
 			$addsql="INSERT INTO ".DB_PREFIX."article set ".getJoinSql($article);
 			$DB->query($addsql);
-			//$DB->query("INSERT INTO ".DB_PREFIX."article (hostid,cateid, userid, title, excerpt, keywords,tag, dateline,modified, closed, visible, stick, password,url,thumb,attachments{$fieldadd1}) VALUES ('$hostid','$cateid', '$uid', '$title', '$excerpt', '$keywords','$tag', '$dateline','$dateline','$closed', '$visible', '$stick', '$password','$url','$thumb','$attcount'{$fieldadd2})");
 			$articleid = $DB->insert_id();
 			if(!$article['url']) $DB->query('update '.DB_PREFIX."article set url='$articleid' where aid=$articleid");
 			if($attachments&&is_array($attachments))
@@ -58,7 +51,7 @@ if(RQ_POST)
 				$fileidarr=array();
 				foreach($attachments as $key=>$attachment)
 				{
-					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`isimage`,`hostid`) values ('$articleid','$dateline','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[isimage]','$hostid')");
+					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`isimage`) values ('$articleid','$dateline','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[isimage]')");
 					$attachments[$key]['aid']=$DB->insert_id();
 					$fileidarr[$attachments[$key]['localid']]=$attachments[$key]['aid'];
 				}
@@ -68,39 +61,23 @@ if(RQ_POST)
 				}
 			}
 			$content['articleid']=$articleid;
-			$DB->query("Insert into ".DB_PREFIX."content set ".getJoinSql($content));
+			$cindex=ceil($articleid/500000);
+			$tablename=DB_PREFIX."content{$cindex}";
+			if($cindex>1&&$articleid%500000<5) $DB->query("CREATE table IF NOT EXISTS {$tablename} select * from `".DB_PREFIX."content1` where 1>2");
+			
+			$DB->query("Insert into ".DB_PREFIX."content{$cindex} set ".getJoinSql($content));
 			//添加tags
-			$DB->query('delete from '.DB_PREFIX."tag where articleid='$articleid' and hostid='$hostid'");
-			if($tags)
-			{
-				for($i=0; $i<count($tags); $i++)
-				{
-					$tags[$i] = trim($tags[$i]);
-					if ($tags[$i]) 
-					{
-						$tag  = $DB->fetch_first("SELECT tag FROM ".DB_PREFIX."tag WHERE tag='$tags[$i]' and articleid=$articleid");
-						if(!$tag) $DB->query("INSERT INTO ".DB_PREFIX."tag (tag,articleid,hostid) VALUES ('$tags[$i]','$articleid','$hostid')");
-					}
-				}
-			}
-			$DB->unbuffered_query("UPDATE ".DB_PREFIX."user SET articles=articles+1 WHERE uid='$uid'");
+			modtag('',$article['tag'],$articleid);
 			clearCookie();
-			if($visible)
-			{
-				stick_recache();
-				rss_recache();
-				pics_recache();
-				latest_recache();
-			}
-			redirect('添加文章成功', 'admin.php?file=article&action=add'.($visible?'':'&view=hidden'));
+			redirect('添加文章成功', $admin_url.'?file=article&action=add'.($visible?'':'&view=hidden'));
 			break;
 		case 'mod'://修改文章
 			$aid=intval($_POST['aid']);
-			$old=$DB->fetch_first('Select * from '.DB_PREFIX."article where aid=$aid and hostid=$hostid");
-			if(!$old) redirect('不存在的记录','admin.php?file=article&action=list');
-			if($old['userid']!=$uid&&$groupid<3) redirect('您无权修改别人的文章','admin.php?file=article&action=list');
-			if(empty($article['title'])) redirect('标题不得为空','admin.php?file=article&action=mod&aid='.$aid);
-			if(empty($content['content'])) redirect('内容不得为空','admin.php?file=article&action=mod&aid='.$aid);
+			$old=$DB->fetch_first('Select * from '.DB_PREFIX."article where aid=$aid");
+			if(!$old) redirect('不存在的记录',$admin_url.'?file=article&action=list');
+			if(empty($article['title'])) redirect('标题不得为空',$admin_url.'?file=article&action=mod&aid='.$aid);
+			if(empty($content['content'])) redirect('内容不得为空',$admin_url.'?file=article&action=mod&aid='.$aid);
+			$oldtag=$old['tag'];
 			
 			//附件先处理
 			$attachments=getAttach();
@@ -130,7 +107,7 @@ if(RQ_POST)
 							{
 								if($d['filename']==$v['filename'])//这里是就是更新了.
 								{
-									$DB->query("update ".DB_PREFIX."attachment set `filesize`='$attachment[filesize]',`filepath`='$attachment[filepath]' where articleid=$aid and aid=$attid and hostid=$hostid");
+									$DB->query("update ".DB_PREFIX."attachment set `filesize`='$attachment[filesize]',`filepath`='$attachment[filepath]' where articleid=$aid and aid=$attid");
 									$oldattach[o]=$attachments[$v];
 									$oldattach[o]['aid']=$attid;
 									unset($attachments[$v]);
@@ -144,7 +121,7 @@ if(RQ_POST)
 				$diffids=implode(',',$diff);
 				if($diffids) 
 				{
-					$dquery=$DB->query('select * from '.DB_PREFIX."attachment where aid in ($diffids) and articleid=$aid and hostid=$hostid");
+					$dquery=$DB->query('select * from '.DB_PREFIX."attachment where aid in ($diffids) and articleid=$aid");
 					while($dfetch=$DB->fetch_array($dquery))
 					{
 						$filepath=RQ_DATA.'/files/'.$dfetch['filepath'];
@@ -152,7 +129,7 @@ if(RQ_POST)
 						$thumbpath=RQ_DATA.'/files/'.$dfetch['thumb_filepath'];
 						if(file_exists($filepath)) @unlink($thumbpath);
 					}
-					$DB->query('Delete from '.DB_PREFIX."attachment where aid in ($diffids) and articleid=$aid and hostid=$hostid");
+					$DB->query('Delete from '.DB_PREFIX."attachment where aid in ($diffids) and articleid=$aid");
 				}
 			}
 			if($attachments)
@@ -160,7 +137,7 @@ if(RQ_POST)
 				$fileidarr=array();
 				foreach($attachments as $attachment)
 				{
-					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`isimage`,`hostid`,`modified`) values ('$aid','$dateline','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[isimage]','$hostid','$timestamp')");
+					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`isimage`,`modified`) values ('$aid','$dateline','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[isimage]','$timestamp')");
 					$attachment['aid']=$DB->insert_id();
 					$fileidarr[$attachment['localid']]=$attachment['aid'];
 					unset($attachment['filepath']);
@@ -175,39 +152,28 @@ if(RQ_POST)
 			$attcount=$attach['count(*)'];
 			// 插入数据部分
 			$DB->query("Update ".DB_PREFIX."article set ".getJoinSql($article)." where aid=$aid");
-			$DB->query("Update ".DB_PREFIX."content set ".getJoinSql($content)." where `articleid`='$aid'");
+			$cindx=ceil($aid/500000);
+			$DB->query("Update ".DB_PREFIX."content{$cindx} set ".getJoinSql($content)." where `articleid`='$aid'");
 			//添加tags
-			$DB->query('delete from '.DB_PREFIX."tag where articleid='$aid' and hostid='$hostid'");
-			if($tags)
-			{
-				for($i=0; $i<count($tags); $i++)
-				{
-					$tags[$i] = trim($tags[$i]);
-					if ($tags[$i]) 
-					{
-						$DB->query("INSERT INTO ".DB_PREFIX."tag (tag,articleid,hostid) VALUES ('$tags[$i]','$aid','$hostid')");
-					}
-				}
-			}
+			modtag($oldtag,$article['tag'],$aid);
 			//处理成草稿后评论也不要显示了的
 			if(!$visible)
 			{
 				$DB->query("update `".DB_PREFIX."comment` set visible=0 where articleid=$aid");
-				comments_recache();
+				
 			}
 			clearCookie();
 			stick_recache();
-			rss_recache();
-			pics_recache();
+			
 			latest_recache();
-			redirect('修改文章成功', 'admin.php?file=article&action=list'.($visible?'':'&view=hidden'));
+			redirect('修改文章成功', $admin_url.'?file=article&action=list'.($visible?'':'&view=hidden'));
 		break;
 		case 'domore':
 			if(isset($_POST['aids'])&&is_array($_POST['aids']))
 			{
 				$view=isset($_POST['view'])?'hidden':'';
 				$aids=implode_ids($_POST['aids']);
-				$aquery=$DB->query('Select aid from '.DB_PREFIX."article a where a.aid in ($aids) and a.hostid='$hostid' $uquery");
+				$aquery=$DB->query('Select aid from '.DB_PREFIX."article where aid in ($aids)");
 				$aidarr=array();
 				while($ainfo=$DB->fetch_array($aquery))
 				{
@@ -227,45 +193,54 @@ if(RQ_POST)
 					switch($do)
 					{
 						case 'dodelete':
-							$query=$DB->query('Select count(userid) as cu,userid from '.DB_PREFIX."article where aid in ($aids) group by userid");
-							while($uinfo=$DB->fetch_array($query))
+							$articlequery=$DB->query('select aid,tag from '.DB_PREFIX."article where aid in ($aids) ");
+							while($articledb=$DB->fetch_array($articlequery))
 							{
-								$DB->query('update '.DB_PREFIX."user set articles=articles-{$uinfo['cu']} where uid={$uinfo['userid']} and hostid='$hostid'");//更新用户文章统计数
+								modtag($articledb['tag'],'',$articledb['aid']);
 							}
-							$DB->query('delete from '.DB_PREFIX."article where aid in ($aids) and hostid='$hostid'");
-							$DB->query('delete from '.DB_PREFIX."content where articleid in ($aids)");
-							$DB->query('delete from '.DB_PREFIX."tag where articleid in ($aids) and hostid='$hostid'");
-							$DB->query('delete from '.DB_PREFIX."attachment where articleid in ($aids) and hostid='$hostid'");
+							
+							$DB->query('delete from '.DB_PREFIX."article where aid in ($aids) ");
+							$tableaids=array();
+							foreach($aidarr as $delaid)
+							{
+								$cindex=ceil($delaid/500000);
+								$tableaids[$cindex][]=$delaid;
+							}
+
+							foreach($tableaids as $table=>$delarr)
+							{
+								$delids=implode_ids($delarr);
+								$DB->query('delete from '.DB_PREFIX."content{$table} where articleid in ($delids)");
+							}
+
+							$DB->query('delete from '.DB_PREFIX."attachment where articleid in ($aids) ");
 							stick_recache();
-							rss_recache();
-							stick_recache();
-							pics_recache();
-							redirect('您选择的文章已成功删除', 'admin.php?file=article&action=list'.($view?'&view='.$view:''));
+							
+							redirect('您选择的文章已成功删除', $admin_url.'?file=article&action=list');
 							break;
 						case 'domove':
 							$cid=$_POST['cid'];
-							$cateinfo=$DB->fetch_first('select * from '.DB_PREFIX."category where cid='$cid' and hostid='$hostid'");
+							$cateinfo=$DB->fetch_first('select * from '.DB_PREFIX."category where cid='$cid' ");
 							if($cateinfo)
 							{
-								$DB->query('update '.DB_PREFIX."article set cateid='$cid' where aid in ($aids) and hostid='$hostid'");
+								$DB->query('update '.DB_PREFIX."article set cateid='$cid' where aid in ($aids) ");
 								stick_recache();
-								rss_recache();
-								stick_recache();
-								pics_recache();
+								
 								latest_recache();
-								redirect('您选择的文章成功移动', 'admin.php?file=article&action=list&cid='.$cid.($view?'&view='.$view:''));
+								redirect('您选择的文章成功移动', $admin_url.'?file=article&action=list&cid='.$cid.($view?'&view='.$view:''));
 							}
-							else redirect('您选择的栏目不存在', 'admin.php?file=article&action=list');
+							else redirect('您选择的栏目不存在', $admin_url.'?file=article&action=list');
 						break;
 					}
 				}
 			}
-			else redirect('请选择要操作的文章', 'admin.php?file=article&action=list');
+			else redirect('请选择要操作的文章', $admin_url.'?file=article&action=list');
 			break;
 		case 'list':
 			if ($do == 'search') 
 			{
-				$searchsql='Select a.*,c.cid,c.hostid,c.name as cname from '.DB_PREFIX.'article a,'.DB_PREFIX."category c where c.cid=a.cateid and a.hostid=c.hostid and a.hostid=$hostid";
+				$searchsql='Select a.*,c.cid,c.name as cname from '.DB_PREFIX.'article a,'.DB_PREFIX."category c where c.cid=a.cateid";
+				$searchfield=$_POST['searchfield'];
 				$keywords = !empty($_POST['keywords'])?trim($_POST['keywords']):'';
 				if ($keywords) 
 				{
@@ -274,18 +249,25 @@ if(RQ_POST)
 					if(preg_match("(AND|\+|&|\s)", $keywords) && !preg_match("(OR|\|)", $keywords)) {
 						$andor = ' AND ';
 						$sqltxtsrch = '1';
-						$keywords = preg_replace("/( AND |&| )/is", "+", $keywords);
+						$keywords = preg_replace("/( AND |&| )/is", "|", $keywords);
 					} else {
 						$andor = ' OR ';
 						$sqltxtsrch = '0';
-						$keywords = preg_replace("/( OR |\|)/is", "+", $keywords);
+						$keywords = preg_replace("/( OR |\|)/is", "|", $keywords);
 					}
 					$keywords = str_replace('*', '%', addcslashes($keywords, '%_'));
-					foreach(explode("+", $keywords) AS $text) {
+					foreach(explode("|", $keywords) AS $text) {
 						$text = trim($text);
 						if($text) {
 							$sqltxtsrch .= $andor;
-							$sqltxtsrch .= "(a.excerpt LIKE '%".$text."%' OR a.title LIKE '%".$text."%' OR a.tag LIKE '%".$text."%' OR a.keywords LIKE '%".$text."%' OR a.url LIKE '%".$text."%')";
+							if($searchfield)
+							{
+								$sqltxtsrch .= "(a.".$searchfield." LIKE '%".$text."%')";
+							}
+							else
+							{
+								$sqltxtsrch .= "(a.excerpt LIKE '%".$text."%' OR a.title LIKE '%".$text."%' OR a.tag LIKE '%".$text."%' OR a.keywords LIKE '%".$text."%' OR a.url LIKE '%".$text."%' OR a.keywords LIKE '%".$text."%')";
+							}
 							doAction('admin_article_search_changesql');
 						}
 					}
@@ -297,25 +279,26 @@ if(RQ_POST)
 				}
 				$searchsql .= !empty($_POST['startdate']) ? " AND dateline < '".strtotime($_POST['startdate'])."'" : '';
 				$searchsql .= !empty($_POST['enddate'] )? " AND dateline > '".strtotime($_POST['enddate'])."'" : '';
-				$squery=$DB->query($searchsql.$uquery);
+				$searchsql.=!empty($_POST['views'])? " AND views ".$_POST['views'] : '';
+				$squery=$DB->query($searchsql);
 				$multipage='';
 				$articledb = array();
 				while ($article = $DB->fetch_array($squery)) {
 					if ($article['attachments']) {
 						$article['attachments'] = count(unserialize($article['attachments']));
-						$article['attachment'] = '<a href="admin.php?file=attachment&action=list&amp;aid='.$article['aid'].'">操作</a>('.$article['attachments'].')';
+						$article['attachment'] = '<a href="{$admin_url}?file=attachment&action=list&amp;aid='.$article['aid'].'">操作</a>('.$article['attachments'].')';
 					} else {
-						$article['attachment'] = '<a href="admin.php?file=attachment&action=list&amp;aid='.$article['aid'].'"><span class="yes">上传</span></a>';
+						$article['attachment'] = '<a href="{$admin_url}?file=attachment&action=list&amp;aid='.$article['aid'].'"><span class="yes">上传</span></a>';
 					}
 					$article['dateline'] = date('Y-m-d H:i',$article['dateline']);
 					$articledb[] = $article;
 				}
 				$total=count($articledb);
 			}
-			else redirect('请指定搜索条件', 'admin.php?file=article&action=list');
+			else redirect('请指定搜索条件', $admin_url.'?file=article&action=list');
 			break;
 		default:
-		redirect('未定义操作', 'admin.php?file=article&action=list');
+		redirect('未定义操作', $admin_url.'?file=article&action=list');
 	}
 }
 else
@@ -324,25 +307,28 @@ else
 	{
 		$attachdb=array();//上传的附件数据
 		$aid=isset($_GET['aid'])?intval($_GET['aid']):0;
-		$article=$DB->fetch_first('Select * from '.DB_PREFIX."article a,`".DB_PREFIX."content` c where aid=$aid and hostid=$hostid and c.articleid=a.aid");
-
+		$article=$DB->fetch_first('Select * from '.DB_PREFIX."article where aid=$aid");
+	
 		$time=empty($article['dateline'])?time():$article['dateline'];
 		$time=date("Y-m-d-H-i-s",$time);
 		list($newyear,$newmonth,$newday,$newhour,$newmin,$newsec)=explode('-',$time);
 		//类别
 		if(!$article)
 		{
-			$closecomment_check=$stick_check='';
+			$stick_check='';
 			$visible_check='checked';
 			$tdtitle='添加内容';
 		}
 		else
 		{
+			$cindex=ceil($article['aid']/500000);
+			$content=$DB->fetch_first('Select * from `'.DB_PREFIX."content{$cindex}` where articleid={$aid}");
+			$article=array_merge($article, $content);
+
 			$tdtitle='编辑内容';
 			$visible_check=$article['visible']?'checked':'';
-			$closecomment_check=$article['closed']?'checked':'';
 			$stick_check=$article['stick']?'checked':'';
-			$aquery=$DB->query("Select * from ".DB_PREFIX."attachment where articleid=$aid and hostid=$hostid");
+			$aquery=$DB->query("Select * from ".DB_PREFIX."attachment where articleid=$aid");
 			while($ath=$DB->fetch_array($aquery))
 			{
 				$ath['dateline']=date('Y-m-d',$ath['dateline']);
@@ -367,12 +353,12 @@ else
 			$addquery = " AND a.visible='0'";
 			$pagelink = '&view=hidden';
 		} elseif ($cid) {
-			$cate = $DB->fetch_first("SELECT name FROM ".DB_PREFIX."category WHERE cid='$cid' and hostid=$hostid");
+			$cate = $DB->fetch_first("SELECT name FROM ".DB_PREFIX."category WHERE cid='$cid'");
 			$addquery = " AND a.cateid='$cid' and a.visible=1";
 			$pagelink = '&cid='.$cid;
 		} 
-		else $addquery = " and a.visible=1";		
-		
+		else $addquery = " and a.visible=1";	
+
 		if($page) {
 		$start_limit = ($page - 1) * 30;
 		} else {
@@ -382,56 +368,41 @@ else
 		$articledb = array();
 		if(empty($tag))
 		{
-			$rs = $DB->fetch_first("SELECT count(*) AS articles FROM ".DB_PREFIX."article a WHERE 1 $searchsql $addquery $uquery and hostid=$hostid");
+			$rs = $DB->fetch_first("SELECT count(*) AS articles FROM ".DB_PREFIX."article a WHERE 1 $searchsql $addquery");
 			$total = $rs['articles'];
-			$multipage = multi($total, 30, $page, 'admin.php?file=article&action=list'.$pagelink);
+			$multipage = multi($total, 30, $page, $admin_url.'?file=article&action=list'.$pagelink);
 			$query = $DB->query("SELECT a.*,c.name as cname FROM ".DB_PREFIX."article a 
 			LEFT JOIN ".DB_PREFIX."category c ON c.cid=a.cateid
-			WHERE a.hostid='$hostid' $searchsql $addquery $uquery ORDER BY a.aid DESC LIMIT $start_limit, 30");
+			WHERE 1 $searchsql $addquery ORDER BY a.aid DESC LIMIT $start_limit, 30");
 		}
 		else
 		{
 			$item = addslashes($tag);
-			$tagarray=array();
-			$tagquery=$DB->query('select distinct articleid from '.DB_PREFIX."tag  WHERE tag='$item' and hostid='$hostid'");
-			while($result=$DB->fetch_array($tagquery))
+			$tagaids=gettagids($item);
+			if($tagaids)
 			{
-				$tagarray[]=$result['articleid'];
+				$query=$DB->query('Select a.*,c.name as cname from '.DB_PREFIX."article a LEFT JOIN ".DB_PREFIX."category c ON c.cid=a.cateid where a.aid in ($tagaids)");
+				$tagarr=explode(',',$tagaids);
+				$total=count($tagarr);
 			}
-			$total=count($tagarray);
-			if (!$total) 
+			else
 			{
-				redirect('标签不存在', 'admin.php?file=article&action=list');
+				redirect('标签不存在', $admin_url.'?file=article&action=list');
 			}
-			$pagelink = '&tag='.urlencode($item);
-			$multipage = multi($total, 30, $page, 'admin.php?file=article&action=list'.$pagelink);
 			
-			$articleids=implode(',',$tagarray);
-			$query=$DB->query('Select a.*,c.name as cname from '.DB_PREFIX."article a LEFT JOIN ".DB_PREFIX."category c ON c.cid=a.cateid where a.aid in ($articleids) and a.hostid='$hostid'");
+			$pagelink = '&tag='.urlencode($item);
+			$multipage = multi($total, 30, $page, $admin_url.'?file=article&action=list'.$pagelink);
 			$subnav = 'Tags:'.$item;
 		}
-		$authors=array();
 		while ($article = $DB->fetch_array($query)) {
 				if ($article['attachments']) {
 					$article['attachments'] = $article['attachments'];
-					$article['attachment'] = '<a href="admin.php?file=attachment&action=list&amp;aid='.$article['aid'].'">操作</a>('.$article['attachments'].')';
+					$article['attachment'] = '<a href="{$admin_url}?file=attachment&action=list&amp;aid='.$article['aid'].'">操作</a>('.$article['attachments'].')';
 				} else {
-					$article['attachment'] = '<a href="admin.php?file=attachment&action=list&amp;aid='.$article['aid'].'"><span class="yes">上传</span></a>';
+					$article['attachment'] = '<a href="{$admin_url}?file=attachment&action=list&amp;aid='.$article['aid'].'"><span class="yes">上传</span></a>';
 				}
 				$article['dateline'] = date('Y-m-d H:i',$article['dateline']);
 				$articledb[] = $article;
-				$authors[]=$article['userid'];
-		}
-		if(count($authors)>0){
-			$authorids=implode_ids($authors);
-			$authquery=$DB->query('Select uid,username from `'.DB_PREFIX.'user` where `uid` in ('.$authorids.')');
-			while($authfetch=$DB->fetch_array($authquery))
-			{
-				foreach($articledb as $k=>$adb)
-				{
-					if($adb['userid']==$authfetch['uid']) $articledb[$k]['userid']=$authfetch['username'];
-				}
-			}
 		}
 		unset($article);
 		$DB->free_result($query);

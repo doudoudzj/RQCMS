@@ -30,7 +30,7 @@ function toolbar_code_save()
 	global $DB,$hostid;
 	$code=$_POST['toolbar_code'];
 	$DB->query('update '.DB_PREFIX."plugin set `config`='$code' where hostid=$hostid and `file`='toolbar'");
-	plugins_recache();
+	setting_recache();
 	redirect('工具栏代码已成功更新','admin.php?file=plugin&action=setting&plugin=toolbar');
 }
 addAction('admin_plugin_setting_save','toolbar_code_save');

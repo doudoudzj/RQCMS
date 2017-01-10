@@ -61,7 +61,7 @@ EOT;
 	}
 	else if($do=='list')
 	{
-		$page=isset($_GET['page'])?intval($_GET['page']):1;
+		$page=isset($_GET['url2'])?intval($_GET['url2']):1;
 		$rs = $DB->fetch_first("SELECT count(*) AS pages FROM ".DB_PREFIX."page where hostid=$hostid");
 		$total = $rs['pages'];
 		$multipage = multi($total, 30, $page, $urllink);
@@ -110,7 +110,7 @@ addAction('admin_plugin_setting_view','page_html_view');
 //保存单页代码
 function page_content_save()
 {
-	global $DB,$hostid,$urllink,$userid,$username;
+	global $DB,$urllink,$userid,$username;
 	//添加，编辑，删除的操作
 	$do=isset($_GET['do'])?$_GET['do']:'';
 	if(in_array($do,array('add','mod')))
@@ -130,13 +130,13 @@ function page_content_save()
 	
 	if($do=='add')
 	{
-		$DB->query('insert into '.DB_PREFIX."page (`hostid`,`userid`,`username`,`title`,`keywords`,`url`,`excerpt`,`content`,`dateline`,`modified`,`visible`) values ('$hostid','$userid','$username','$title','$keywords','$url','$excerpt','$content','$timestamp','$timestamp','1')");
+		$DB->query('insert into '.DB_PREFIX."page (`userid`,`username`,`title`,`keywords`,`url`,`excerpt`,`content`,`dateline`,`modified`,`visible`) values ('$userid','$username','$title','$keywords','$url','$excerpt','$content','$timestamp','$timestamp','1')");
 		redirect('单页添加成功',$urllink);
 	}
 	else if($do=='mod')
 	{
 		$pid=$_POST['pid'];
-		$DB->query('update '.DB_PREFIX."page set `hostid`= '$hostid', `userid`='$userid',`username`='$username',`title`='$title',`keywords`='$keywords',`url`='$url',`excerpt`='$excerpt',`content`='$content',`dateline`='$timestamp',`modified`='$timestamp',`visible`=1 where pid=$pid");
+		$DB->query('update '.DB_PREFIX."page set `hostid`=  `userid`='$userid',`username`='$username',`title`='$title',`keywords`='$keywords',`url`='$url',`excerpt`='$excerpt',`content`='$content',`dateline`='$timestamp',`modified`='$timestamp',`visible`=1 where pid=$pid");
 		redirect('单页编辑成功',$urllink);
 	}
 	else if ($do=='del'){

@@ -43,7 +43,7 @@ addAction('admin_plugin_add_item','toolbar_add_item');
 
 function toolbar_footer_add()
 {
-	global $hostid,$pluginArr,$mapArr,$output;
+	global $hostid,$pluginArr,$filemapArr,$output;
 	$code=$pluginArr['toolbar'];
 	$html=$output;
 	$pos=strrpos($html,'</head>');

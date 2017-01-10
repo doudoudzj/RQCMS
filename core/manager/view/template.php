@@ -3,7 +3,7 @@ print <<<EOT
 <script type="text/javascript">
 function really(d,m,n) {
 	if (confirm(m)) {
-		window.location.href='admin.php?file=template&action=delonetag&tag='+d+'&tagid='+n;
+		window.location.href=$admin_url.'?file=template&action=delonetag&tag='+d+'&tagid='+n;
 	}
 }
 </script>
@@ -13,14 +13,13 @@ function really(d,m,n) {
       <td valign="top" style="width:150px;"><div class="tableborder">
           <div class="tableheader">模板管理</div>
           <div class="leftmenubody">
-            <div class="leftmenuitem">&#8226; <a href="admin.php?file=template&action=template">模板管理</a></div>
-			<div class="leftmenuitem">&#8226; <a href="admin.php?file=template&action=tool">模板工具</a></div>
+            <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=template&action=template">模板管理</a></div>
           </div>
         </div>
         <div class="tableborder">
           <div class="tableheader">模板变量</div>
           <div class="leftmenubody">
-            <div class="leftmenuitem">&#8226; <a href="admin.php?file=template&action=stylevar">自定义变量</a></div>
+            <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=template&action=stylevar">自定义变量</a></div>
           </div>
         </div>
         </div></td>
@@ -46,28 +45,22 @@ if($action == 'template'){print <<<EOT
                 <tr>
                   <td class="alertbox">
 EOT;
-if ($current_template_info) {print <<<EOT
-                    <table border="0" cellpadding="20">
-                      <tr>
-                        <td align="center"><table border="0" cellspacing="0" cellpadding="5" class="screenshot">
-                            <tr>
-                              <td><img alt="$current_template_info[name]" src="$current_template_info[screenshot]" border="0" /></td>
-                            </tr>
-                          </table></td>
-                        <td valign="top"><ul class="templateinfo">
-                            <li>$current_template_info[name]</li>
-                            <li>制作者:$current_template_info[author]</li>
-                            <li>适用版本:$current_template_info[version]</li>
-                          </ul>
-                          <div class="templateinfo2">$current_template_info[description]</div>
-                          <div class="templateinfo2">模板目录(相对根目录):<b>$current_template_info[templatedir]</b></div></td>
-                      </tr>
+print <<<EOT
+        <table border="0" cellpadding="10">
+					 <tr>
+					 <td>模板类型</td><td>模板名称</td><td>制作者</td><td>适用版本</td><td>模板描述</td><td>模板目录</td><td>操作</td>
+					 </tr>					
+					 <tr>
+					 <td>电脑</td><td>$current_template_info[name]</td><td>$current_template_info[author]</td><td>$current_template_info[version]</td><td>$current_template_info[description]</td><td>$current_template_info[templatedir]</td><td></td>
+					 </tr>
+					  <tr>
+						<td>手机</td><td>$mobile_template_info[name]</td><td>$mobile_template_info[author]</td><td>$mobile_template_info[version]</td><td>$mobile_template_info[description]</td><td>$mobile_template_info[templatedir]</td><td></td>
+					 </tr>
+					 
+					  <tr>
+					 <td>微信</td><td>$weixin_template_info[name]</td><td>$weixin_template_info[author]</td><td>$weixin_template_info[version]</td><td>$weixin_template_info[description]</td><td>$weixin_template_info[templatedir]</td><td></td>
+					 </tr>
                     </table> 
-EOT;
-} else {print <<<EOT
-                    没有当前主题的相关资料              
-EOT;
-}print <<<EOT
                   </td>
                 </tr>
               </table></td>
@@ -87,8 +80,10 @@ if ($available_template_db) {
 foreach($available_template_db as $id => $template){print <<<EOT
 
                     <div class="availabletheme">
-                      <h3><a title="设置$template[name]主题为当前主题" href="admin.php?file=template&action=settemplate&name=$template[dirurl]">$template[name]</a></h3>
-                      <a href="admin.php?file=template&action=settemplate&name=$template[dirurl]" class="screenshot"><img src="$template[screenshot]" border="0" alt="设置$template[name]主题为当前主题" /></a> </div>
+                      <h3>$template[name]</h3>
+                      <a href="{$admin_url}?file=template&action=settemplate&name=$template[dirurl]" class="screenshot"><img src="$template[screenshot]" border="0" /></a> 
+					  <a href="{$admin_url}?file=template&action=settemplate&name=$template[dirurl]&type=pc">设置为PC模板</a> <a href="{$admin_url}?file=template&action=settemplate&name=$template[dirurl]&type=mobile">设置为手机模板</a> <a href="{$admin_url}?file=template&action=settemplate&name=$template[dirurl]&type=weixin">设置为微信模板</a> 
+					  </div>
                     
 EOT;
 }} else {print <<<EOT
@@ -103,7 +98,7 @@ EOT;
 EOT;
 } elseif($action == 'stylevar'){print <<<EOT
 
-                <form action="admin.php?file=template" method="post" name="form">
+                <form action="{$admin_url}?file=template" method="post" name="form">
 				<input type="hidden" name="action" value="domorestylevar">
                   <tr class="tdbheader">
                     <td width="4%" nowrap="nowrap">状态</td>
@@ -139,7 +134,7 @@ EOT;
           </tr>
           <tr>
             <td class="rightmainbody"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
-                <form action="admin.php?file=template" method="post" name="form">
+                <form action="{$admin_url}?file=template" method="post" name="form">
 				<input type="hidden" name="action" value="addstylevar">
                   <tr class="tdbheader">
                     <td nowrap="nowrap" colspan="2">添加自定义变量</td>
@@ -168,8 +163,8 @@ EOT;
 EOT;
 foreach($filedb as $key => $file){print <<<EOT
                 <tr class="tablecell">
-                  <td nowrap="nowrap"><b><a href="admin.php?file=template&action=mod&path=$path&file=$file[filename]&ext=$file[extension]">$file[filename]</a></b></td>
-                  <td nowrap="nowrap"><a href="admin.php?file=template&action=del&path=$path&file=$file[filename]&ext=$file[extension]">删除</a></td>
+                  <td nowrap="nowrap"><b><a href="{$admin_url}?file=template&action=mod&path=$path&file=$file[filename]&ext=$file[extension]">$file[filename]</a></b></td>
+                  <td nowrap="nowrap"><a href="{$admin_url}?file=template&action=del&path=$path&file=$file[filename]&ext=$file[extension]">删除</a></td>
                 </tr>           
 EOT;
 }print <<<EOT
@@ -178,7 +173,7 @@ EOT;
                 </tr>             
 EOT;
 } elseif ($action == 'mod') {print <<<EOT
-                <form action="admin.php?file=template" method="post" name="form">
+                <form action="{$admin_url}?file=template" method="post" name="form">
                   <input type="hidden" name="action" value="savefile">
                   <tr class="tdbheader">
                     <td colspan="2">编辑模板文件</td>
@@ -213,7 +208,7 @@ EOT;
                 </form>     
 EOT;
 } elseif ($action == 'newtemplate') {print <<<EOT
-                <form action="admin.php?file=template" method="post" name="form">
+                <form action="{$admin_url}?file=template" method="post" name="form">
                   <input type="hidden" name="action" value="donewtemplate">
                   <tr class="tdbheader">
                     <td colspan="2">新建模板</td>
@@ -230,13 +225,13 @@ EOT;
                 </form>           
 EOT;
 } elseif ($action == 'del') {print <<<EOT
-                <form action="admin.php?file=template" method="post" name="form">
+                <form action="{$admin_url}?file=template" method="post" name="form">
                   <tr class="alertheader">
                     <td colspan="1"><a name="删除模板"></a>删除模板</td>
                   </tr>
                   <tr>
-                    <td class="alertbox"><p>模板套系: <a href="admin.php?file=template&action=filelist&path=$path">$path</a></p>
-                      <p>模板文件: <a href="admin.php?file=template&action=mod&path=$path&file=$file">$file</a></p>
+                    <td class="alertbox"><p>模板套系: <a href="{$admin_url}?file=template&action=filelist&path=$path">$path</a></p>
+                      <p>模板文件: <a href="{$admin_url}?file=template&action=mod&path=$path&file=$file">$file</a></p>
                       <p><b>注意: 删除模板文件将不会显示和该模板有关的一切页面，确定吗？</b></p>
                       <p>
                         <input type="submit" value="确认" class="formbutton">

@@ -1,16 +1,16 @@
 <?php
-if(!isset($_GET['url'])) message('未定义参数');
-$page=isset($_GET['page'])?intval($_GET['page']):1;//这个是文章的页数
+if(!isset($_GET['url1'])) run404('未定义参数');
+$page=isset($_GET['url2'])?intval($_GET['url2']):1;//这个是文章的页数
 $catepage=isset($_GET['catepage'])?intval($_GET['catepage']):1;//这个是评论的页数
 
 $comment_username=isset($_COOKIE['comment_username'])?$_COOKIE['comment_username']:'';
 $comment_url=isset($_COOKIE['comment_url'])?$_COOKIE['comment_url']:'';
 
-$article=getArticle($_GET['url']);
+$article=getArticle($_GET['url1']);
 if(empty($article))
 {
 	doAction('article_not_find');
-	message('该文章不存在或已被删除',RQ_HTTP.$host['host']);
+	run404('该文章不存在或已被删除');
 }
 //如果启用了自动缓存，先判断是否超时的
 if(RQ_CACHE) cacheControl($article['lastmodified']);
@@ -36,19 +36,6 @@ if(strpos($article['content'],'[page]'))
 	}
 }
 
-//加密处理
-$article['allowread'] = true;
-if(!empty($article['password']))
-{
-	if(isset($_COOKIE['readpassword_'.$aid])&& $_COOKIE['readpassword_'.$aid] == $article['password']) $article['allowread'] = true;
-	else if(isset($_POST['readpassword'])&&$_POST['readpassword']==$article['password'])
-	{
-		$article['allowread'] = true;
-		setcookie('readpassword_'.$aid,$article['password']);
-	}
-	else $article['allowread'] = false;
-}
-
 $DB->unbuffered_query("UPDATE ".DB_PREFIX."article SET views=views+1 WHERE aid=$aid");
 
 //处理PHP高亮
@@ -59,7 +46,7 @@ if($article['cateid']=='0')
 }
 else
 {
-	$article['cname'] = $cateArr[$article['cateid']]['name'];
+	$article['cname'] = $category[$article['cateid']]['name'];
 }
 // 评论	
 $commentdb=array();

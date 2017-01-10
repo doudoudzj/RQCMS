@@ -7,7 +7,7 @@ $tables = array(
 	DB_PREFIX.'attachment',
 	DB_PREFIX.'category',
 	DB_PREFIX.'comment',
-	DB_PREFIX.'content',
+	DB_PREFIX.'content1',
 	DB_PREFIX.'link',
 	DB_PREFIX.'filemap',
 	DB_PREFIX.'host',
@@ -15,7 +15,7 @@ $tables = array(
 	DB_PREFIX.'tag',
 	DB_PREFIX.'user',
 	DB_PREFIX.'var',
-	DB_PREFIX.'log',
+	DB_PREFIX.'login',
 	DB_PREFIX.'redirect'
 );
 
@@ -41,7 +41,7 @@ if ($action == 'downsql') {
 	}
 	else
 	{
-		redirect('备份文件'.$sqlfile.'没有找到', 'admin.php?file=database&action=filelist');
+		redirect('备份文件'.$sqlfile.'没有找到', $admin_url.'?file=database&action=filelist');
 	}
 }
 
@@ -53,12 +53,12 @@ if ($action == 'resume') {
 	$file = $backupdir.'/'.$sqlfile;
 	$path_parts = pathinfo($file);
 	if (strtolower($path_parts['extension']) != 'sql') {
-		redirect('只能恢复SQL文件!','admin.php?file=database&action=filelist');
+		redirect('只能恢复SQL文件!',$admin_url.'?file=database&action=filelist');
 	}
 	checkSqlFileInfo($file);
 	bakindata($file);
 	//更新缓存
-	redirect('数据恢复成功','admin.php?file=database&action=filelist');
+	redirect('数据恢复成功',$admin_url.'?file=database&action=filelist');
 }
 
 /**
@@ -134,21 +134,21 @@ if ($action == 'dobackup') {
 				@fclose($fp);
 				redirect('备份失败。备份目录('.RQ_DATA.'/backup)不可写');
 			}else{
-				redirect("数据库备份成功",'admin.php?file=database&action=filelist');
+				redirect("数据库备份成功",$admin_url.'?file=database&action=filelist');
 			}
 		}else{
 			redirect('创建备份文件失败。备份目录('.RQ_DATA.'/backup)不可写');
 		}
 	}
 	}else{
-		redirect('数据表没有任何内容','admin.php?file=database&action=filelist');
+		redirect('数据表没有任何内容',$admin_url.'?file=database&action=filelist');
 	}
 }// 备份操作结束
 
 
 //批量删除备份文件
 if($action == 'deldbfile') {
-	!isset($_POST['sqlfiles'])&&redirect('未选择任何文件','admin.php?file=database&action=filelist');
+	!isset($_POST['sqlfiles'])&&redirect('未选择任何文件',$admin_url.'?file=database&action=filelist');
 	$sqlfiles=$_POST['sqlfiles'];
 	$selected = count($sqlfiles);
 	$succ = $fail = 0;
@@ -162,10 +162,10 @@ if($action == 'deldbfile') {
 				$fail++;
 			}
 		} else {
-			redirect($filen.' 文件已不存在', 'admin.php?file=database&action=filelist');
+			redirect($filen.' 文件已不存在', $admin_url.'?file=database&action=filelist');
 		}
     }
-    redirect('删除数据文件操作完毕,删除'.$selected.'个,成功'.$succ.'个,失败'.$fail.'个.', 'admin.php?file=database&action=filelist',5);
+    redirect('删除数据文件操作完毕,删除'.$selected.'个,成功'.$succ.'个,失败'.$fail.'个.', $admin_url.'?file=database&action=filelist',5);
 }
 
 // 数据库维护操作

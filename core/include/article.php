@@ -23,7 +23,9 @@ function getTagArr($tag)
 		$tag = substr($tag, 0, strlen($tag)-1);
 	}
 	if(!$tag) return false;
-	return explode(',',$tag);
+	$tagarr= explode(',',$tag);
+	$tagarr= array_unique($tagarr);
+	return $tagarr;
 }
 
 //清空cookie里保存的数据
@@ -85,11 +87,6 @@ function getAttach()
 		if(empty($val['name'])) unset($attachments[$id]);
 		else $attachments[$id]['localid']=$id;
 	}
-		
-	foreach($attachments as $id=>$val)
-	{
-		if(isset($_POST['score'])&&is_array($_POST['score'])) $attachments[$id]=$val;
-	}
 	
 	foreach($attachments as $id=>$val)
 	{	
@@ -112,7 +109,7 @@ function getAttach()
 		$ext=strtolower(trim(pathinfo($val['name'], PATHINFO_EXTENSION)));
 		$fnamehash = md5(uniqid(microtime()));
 		$filepath = $attach_dir.'/'.$fnamehash.'.'.$ext.'.file';
-		$attachment=RQ_DATA.'/files/'.$filepath;
+		$attachment=RQ_DATA.'/files/'.$filepath;exit($val['tmp_name']);
 		if(!move_uploaded_file($val['tmp_name'],$attachment))
 		{
 			redirect('上传附件发生意外错误!');

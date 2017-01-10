@@ -1,5 +1,5 @@
 <?php
-$uploadurl=mkUrl('admin.php','').'?file=upload';
+$uploadurl=mkUrl('admin','').'?file=upload';
 print <<<EOT
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -8,8 +8,9 @@ print <<<EOT
 <meta http-equiv="Content-Language" content="UTF-8" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta name="author" content="RQ204" />
+<base href="/">
 <title>{$host['name']} - RQCMS {$constant['RQ_VERSION']}</title>
-<link rel="stylesheet" href="{$cssfile}" type="text/css">
+<link rel="stylesheet" href="{$css_url}" type="text/css">
 <script type="text/javascript" src="{$editordir}jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="{$editordir}xheditor-1.1.14-zh-cn.min.js"></script>
 
@@ -65,9 +66,9 @@ function pageInit()
 EOT;
 if ($groupid) {
 print <<<EOT
-          <td class="topLinks">欢迎您 $username [<a href="admin.php?file=login&action=logout">注销身份</a>] 
+          <td class="topLinks">欢迎您 $username [<a href="{$admin_url}?file=login&action=logout">注销身份</a>] 
 EOT;
-if($groupid==4) echo ' [<a href="admin.php?file=special">站点管理</a>]';
+if($groupid==4) echo ' [<a href="'.$admin_url.'?file=special">站点管理</a>]';
 if ($groupid) print <<<EOT
   [<a href="./" target="_blank">站点首页</a>]
 </td>
@@ -82,7 +83,7 @@ EOT;
 EOT;
 foreach ($adminitem AS $link => $title)	{
 print <<<EOT
-         <td width="9%" class="navcell" onMouseover="$('$link').className='cpnavmenuHover'" onMouseout="$('{$link}').className='cpnavmenu'"><div class="cpnavmenu" id="{$link}"><a href="admin.php?file={$link}">{$title}</a></div></td>
+         <td width="9%" class="navcell" onMouseover="$('$link').className='cpnavmenuHover'" onMouseout="$('{$link}').className='cpnavmenu'"><div class="cpnavmenu" id="{$link}"><a href="{$admin_url}?file={$link}">{$title}</a></div></td>
 EOT;
 }print <<<EOT
           <td>&nbsp;</td>

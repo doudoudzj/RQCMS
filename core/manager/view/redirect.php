@@ -5,7 +5,7 @@ print <<<EOT
 <head>
 <title>系统消息</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<link rel="stylesheet" href="{$cssfile}" type="text/css">
+<link rel="stylesheet" href="{$css_url}" type="text/css">
 <meta HTTP-EQUIV="REFRESH" content="$min;url=$url">
 <style type="text/css">
 .alert {

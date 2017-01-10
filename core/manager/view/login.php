@@ -3,7 +3,7 @@ print <<<EOT
 <div id="simpleHeader"></div>
 <div class="loginBox">
   <table border="0" cellpadding="5" cellspacing="1">
-    <form method="post" action="admin.php?file=login">
+    <form method="post" action="{$admin_url}?file=login">
       <input type="hidden" name="action" value="login" />
       <tr>
         <td nowrap="nowrap">帐号:<br />

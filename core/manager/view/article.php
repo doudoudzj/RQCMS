@@ -24,7 +24,7 @@ function checkform()
 
 $(document).ready(function(){
     $('#cid').change(function(){
-		var upurl="admin.php?file=upload&cid="+$(this).children('option:selected').val(); 
+		var upurl="{$admin_url}?file=upload&cid="+$(this).children('option:selected').val(); 
         editor.settings.upImgUrl=upurl;
 		editor.settings.upFlashUrl=upurl;
 		editor.settings.upMediaUrl=upurl;
@@ -39,26 +39,26 @@ $(document).ready(function(){
       <td valign="top" style="width:150px;"><div class="tableborder">
         <div class="tableheader">文章管理</div>
         <div class="leftmenubody">
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=add">添加文章</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list">编辑文章</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=search">搜索文章</a></div>
-		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list&view=hidden">草稿箱($hiddenCount)</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=add">添加文章</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=list">编辑文章</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=search">搜索文章</a></div>
+		  <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=list&view=hidden">草稿箱($hiddenCount)</a></div>
         </div>
       </div>
 	  <div class="tableborder">
         <div class="tableheader">文章分类</div>
         <div class="leftmenubody">
-		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list&view=stick">置顶文章</a></div>
+		  <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=list&view=stick">置顶文章</a></div>
 EOT;
-foreach($cateArr as $key => $cate){print <<<EOT
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=article&action=list&cid={$cate['cid']}">{$cate['name']}</a></div>
+foreach($category as $key => $cate){print <<<EOT
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=article&action=list&cid={$cate['cid']}">{$cate['name']}</a></div>
 EOT;
 }print <<<EOT
         </div>
       </div></td>
       <td valign="top" style="width:20px;"></td>
       <td valign="top">
-	  <form action="admin.php?file=article" enctype="multipart/form-data" method="POST" name="form1""><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	  <form action="{$admin_url}?file=article" enctype="multipart/form-data" method="POST" name="form1""><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 	  <tr><td class="rightmainbody"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 EOT;
 if($action == 'list'){print <<<EOT
@@ -75,13 +75,13 @@ if($action == 'list'){print <<<EOT
 EOT;
 foreach($articledb as $key => $article){print <<<EOT
     <tr class="tablecell">
-      <td><a href="admin.php?file=article&action=mod&aid=$article[aid]">$article[title]</a></td>
+      <td><a href="{$admin_url}?file=article&action=mod&aid=$article[aid]">$article[title]</a></td>
 	  <td nowrap>$article[dateline]</td>
-      <td nowrap><a href="admin.php?file=article&action=list&cid=$article[cateid]">$article[cname]</a></td>
+      <td nowrap><a href="{$admin_url}?file=article&action=list&cid=$article[cateid]">$article[cname]</a></td>
 	  <td nowrap>$article[views]</td>
       <td nowrap>$article[comments]</td>
       <td nowrap>$article[attachment]</td>
-	  <td nowrap>$article[userid]</td>
+	  <td nowrap>$article[writer]</td>
       <td nowrap><input type="checkbox" name="aids[]" value="$article[aid]"></td>
     </tr>
 EOT;
@@ -105,7 +105,7 @@ EOT;
           <option value="">== 选择分类 ==</option>
 EOT;
 $i=0;
-foreach($cateArr as $key => $cate){
+foreach($category as $key => $cate){
 $i++;
 $selected = ($cate['cid'] == $article['cateid']) ? "selected" : "";
 print <<<EOT
@@ -127,7 +127,7 @@ EOT;
       <td><textarea name="article[excerpt]" style="width:100%; height:100px;">{$article['excerpt']}</textarea></td>
     </tr>
     <tr class="tablecell">
-      <td valign="top">文章内容:<br /><br />手动分页符<br /><a href="javascript:void(0);" onClick="editor.pasteHTML('[page]');">[page]</a></td>
+      <td valign="top">文章内容:<br /></td>
       <td><textarea name="content[content]" id="content" style="width:100%; height:400px;">{$article['content']}</textarea></td>
     </tr>
 	 <tr class="tablecell">
@@ -136,7 +136,7 @@ EOT;
     </tr>
 	<tr class="tablecell">
       <td>缩略图片:</td>
-      <td><input class="formfield" type="text" name="article[thumb]" size="50" maxlength="20" value="$article[thumb]"> 255个字符以内</td>
+      <td><input class="formfield" type="text" name="article[thumb]" size="50" maxlength="50" value="$article[thumb]"><input name="litpic" id="litpic" type="file"></td>
     </tr>
 EOT;
 print <<<EOT
@@ -145,8 +145,6 @@ print <<<EOT
       <td> <input name="article[visible]" type="checkbox" value="1" $visible_check>
         发布本文,不选则为草稿 <input name="article[stick]" type="checkbox" value="1" $stick_check>
         置顶本文<br />
-		<input name="article[closed]" type="checkbox" value="1" $closecomment_check><input class="formfield" type="hidden" name="article[password]" size="50" maxlength="20" value="$article[password]"> 
-        禁止评论
 		<input name='edittime' type="checkbox" value="1">
 		更改发布时间 <input class="formfield" name="newyear" type="text" value="$newyear" maxlength="4" style="width:40px"> 年 <input class="formfield" name="newmonth" type="text" value="$newmonth" maxlength="2" style="width:20px"> 月 <input class="formfield" name="newday" type="text" value="$newday" maxlength="2" style="width:20px"> 日 <input class="formfield" name="newhour" type="text" value="$newhour" maxlength="2" style="width:20px"> 时 <input class="formfield" name="newmin" type="text" value="$newmin" maxlength="2" style="width:20px"> 分 <input class="formfield" name="newsec" type="text" value="$newsec" maxlength="2" style="width:20px"> 秒 <input class="formbutton" type="button" onclick="alert('有效的时间戳典型范围是从格林威治时间 1901 年 12 月 13 日 星期五 20:45:54 到 2038年 1 月 19 日 星期二 03:14:07\\n\\n该日期根据 32 位有符号整数的最小值和最大值而来\\n\\n取值说明: 日取 01 到 30 之间, 时取 0 到 24 之间, 分和秒取 0 到 60 之间!\\n\\n系统会自动检查时间有效性,如果不在有效范围内,将不会执行更改时间操作\\n\\n注意:如果系统是按照时间而不是提交次序排列文章,修改时间可以改变文章的顺序.');" value="时间说明">		
 		</td>
@@ -158,7 +156,7 @@ if(count($attachdb) > 0){print <<<EOT
       <td>
 EOT;
 foreach($attachdb as $key => $attach){
-$atturl=mkUrl('attachment.php',$attach['aid']);
+$atturl=mkUrl('attachment',$attach['aid']);
 print <<<EOT
 <input type="checkbox" name="keep[]" value="{$attach['aid']}" checked> 保留 <a href="$atturl" target="_blank"><b>$attach[filename]</b></a> ($attach[dateline], $attach[filesize]) <b> <a href="javascript:void(0);" onClick="editor.pasteHTML('[attach={$attach['aid']}]');">插入文章</a></b><br />
 EOT;
@@ -193,7 +191,7 @@ EOT;
         <br>
 EOT;
 foreach($articledb as $key => $article){print <<<EOT
-        <li><a href="admin.php?file=article&action=mod&aid=$article[aid]">$article[title]</a><input type="hidden" name="aids[]" value="$article[aid]"></li>
+        <li><a href="{$admin_url}?file=article&action=mod&aid=$article[aid]">$article[title]</a><input type="hidden" name="aids[]" value="$article[aid]"></li>
 EOT;
 }print <<<EOT
       </ol></p>
@@ -201,7 +199,7 @@ EOT;
         <select name="cid">
             <option value="" selected>选择分类</option>
 EOT;
-foreach($cateArr as $key => $cate){print <<<EOT
+foreach($category as $key => $cate){print <<<EOT
             <option value="{$cate['cid']}">{$cate['name']}</option>
 EOT;
 }print <<<EOT
@@ -222,7 +220,7 @@ EOT;
 	  <p><ol>
 EOT;
 foreach($articledb as $key => $article){print <<<EOT
-        <li><a href="admin.php?file=article&action=mod&aid=$article[aid]">$article[title]</a><input type="hidden" name="aids[]" value="$article[aid]"></li>
+        <li><a href="{$admin_url}?file=article&action=mod&aid=$article[aid]">$article[title]</a><input type="hidden" name="aids[]" value="$article[aid]"></li>
 EOT;
 }print <<<EOT
       </ol></p>
@@ -244,17 +242,34 @@ EOT;
           <option value="">== 全部分类 ==</option>
 EOT;
 $i=0;
-foreach($cateArr as $key => $cate){
+$afields=GetTableField('article');
+$afields=array_flip($afields);
+unset($afields['aid']);
+unset($afields['cateid']);
+unset($afields['ban']);
+unset($afields['closed']);
+unset($afields['password']);
+$afields=array_flip($afields);
+foreach($category as $key => $cate){
 $i++;
-$selected = ($cate['cid'] == $article['cid']) ? 'selected' : '';
 print <<<EOT
-          <option value="$cate[cid]" $selected>$i. $cate[name]</option>
+          <option value="$cate[cid]">$i. $cate[name]</option>
 EOT;
 }print <<<EOT
         </select></td>
     </tr>
+	<tr class="tablecell">
+	  <td><b>搜索范围设定:</b></td>
+	  <td><select name="searchfield"><option value="" selected>标题、描述,Tag,关键词内</option>
+EOT;
+foreach($afields as $af){print <<<EOT
+	  <option value="{$af}">仅搜索字段 {$af}</option>
+EOT;
+}print <<<EOT
+	  </select></td>
+    </tr>
     <tr class="tablecell">
-	  <td><b>标题、作者、描述,Tag,关键词内的关键字:</b></td>
+	  <td><b>搜索关键字:</b></td>
 	  <td><input class="formfield" type="text" name="keywords" size="35" maxlength="50" value=""></td>
     </tr>
     <tr class="tablecell">
@@ -266,6 +281,11 @@ EOT;
 	  <td><b>添加时间晚于:</b><br />
 	  yyyy-mm-dd</td>
 	  <td><input class="formfield" type="text" name="enddate" size="35" maxlength="255" value=""></td>
+    </tr>
+	<tr class="tablecell">
+	  <td><b>阅读量判断:</b><br />
+	  可以填写&gt;0或是&lt;100或是=这样的条件</td>
+	  <td><input class="formfield" type="text" name="views" size="35" maxlength="50" value=""></td>
     </tr>
     <input type="hidden" name="action" value="list">
     <input type="hidden" name="do" value="search">

@@ -63,9 +63,9 @@ $server['mysql']=$DB->version();
 if (function_exists ( 'memory_get_usage' )) {
 	$server ['memory_info'] = get_real_size ( memory_get_usage () );
 }
-$aarr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article WHERE hostid=$hostid");
-$atarr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."attachment WHERE hostid=$hostid");
-$carr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."comment WHERE hostid=$hostid");
+$aarr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article");
+$atarr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."attachment");
+$carr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."comment");
 
 $server['article']=$aarr['count(*)'];
 $server['attach']=$atarr['count(*)'];

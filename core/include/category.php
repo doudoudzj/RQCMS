@@ -1,9 +1,9 @@
 <?php
 //获取一个栏目中有多少文章
-function getArticleNum($hostid,$cateids)
+function getArticleNum($cateids)
 {
 	global $DB;
-	$fetch=$DB->fetch_first("Select count(*) as a from `".DB_PREFIX."article` where `hostid`='$hostid' and `cateid` in ($cateids)");
+	$fetch=$DB->fetch_first("Select count(*) as a from `".DB_PREFIX."article` where `cateid` in ($cateids)");
 	return $fetch['a'];
 }
 
@@ -15,45 +15,26 @@ function checkname($name) {
 	}
 }
 
-// 删除Tag函数
-function removetag($item,$tagid) {
-	global $DB, $db_prefix;
-	$item = addslashes($item);
-	$tag = $DB->fetch_first("SELECT aids FROM ".DB_PREFIX."tags WHERE tag='$item'");
-	if ($tag) {
-		$query  = $DB->query("SELECT articleid, keywords FROM ".DB_PREFIX."articles WHERE articleid IN (".$tag['aids'].")");
-		while ($article = $DB->fetch_array($query)) {
-			$article['keywords'] = str_replace(','.$item.',', ',', $article['keywords']);
-			$article['keywords'] = str_replace(','.$item, '', $article['keywords']);
-			$article['keywords'] = str_replace($item.',', '', $article['keywords']);
-			$article['keywords'] = str_replace($item, '', $article['keywords']);
-			$DB->unbuffered_query("UPDATE ".DB_PREFIX."articles SET keywords='".addslashes($article['keywords'])."' WHERE articleid='".$article['articleid']."'");
-		}
-		$DB->unbuffered_query("DELETE FROM ".DB_PREFIX."tags WHERE tagid='".intval($tagid)."'");
-	}
-}
-
-
-function getCateOption($cateArr,$select,$self='')
+function getCateOption($category,$select,$self='')
 {
 	$re='';
-	foreach($cateArr as $a=>$b)
+	foreach($category as $a=>$b)
 	{
 		if($b['pid']=='0')
 		{
 			if($self==$b['cid']) continue;
 			$add=$select==$a?' selected':'';
 			$re.='<option value="'.$a.'" '.$add.'>'.$b['name'].'</option>';
-			$re.=getoption($a,$cateArr,$select,1,$self);
+			$re.=getoption($a,$category,$select,1,$self);
 		}
 	}
 	return $re;
 }
 
-function getoption($pid,$cateArr,$select,$level,$self)
+function getoption($pid,$category,$select,$level,$self)
 {
 	$re='';
-	foreach($cateArr as $a=>$b)
+	foreach($category as $a=>$b)
 	{
 		if($b['pid']==$pid)
 		{
@@ -61,44 +42,29 @@ function getoption($pid,$cateArr,$select,$level,$self)
 			$add=$select==$a?' selected':'';
 			$pad=str_pad('', $level, '+', STR_PAD_LEFT);
 			$re.='<option value="'.$a.'"'.$add.'>'.$pad.$b['name'].'</option>';
-			$re.=getoption($a,$cateArr,$select,$level+1,$self);
+			$re.=getoption($a,$category,$select,$level+1,$self);
 		}
 	}
 	return $re;
 }
 
-
-function getChildArr($cid,$cateArr)
-{
-	$childidArr[]=$cid;
-	foreach($cateArr as $id=>$cateinfo)
-	{
-		if($cateinfo['pid']==$cid)
-		{
-			$child=getChildArr($id,$cateArr);
-			$childidArr=array_merge($childidArr,$child);
-		}
-	}
-	return $childidArr;
-}
-
-function getChildLevel($cid,$cateArr)
+function getChildLevel($cid,$category)
 {
 	$level=0;
-	foreach($cateArr as $id=>$cateinfo)
+	foreach($category as $id=>$cateinfo)
 	{
 		if($cateinfo['pid']==$cid)
 		{
-			$level=$level+getChildLevel($id,$cateArr);
+			$level=$level+getChildLevel($id,$category);
 		}
 	}
 	return $level;
 }
 
-function getMaxCid($cateArr)
+function getMaxCid($category)
 {
-	sort($cateArr);
-	$a=end($cateArr);
+	sort($category);
+	$a=end($category);
 	return $a['cid'];
 }
 	

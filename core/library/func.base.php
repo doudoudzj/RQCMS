@@ -438,15 +438,15 @@ function getGetArr($string)
 }
 
 //获取最下级的分类id
-function getChildCate($cateid,$cateArr)
+function getChildCate($cateid,$category)
 {
 	$has=array();
 	$has[]=$cateid;
-	foreach($cateArr as $key => $cate)
+	foreach($category as $key => $cate)
 	{
 		if($cate['pid']==$cateid)
 		{
-			$has[]=getChildCate($cate['cid'],$cateArr);
+			$has[]=getChildCate($cate['cid'],$category);
 		}
 	}
 	return implode(',',$has);
@@ -464,3 +464,72 @@ function getJoinSql($article)
 	return $sql;
 }
 
+
+/**
+ * 检测来源是手机用户
+ *
+ * @return boolean true 是手机端  false 是其他终端
+ */
+function from_mobile() {
+	$regex_match = "/(nokia|iphone|android|motorola|^mot\-|softbank|foma|docomo|kddi|up\.browser|up\.link|";
+	$regex_match .= "htc|dopod|blazer|netfront|helio|hosin|huawei|novarra|CoolPad|webos|techfaith|palmsource|meizu|miui|ucweb";
+	$regex_match .= "blackberry|alcatel|amoi|ktouch|nexian|samsung|^sam\-|s[cg]h|^lge|ericsson|philips|sagem|wellcom|bunjalloo|maui|";
+	$regex_match .= "symbian|smartphone|midp|wap|phone|windows ce|iemobile|^spice|^bird|^zte\-|longcos|pantech|gionee|^sie\-|portalmmm|";
+	$regex_match .= "jig\s browser|hiptop|^ucweb|^benq|haier|^lct|opera\s*mobi|opera\*mini|320x320|240x320|176x220";
+	$regex_match .= ")/i";
+
+	if (isset($_SERVER['HTTP_X_WAP_PROFILE']) || isset($_SERVER['HTTP_PROFILE']) || (isset($_SERVER['HTTP_USER_AGENT']) && preg_match($regex_match, strtolower($_SERVER['HTTP_USER_AGENT'])))) {
+		return true;
+	}
+	return false;
+}
+
+//检查是不是从微信来的
+function from_weixin(){ 
+	if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false ) {
+			return true;
+	}	
+	return false;
+}
+
+function runquery($sql,$prefix) {
+	global $DB, $tablenum;
+	$sql = str_replace("\r", "\n", str_replace('`prefix_', '`'.$prefix, $sql));
+	$ret = explode(";\n", trim($sql));
+	unset($sql);
+	foreach($ret as $query) {
+		$query = trim($query);
+		if($query) {
+			if(substr($query, 0, 12) == 'CREATE TABLE') {
+				$name = preg_replace("/CREATE TABLE `([a-z0-9_]+)` \(.*/is", "\\1", $query);
+				$DB->query($query);
+				echo '创建表 '.$name.' ... <font color="#0000EE">成功</font><br />';
+				$tablenum++;
+			} else {
+				$DB->query($query);
+			}
+		}
+	}
+}
+
+function run404($reason='')
+{
+	global $theme;
+	header('HTTP/1.1 404 Not Found');
+	include RQ_DATA.'/themes/'.$theme.'/404.php';
+	exit;
+}
+
+function getChildArr($cid,$category)
+{
+	$childidArr[]=$cid;
+	foreach($category as $id=>$cateinfo)
+	{
+		if($cateinfo['pid']==$cid)
+		{
+			$child=getChildArr($id,$category);
+			$childidArr=array_merge($childidArr,$child);
+		}
+	}
+	return $childidArr;
+}

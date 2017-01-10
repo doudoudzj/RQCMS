@@ -19,8 +19,7 @@ if(RQ_POST)
 				$attarr=$DB->fetch_first('Select count(*) from '.DB_PREFIX."attachment WHERE articleid=$articleid");
 				$attcount=$attarr['count(*)'];
 				$DB->query("update ".DB_PREFIX."article set attachments=$attcount where aid=$articleid");
-				//redirect('成功删除所选附件,如果删除数量很多.建议执行一次附件修复操作,更新文章中的附件信息以提高访问速度.', 'admin.php?file=attachment&action=list&articleid='.$articleid,'10');
-				redirect('成功删除所选附件', 'admin.php?file=attachment&action=list&aid='.$articleid,'2');
+				redirect('成功删除所选附件', $admin_url.'?file=attachment&action=list&aid='.$articleid,'2');
 				} else {
 				redirect('未选择任何附件');
 			}
@@ -46,14 +45,14 @@ if(RQ_POST)
 			
 			}
 			
-			redirect('成功修复'.count($articledic).'个附件记录', 'admin.php?file=attachment&action=list');
+			redirect('成功修复'.count($articledic).'个附件记录', $admin_url.'?file=attachment&action=list');
 		break;
 		case 'addattachtoarticle':	//添加附件到指定文章
 			$aid = intval($_POST['aid']);
 			include_once RQ_CORE.'/include/article.php';
-			$article = $DB->fetch_first("SELECT title,attachments,visible FROM ".DB_PREFIX."article WHERE aid='$aid' and hostid=$hostid");
+			$article = $DB->fetch_first("SELECT title,attachments,visible FROM ".DB_PREFIX."article WHERE aid='$aid'");
 			if(!$article) {
-				redirect('文章不存在', 'admin.php?file=attachment');
+				redirect('文章不存在', $admin_url.'?file=attachment');
 			}
 
 			// 修改附件
@@ -63,7 +62,7 @@ if(RQ_POST)
 			{
 				foreach($attachments as $key=>$attachment)
 				{
-					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`isimage`,`hostid`) values ('$aid','$timestamp','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[isimage]','$hostid')");
+					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`isimage`) values ('$aid','$timestamp','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[isimage]')");
 					$attachments[$key]['aid']=$DB->insert_id();
 					unset($attachments[$key]['filepath']);
 					unset($attachments[$key]['thumb_filepath']);
@@ -72,7 +71,7 @@ if(RQ_POST)
 			}
 			$attachstr=addslashes(serialize($oldattach));
 			$DB->query('update '.DB_PREFIX."article set `attachments`=`attachments`+$attachment_count where aid='$aid'");
-			redirect('成功上传了'.$attachment_count.'个附件到《'.$article['title'].'》', 'admin.php?file=attachment&action=list&aid='.$aid);
+			redirect('成功上传了'.$attachment_count.'个附件到《'.$article['title'].'》', $admin_url.'?file=attachment&action=list&aid='.$aid);
 			break;
 	}
 }
@@ -102,14 +101,14 @@ else
 		}
 		$aid =isset($_GET['aid'])?intval($_GET['aid']):'';
 		if ($aid) {
-			$article = $DB->fetch_first("SELECT title FROM ".DB_PREFIX."article WHERE aid='$aid' and hostid=$hostid");
+			$article = $DB->fetch_first("SELECT title FROM ".DB_PREFIX."article WHERE aid='$aid'");
 			$subnav = '《'.$article['title'].'》的附件';
 			$sql .= " AND a.articleid='$aid'";
 		} else {
 			$warning = '';
 			$a_dir = RQ_DATA.'/files/';
 			$dircount = dircount($a_dir);
-			$stats = $DB->fetch_first("SELECT count(*) as count, sum(filesize) as sum FROM ".DB_PREFIX."attachment where hostid=$hostid");
+			$stats = $DB->fetch_first("SELECT count(*) as count, sum(filesize) as sum FROM ".DB_PREFIX."attachment");
 			$stats['count'] = ($stats['count'] != 0) ? $stats['count'] : 0;
 			$stats['sum'] = ($stats['count'] == 0) ? '0 KB' : sizecount($stats['sum']);
 			if (!@is_dir($a_dir)) {
@@ -119,8 +118,8 @@ else
 
 		$total = $DB->num_rows($DB->query("SELECT aid FROM ".DB_PREFIX."attachment a ".$sql.(isset($order)?" order by $order desc":'')));
 		$aidadd=$aid?'&aid='.$aid:'';
-		$multipage = multi($total, 30, $page, 'admin.php?file=attachment&action=list&view='.$view.$aidadd);
-		$query = $DB->query("SELECT a.*,ar.title as article FROM ".DB_PREFIX."attachment a LEFT JOIN ".DB_PREFIX."article ar ON (ar.aid=a.articleid) $sql and ar.hostid=$hostid  ORDER BY ".(isset($order)?"$order DESC, ":'')."a.aid DESC LIMIT $start_limit, 30");
+		$multipage = multi($total, 30, $page, $admin_url.'?file=attachment&action=list&view='.$view.$aidadd);
+		$query = $DB->query("SELECT a.*,ar.title as article FROM ".DB_PREFIX."attachment a LEFT JOIN ".DB_PREFIX."article ar ON (ar.aid=a.articleid) $sql ORDER BY ".(isset($order)?"$order DESC, ":'')."a.aid DESC LIMIT $start_limit, 30");
 
 		$attachdb = array();
 		while ($attach = $DB->fetch_array($query)) {

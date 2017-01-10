@@ -1,5 +1,0 @@
-﻿Template Name: RQCMS开发者主题
-Template Version: 1.0
-Template Description: 该主题列出了每个页面所有可以使用参数
-Template Author: rq204
-Template Author URL: http://www.rqcms.com

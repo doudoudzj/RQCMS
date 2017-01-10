@@ -1,59 +1,45 @@
 <?php
-$page=isset($_GET['page'])?intval($_GET['page']):1;
-$item=isset($_GET['url'])?$_GET['url']:'';
+$page=isset($_GET['url2'])?intval($_GET['url2']):1;
+$item=isset($_GET['url1'])?$_GET['url1']:'';
 $articledb=array();
 $multipage ='';
 $title='';
 $tagdb=array();
-if ($item) 
+if ($item)
 {
-	$shownum=$host['list_shownum'];
-	$start_limit = ($page - 1) * $shownum;
-	$query_sql = "SELECT articleid from ".DB_PREFIX."tag where tag='$item' and hostid='$hostid' order by tid desc limit $start_limit, $shownum";
-	doAction('tag_change_sql');
-	$query=$DB->query($query_sql);
-	$selectnum=$DB->num_rows($query);
-	if($selectnum)
-	{
-		$idarray=array();
-		while($m=$DB->fetch_array($query))
-		{
-			$idarray[]=$m['articleid'];
-		}
-		$aids=implode_ids($idarray);
-		$query_sql = "SELECT * FROM ".DB_PREFIX."article WHERE aid in ($aids)  and visible='1' and hostid=$hostid ORDER BY dateline desc";
-		$query=$DB->query($query_sql);
-		$articledb=array();
-		while($adb=$DB->fetch_array($query))
-		{
-			$articledb[]=showArticle($adb);
-		}
-		$total=count($articledb);
-	}
-	else
-	{
-		message('记录不存在.', '/');
-	}
-	$title=$item;
-	$DB->free_result($query);
+    $tagarr = $DB->fetch_first("SELECT * FROM ".DB_PREFIX."tag where tag='$item' ");
+    $total=0;
+    $shownum=$host['list_shownum'];
+    if($tagarr)
+    {
+        $aids=$tagarr['aids'];
+        $aidsarr=explode(',',$aids);
+        $aidsarr=array_reverse($aidsarr);
+        $total=count($aidsarr);
+        $pagenum=ceil($total/$shownum);
+        if($page>$pagenum) $page=$pagenum;
+        $start = ($page - 1) * $shownum;
+        $listaids=array_slice($aidsarr,$start,$shownum);
+        $aidstr=implode_ids($listaids);
+        $query_sql = "SELECT * FROM ".DB_PREFIX."article WHERE aid in ($aidstr) and visible='1' ORDER BY dateline desc";
+        $query=$DB->query($query_sql);
+        $articledb=array();
+        while($adb=$DB->fetch_array($query))
+        {
+            $articledb[]=showArticle($adb);
+        }
+    }
+    else
+    {
+        run404('记录不存在');
+    }
+ 
+    $title=$item;
+    $DB->free_result($query);
 }
-else 
+else
 {
-	$title='标签';
-	$shownum = intval($host['tags_shownum']);
-	$start_limit = ($page - 1) * $shownum;
-	$multipage='';
-	//$multipage = multi(100, $shownum, $page, 'tag.php');
-	$query = $DB->query("SELECT count(*) as usenum,tag FROM ".DB_PREFIX."tag where hostid='$hostid' group by tag ORDER BY tid DESC LIMIT $start_limit, ".$shownum);
-	while ($tag = $DB->fetch_array($query)) {
-		$tag['fontsize'] = 12 + $tag['usenum'] / 2;
-		$tag['url'] = $tag['tag'];
-		$tag['usenum'] = intval($tag['usenum']);
-		$tag['item'] = $tag['tag'];
-		$tagdb[]=$tag;
-	}
-	unset($tag);
-	$DB->free_result($query);
+    run404('找不到页面');
 }
-
+ 
 doAction('tag_before_view');

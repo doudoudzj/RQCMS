@@ -6,17 +6,17 @@ print <<<EOT
       <td rowspan="3" valign="top" style="width:150px;"><div class="tableborder">
         <div class="tableheader">附件查看</div>
         <div class="leftmenubody">
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=attachment&action=list&view=image">图片附件</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=attachment&action=list&view=file">文件附件</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=attachment&action=list&view=hot">热门附件</a></div>
-		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=attachment&action=list&view=big">最大附件</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=attachment&action=list&view=image">图片附件</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=attachment&action=list&view=file">文件附件</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=attachment&action=list&view=hot">热门附件</a></div>
+		  <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=attachment&action=list&view=big">最大附件</a></div>
         </div>
       </div>
 	  <div class="tableborder">
         <div class="tableheader">附件管理</div>
         <div class="leftmenubody">
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=attachment&action=repair">附件修复</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=attachment&action=clear">附件清理</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=attachment&action=repair">附件修复</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=attachment&action=clear">附件清理</a></div>
         </div>
       </div>
 	  </td>
@@ -46,7 +46,7 @@ if (!$aid) {print <<<EOT
   </tr>      
 EOT;
 } else {print <<<EOT
-  <form action="admin.php?file=attachment" method="post" enctype="multipart/form-data">
+  <form action="{$admin_url}?file=attachment" method="post" enctype="multipart/form-data">
   <input type="hidden" name="action" value="addattachtoarticle" />
   <input type="hidden" name="aid" value="$aid" />
   <tr class="tdbheader">
@@ -70,7 +70,7 @@ print <<<EOT
     </tr>
     <tr>
       <td valign="top" class="rightmainbody"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
-        <form action="admin.php?file=attachment"  method="post">
+        <form action="{$admin_url}?file=attachment"  method="post">
           <input type="hidden" name="action" value="delattachments" />
           <input type="hidden" name="aid" value="$aid" />
           <tr class="tdbheader">
@@ -84,8 +84,8 @@ print <<<EOT
           </tr>       
 EOT;
 foreach($attachdb as $key => $attach){
-$atturl=mkUrl('attachment.php',$attach['aid']);
-$arturl='admin.php?file=article&action=mod&aid='.$attach['articleid'];
+$atturl=mkUrl('attachment',$attach['aid']);
+$arturl=$admin_url.'?file=article&action=mod&aid='.$attach['articleid'];
 print <<<EOT
           <tr class="tablecell">
             <td><a href="{$atturl}" target="_blank" title="$attach[filepath]">$attach[filename]</a></td>
@@ -109,7 +109,7 @@ EOT;
         </form>
 EOT;
 } elseif ($action == 'repair') {print <<<EOT
-        <form action="admin.php?file=attachment" method="post">
+        <form action="{$admin_url}?file=attachment" method="post">
           <input type="hidden" name="action" value="dorepair" />
           <tr class="tdbheader">
             <td>附件修复</td>
@@ -126,7 +126,7 @@ EOT;
 EOT;
 } elseif ($action == 'clear') {print <<<EOT
 
-        <form action="admin.php?file=attachment" method="post">
+        <form action="{$admin_url}?file=attachment" method="post">
           <input type="hidden" name="action" value="doclear" />
           <tr class="tdbheader">
             <td>附件清理</td>

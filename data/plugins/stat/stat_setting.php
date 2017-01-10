@@ -30,7 +30,7 @@ function stat_code_save()
 	global $DB,$hostid;
 	$code=$_POST['stat_code'];
 	$DB->query('update '.DB_PREFIX."plugin set `config`='$code' where hostid=$hostid and `file`='stat'");
-	plugins_recache();
+	setting_recache();
 	redirect('统计代码已成功更新','admin.php?file=plugin&action=setting&plugin=stat');
 }
 addAction('admin_plugin_setting_save','stat_code_save');

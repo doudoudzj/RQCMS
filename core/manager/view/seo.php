@@ -7,19 +7,20 @@ print <<<EOT
 	  <div class="tableborder">
         <div class="tableheader">标签管理</div>
         <div class="leftmenubody">
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=seo&action=taglist">标签管理</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=seo&action=taglist">标签管理</a></div>
+		  <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=seo&action=tagrebuilt&tagindex=0">重建标签</a></div>
         </div>
 	  <div class="tableborder">
         <div class="tableheader">网址链接</div>
         <div class="leftmenubody">
-		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=seo&action=addredirect">添加跳转</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=seo&action=redirect">自动跳转</a></div>
+		  <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=seo&action=addredirect">添加跳转</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=seo&action=redirect">自动跳转</a></div>
         </div>
       </div>
 	  </td>
       <td valign="top" style="width:20px;"></td>
       <td valign="top">
-	  <form action="admin.php?file=seo" method="POST"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	  <form action="{$admin_url}?file=seo" method="POST"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 	  <tr><td class="rightmainbody"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 EOT;
 if($action == 'taglist'){print <<<EOT
@@ -33,10 +34,10 @@ if($action == 'taglist'){print <<<EOT
 EOT;
 foreach($tagdb as $key => $tag){print <<<EOT
     <tr class="tablecell">
-      <td><a href="admin.php?file=article&action=list&tag=$tag[url]">$tag[item]</a></td>
+      <td><a href="{$admin_url}?file=article&action=list&tag=$tag[url]">$tag[item]</a></td>
       <td>$tag[usenum]</td>
-      <td><a href="admin.php?file=seo&action=modtag&tag=$tag[url]">修改</a></td>
-      <td nowrap><input type="checkbox" name="tag[$tag[item]]" value="$tag[item]">
+      <td><a href="{$admin_url}?file=seo&action=modtag&tag=$tag[url]">修改</a></td>
+      <td nowrap><input type="checkbox" name="tag[]" value="$tag[item]">
       </td>
     </tr>
 EOT;
@@ -72,7 +73,7 @@ elseif ($action == 'modtag') {print <<<EOT
       <td>
 EOT;
 foreach($articledb as $key => $article){print <<<EOT
-<a href="admin.php?file=article&action=mod&aid=$article[aid]">$article[title]</a><br>
+<a href="{$admin_url}?file=article&action=mod&aid=$article[aid]">$article[title]</a><br>
 EOT;
 }print <<<EOT
 </td>
@@ -132,7 +133,7 @@ foreach($redirectdb as $key => $rdb){print <<<EOT
       <td>$rdb[old]</td>
       <td>$rdb[new]</td>
 	  <td>$rdb[status]</td>
-      <td><a href="admin.php?file=seo&action=modredirect&rid=$rdb[rid]">修改</a></td>
+      <td><a href="{$admin_url}?file=seo&action=modredirect&rid=$rdb[rid]">修改</a></td>
       <td nowrap><input type="checkbox" name="rid[$rdb[rid]]" value="$rdb[rid]">
       </td>
     </tr>

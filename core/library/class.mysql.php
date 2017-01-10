@@ -120,7 +120,7 @@ class DB_MySQL  {
 
 		if ($sql) {
 			@$fp = fopen(RQ_DATA.'/logs/dberror.php', 'a');
-			@fwrite($fp, "$username\t$timestamp\t$onlineip\t".basename(RQ_FILE)."\t".htmlspecialchars($this->geterrdesc())."\t".str_replace(array("\r", "\n", "\t"), array(' ', ' ', ' '), trim(htmlspecialchars(str_replace("\t",'',$sql))))."\n");
+			@fwrite($fp, "$username\t$timestamp\t$onlineip\t".basename($_SERVER["SCRIPT_FILENAME"])."\t".htmlspecialchars($this->geterrdesc())."\t".str_replace(array("\r", "\n", "\t"), array(' ', ' ', ' '), trim(htmlspecialchars(str_replace("\t",'',$sql))))."\n");
 			@fclose($fp);
 		}
 

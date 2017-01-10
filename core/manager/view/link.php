@@ -6,13 +6,13 @@ print <<<EOT
       <td valign="top" style="width:150px;"><div class="tableborder">
         <div class="tableheader">链接管理</div>
         <div class="leftmenubody">
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=link&action=add">添加链接</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=link&action=list">编辑链接</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=link&action=add">添加链接</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=link&action=list">编辑链接</a></div>
         </div>
       </div></td>
       <td valign="top" style="width:20px;"></td>
       <td valign="top">
-	  <form action="admin.php?file=link" method="POST" name="form"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	  <form action="{$admin_url}?file=link" method="POST" name="form"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 	  <tr><td class="rightmainbody"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 EOT;
 if($action == 'add'){print <<<EOT

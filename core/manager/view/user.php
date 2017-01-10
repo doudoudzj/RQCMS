@@ -1,14 +1,14 @@
 <?php
 print <<<EOT
 <div class="mainbody">
-<p class="p_nav"><a href="admin.php?file=user&action=add">添加用户</a> [ 降序排列: <a href="admin.php?file=user&action=list&order=username">用户名</a> | <a href="admin.php?file=user&action=list&order=logincount">登陆次数</a> | <a href="admin.php?file=user&action=list&order=regdateline">注册时间</a> ] [ 发表与否: <a href="admin.php?file=user&action=list&lastpost=already">发表过评论</a> | <a href="admin.php?file=user&action=list&lastpost=never">从未发表过评论</a> ] [ 组别: <a href="admin.php?file=user&action=list&groupid=3">管理组</a> | <a href="admin.php?file=user&action=list&groupid=2">撰写组</a> | <a href="admin.php?file=user&action=list&groupid=1">注册组</a> ]</p>
+<p class="p_nav"><a href="{$admin_url}?file=user&action=add">添加用户</a> [ 降序排列: <a href="{$admin_url}?file=user&action=list&order=username">用户名</a> | <a href="{$admin_url}?file=user&action=list&order=logincount">登陆次数</a> | <a href="{$admin_url}?file=user&action=list&order=regdateline">注册时间</a> ] [ 发表与否: <a href="{$admin_url}?file=user&action=list&lastpost=already">发表过评论</a> | <a href="{$admin_url}?file=user&action=list&lastpost=never">从未发表过评论</a> ] [ 组别: <a href="{$admin_url}?file=user&action=list&groupid=3">管理组</a> | <a href="{$admin_url}?file=user&action=list&groupid=2">撰写组</a> | <a href="{$admin_url}?file=user&action=list&groupid=1">注册组</a> ]</p>
 <div class="box">
 <div class="alert">搜索用户</div>
-<div class="alertmsg"><form method="post" action="admin.php?file=user&action=list">
+<div class="alertmsg"><form method="post" action="{$admin_url}?file=user&action=list">
 <input class="formfield" type="text" size="15" name="srhname" value="" /> <input class="formbutton" type="submit" value="确定" />
 </form></div>
 </div>
-	  <form action="admin.php?file=user" method="POST"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	  <form action="{$admin_url}?file=user" method="POST"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 	  <tr><td class="rightmainbody"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 EOT;
 if($action == 'list'){print <<<EOT
@@ -27,13 +27,13 @@ if($action == 'list'){print <<<EOT
 EOT;
 foreach($userdb as $key => $user){print <<<EOT
   <tr class="tablecell">
-    <td nowrap><a href="admin.php?file=user&action=mod&userid=$user[uid]">$user[username]</a></td>
+    <td nowrap><a href="{$admin_url}?file=user&action=mod&userid=$user[uid]">$user[username]</a></td>
     <td>$user[group]</td>
 	<td>$user[email]</td>
     <td>$user[url]</td>
     <td>$user[regdateline]</td>
     <td>$user[logincount]</td>
-    <td><a href="admin.php?file=user&action=list&ip=$user[loginip]">$user[loginip]</a></td>
+    <td><a href="{$admin_url}?file=user&action=list&ip=$user[loginip]">$user[loginip]</a></td>
     <td>$user[logintime]</td>
     <td>$user[lastpost]</td>
     <td><input type="checkbox" name="user[]" value="$user[uid]" $user[disabled] /></td>
@@ -127,7 +127,7 @@ EOT;
 	  <p><ol>
 EOT;
 foreach($userdb as $user){print <<<EOT
-        <li><a href="admin.php?file=user&action=mod&userid=$user[uid]">$user[username]</a><input type="hidden" name="user[]" value="$user[uid]"></li>
+        <li><a href="{$admin_url}?file=user&action=mod&userid=$user[uid]">$user[username]</a><input type="hidden" name="user[]" value="$user[uid]"></li>
 EOT;
 }print <<<EOT
       </ol></p>

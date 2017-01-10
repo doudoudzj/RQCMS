@@ -6,17 +6,17 @@ print <<<EOT
       <td valign="top" style="width:150px;"><div class="tableborder">
         <div class="tableheader">系统维护</div>
         <div class="leftmenubody">
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=cache">缓存管理</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=maintenance&action=cache">缓存管理</a></div>
         </div>
       </div>
 	  <div class="tableborder">
         <div class="tableheader">日志管理</div>
         <div class="leftmenubody">
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=login">登陆日志</a></div>
-          <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=search">站内搜索</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=maintenance&action=log&do=login">登陆日志</a></div>
+          <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=maintenance&action=log&do=search">站内搜索</a></div>
 EOT;
 if($groupid==4){print <<<EOT
-		  <div class="leftmenuitem">&#8226; <a href="admin.php?file=maintenance&action=log&do=dberror">MySql</a></div>
+		  <div class="leftmenuitem">&#8226; <a href="{$admin_url}?file=maintenance&action=log&do=dberror">MySql</a></div>
 EOT;
 }print <<<EOT
         </div>
@@ -30,7 +30,7 @@ print <<<EOT
 	  <tr><td class="rightmainbody"><table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 EOT;
 if(!$action || $action == 'cache') {print <<<EOT
-<form action="admin.php?file=maintenance"  method="POST">
+<form action="{$admin_url}?file=maintenance"  method="POST">
     <tr class="tdbheader">
       <td width="50%"><b>缓存名称</b></td>
       <td width="25%"><b>生成时间</b></td>
@@ -57,7 +57,7 @@ EOT;
 if($do=='login'||$do=='dberror'){
 $show=$do=='login'?'登录结果':'SQL语句';
 print <<<EOT
-<form action="admin.php?file=maintenance"  method="POST">
+<form action="{$admin_url}?file=maintenance"  method="POST">
     <tr class="tdbheader">
       <td width="10%"><b>用户名</b></td>
       <td width="10%"><b>时间</b></td>
@@ -78,7 +78,7 @@ EOT;
 }
 }else if($do=='search'){
 print <<<EOT
-<form action="admin.php?file=maintenance"  method="POST">
+<form action="{$admin_url}?file=maintenance"  method="POST">
     <tr class="tdbheader">
       <td width="20%" colspan="2"><b>时间</b></td>
       <td width="20%"><b>IP地址</b></td>

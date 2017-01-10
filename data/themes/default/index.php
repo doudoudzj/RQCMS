@@ -1,114 +1,73 @@
 <?php
-$top10cache=getLatestArticle(10);
-$stickcache=getStickArticle(10);
-$picscache=getPicArticle(5);
-$commentdata=getLatestComment(10);
-$linkarr=getLink();
-$hotcache=getHotArticle(10);
-$listcache=array();
-$latestarray=@include RQ_DATA.'/cache/latest_'.$host['host'].'.php';
-//得到最新的所有栏目的文章id
-if($latestarray)
-{
-	unset($latestarray['cateids'][0]);
-	$listcache=$latestarray['cateids'];
-}
+$latestarray=getLatestArticle(10);
 
 include RQ_DATA."/themes/$theme/header.php";
 ?>
-
-  <div id=main>
-    <div id=left>
-      <h3>最新文章</h3>
-      <div class=leftbox_index>
-        <div id=focus><dl><dt>
+最新文章调用，在所有页面都可以使用<br>
+$top10cache=getLatestArticle(10);<br>
+系统默认是20条缓存，多的会查询数据库<br>
+<ul>
 <?php
-foreach($picscache as $k=>$v){
-?>
-<a href="<?php echo $v['url']; ?>" title="<?php echo $v['title']; ?>">$k</a>
-<?php
-}?>
-<dd>
-<?php
-foreach($picscache as $k=>$v){?>
-<img src="<?php echo $v['aurl']; ?>" id="pic<?php echo $v['aid']; ?>" />
-<?php
-}?>
-</dd></dl></div>
-        </div>
-        <div id=focist>
-          <ul>
-<?php
+$top10cache=getLatestArticle(10);
 foreach($top10cache AS $data){
 ?>
-            <li><a href="<?php echo $data['aurl']; ?>" title="<?php echo $data['title']; ?>"><?php echo $data['title'];?></a></li>
+    <li><a href="<?php echo $data['aurl']; ?>" title="<?php echo $data['title']; ?>"><?php echo $data['title'];?></a></li>
 <?php
 }?>
-          </ul>
-        </div>
+</ul>
+<hr>
+栏目循环和每个栏目最新文章,$cateid是栏目id<br>
+$value=getLatestArticle(5,$cateid);<br>
 <?php
-foreach($cateArr as $cateid=>$cname){
-if(isset($listcache[$cateid])){//隐藏的栏目不显示
+foreach($category as $cateid=>$cname){
 ?>
-      <div class=box>
-        <h3><a href="<?php echo $cname['curl']; ?>"><?php echo $cname['name'];;?></a></h3>
+        <h3>栏目信息：<a href="<?php echo $cname['curl']; ?>"><?php echo $cname['name'];;?></a></h3>
         <ul>
 <?php
-$value=$listcache[$cateid];
+$value=getLatestArticle(5,$cateid);
+
 if(!empty($value))
 {
-foreach($value AS $k=>$v){
-$data=$latestarray['article'][$v];
+foreach($value AS $data){
 ?>
            <li><a href="<?php echo $data['aurl']; ?>" title="<?php echo $data['title']; ?>"><?php echo $data['title'];;?></a></li>
 <?php
-}}?>
-        </ul>
-      </div>
-<?php
 }}
 ?>
-      <div id=oneline></div>
-    </div>
-    <div id=right>
-      <div class=rightbox>
+ </ul>
+<?php
+}
+?>
+
+<hr>  
         <h3>热门文章</h3>
+		$hotcache=getHotArticle(10);
         <ul>
 <?php
+$hotcache=getHotArticle(10);
 foreach($hotcache as $data){ ?>
           <li><a href="<?php echo $data['aurl']; ?>" title="<?php echo $data['title']; ?>"><?php echo $data['title'];;?></a></li>
 <?php
 }?>
         </ul>
-      </div>
-      <div class=rightbox>
+ <hr>
         <h3>推荐文章</h3>
+		$stickcache=getStickArticle(10);
         <ul>
 <?php
+$stickcache=getStickArticle(10);
 foreach($stickcache AS $data){
 ?>
           <li><a href="<?php echo $data['aurl']; ?>" title="<?php echo $data['title']; ?>"><?php echo $data['title'];;?></a></li>
 <?php
 }?>
         </ul>
-      </div>
-      <div class=rightbox>
-        <h3>最新评论</h3>
-        <ul>
-<?php
-foreach($commentdata AS $data){
-?>
-         <li><a href="<?php echo $data['url']; ?>"><?php echo $data['content'];?></a></li>
-<?php
-}?>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class=links>
+<hr>
 	<h3>友情链接:</h3>
+	$linkarr=isset($setting['link'])?$setting['link']:array();
     <ul>
 <?php
+$linkarr=isset($setting['link'])?$setting['link']:array();
 if($linkarr){
 foreach($linkarr AS $link){
 ?>
@@ -116,7 +75,9 @@ foreach($linkarr AS $link){
 <?php
 }}?>
     </ul>
-  </div>
+<hr>
+备案信息
+<a href="http://www.miibeian.gov.cn/" target="_blank"><?php echo $host['icp'];?></a>
 <?php
 include RQ_DATA."/themes/$theme/footer.php";
 ?>

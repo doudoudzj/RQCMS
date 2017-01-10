@@ -77,13 +77,13 @@ else
 			$logs=array();
 		}
 
-		$multipage = multi($total, 30, $page, "admin.php?file=maintenance&action=log&do=$do");
+		$multipage = multi($total, 30, $page, "{$admin_url}?file=maintenance&action=log&do=$do");
 	}
 	else if($do=='search')
 	{
 		$searchs  = $DB->query("SELECT * FROM ".DB_PREFIX."$do");
 		$total     = $DB->num_rows($searchs);
-		$multipage = multi($total, 30, $page, "admin.php?file=maintenance&action=log&do=$do");
+		$multipage = multi($total, 30, $page, "{$admin_url}?file=maintenance&action=log&do=$do");
 		$searchdb = array();
 		$query = $DB->query("SELECT * FROM ".DB_PREFIX."$do ORDER BY sid DESC LIMIT $start_limit, 30");
 		while ($search = $DB->fetch_array($query)) {
@@ -97,7 +97,7 @@ else
 	{	
 		$searchs  = $DB->query("SELECT * FROM ".DB_PREFIX."$do");
 		$total     = $DB->num_rows($searchs);
-		$multipage = multi($total, 30, $page, "admin.php?file=maintenance&action=log&do=$do");
+		$multipage = multi($total, 30, $page, "{$admin_url}?file=maintenance&action=log&do=$do");
 		$searchdb = array();
 		$query = $DB->query("SELECT * FROM ".DB_PREFIX."$do ORDER BY lid DESC LIMIT $start_limit, 30");
 		while ($search = $DB->fetch_array($query)) {

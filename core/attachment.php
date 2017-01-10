@@ -1,25 +1,22 @@
 <?php
 if ($host['attachments_remote_open']&&!$host['attach_display']) //禁止从非本站下载
 {	
-	if(strpos($refer_url,RQ_HTTP.RQ_HOST)!=0) message('附件禁止从地址栏直接输入或从其他站点链接访问', './');
+	if(strpos($refer_url,RQ_HTTP.RQ_HOST)!=0) run404('附件禁止从地址栏直接输入或从其他站点链接访问');
 }
-
-//在检查下载id前的处理
-doAction('attachment_before_checkaid');
 
 // 查询文章
 
-$aid = intval($_GET['url']);
+$aid = intval($_GET['url1']);
 if (!$aid)
 {
-	message('缺少附件参数', './');
+	run404('不存在的记录');
 } 
 else 
 {
-	$attachinfo = $DB->fetch_first("select * from ".DB_PREFIX."attachment where aid='$aid' and hostid=$hostid");
+	$attachinfo = $DB->fetch_first("select * from ".DB_PREFIX."attachment where aid='$aid'");
 	if (!$attachinfo)
 	{
-		message('附件不存在', '/');
+		run404();
 	}
 	else
 	{
@@ -80,7 +77,7 @@ else
 	}
 	else 
 	{
-		message('读取附件失败', '/');
+		run404('读取附件失败');
 	}
 }
 ?>

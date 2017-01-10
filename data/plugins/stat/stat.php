@@ -43,10 +43,10 @@ addAction('admin_plugin_add_item','stat_add_item');
 
 function stat_footer_add()
 {
-	global $pluginArr,$mapArr,$output;
+	global $pluginArr,$filemapArr,$output;
 	$html=$output;
 	$pos=strrpos($html,'</body>');
-	if($pos&&$mapArr['file'][RQ_FILE]!='admin.php')
+	if($pos&&$filemapArr['file'][RQ_FILE]!='admin.php')
 	{
 		$html=substr($html,0,$pos).$pluginArr['stat'].substr($html,$pos);
 	}

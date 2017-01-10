@@ -71,7 +71,7 @@ addAction('admin_plugin_add_item','page_add_item');
 
 function page_404_before_output()
 {
-	global $host,$pluginArr,$mapArr;
+	global $host,$pluginArr,$filemapArr;
 	//没有找到文章时，查询一下缓存文件
 }
 
