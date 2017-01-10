@@ -1,7 +1,7 @@
 <?php
 if(empty($action)) $action='list';
 $sitedb=array();
-$setting['name']=$setting['host']=$setting['hid']='';
+$setting['name']=$setting['host']=$setting['host2']=$setting['hid']='';
 $setting['url_ext']='php';
 $files=array('index.php','category.php','article.php','attachment.php','search.php','comment.php','tag.php','profile.php','admin.php','captcha.php','rss.php','js.php');
 foreach($files as $f) $info[$f]='';
@@ -39,11 +39,12 @@ if(RQ_POST)
 			if(!isset($_POST['maps'])) redirect('maps参数不足','admin.php?file=special');
 			$hostname=$_POST['setting']['name'];
 			$hosturl=$_POST['setting']['host'];
+			$host2=$_POST['setting']['host2'];
 			//先检查网址是否存在
 			$exsits=$DB->fetch_first('Select * from '.DB_PREFIX."host where host='$hosturl'");
 			if($exsits) redirect('该站点已经存在','admin.php?file=special');
 
-			$sql="INSERT INTO `".DB_PREFIX."host` (`name`, `host`, `gzipcompress`, `theme`, `password`, `keywords`, `description`, `icp`, `close`, `close_note`, `list_shownum`, `article_order`, `title_limit`, `tags_shownum`, `related_shownum`, `related_title_limit`, `related_order`, `audit_comment`, `comment_order`, `article_comment_num`, `comment_min_len`, `comment_max_len`, `commentlist_num`, `comment_post_space`, `allow_search_content`, `search_post_space`, `search_keywords_min_len`, `attach_save_dir`, `attach_thumbs`, `attach_display`, `attach_thumbs_size`, `attachments_remote_open`, `watermark`, `watermark_size`, `watermark_pos`, `watermark_trans`, `watermark_padding`, `server_timezone`, `time_article_format`, `time_comment_format`,`closereg`, `censoruser`, `banip_enable`, `ban_ip`, `spam_enable`, `spam_words`, `spam_url_num`, `js_enable`, `js_cache_life`, `js_lock_url`, `rss_enable`, `rss_num`, `rss_ttl`,`status`,`friend_url`,`listcachenum`) VALUES ('$hostname', '$hosturl', 0, 'default', '', 'CMS,RQCMS', '又一个RQCMS', '1234567890', 0, '服务器检修中,稍后开放', 10, 'articleid', 0, 10, 10, 0, 'dateline', 1, 0, 10, 10, 3000, 20, 10, 1, 10, 2, 2, 0, 2, '200x200', 1, 0, 150, 4, 10, 5, '8', 'Y-m-d', 'Y-m-d',0, 'admin', 0, '', 0,'', 0, 0, 3600, '', 1, 20, 3600,1,'aid',20)";
+			$sql="INSERT INTO `".DB_PREFIX."host` (`name`, `host`,`host2`, `gzipcompress`, `theme`, `password`, `keywords`, `description`, `icp`, `close`, `close_note`, `list_shownum`, `article_order`, `title_limit`, `tags_shownum`, `related_shownum`, `related_title_limit`, `related_order`, `audit_comment`, `comment_order`, `article_comment_num`, `comment_min_len`, `comment_max_len`, `commentlist_num`, `comment_post_space`, `allow_search_content`, `search_post_space`, `search_keywords_min_len`, `attach_save_dir`, `attach_thumbs`, `attach_display`, `attach_thumbs_size`, `attachments_remote_open`, `watermark`, `watermark_size`, `watermark_pos`, `watermark_trans`, `watermark_padding`, `server_timezone`, `time_article_format`, `time_comment_format`,`closereg`, `censoruser`, `banip_enable`, `ban_ip`, `spam_enable`, `spam_words`, `spam_url_num`, `js_enable`, `js_cache_life`, `js_lock_url`, `rss_enable`, `rss_num`, `rss_ttl`,`status`,`friend_url`,`listcachenum`) VALUES ('$hostname', '$hosturl','$host2', 0, 'default', '', 'CMS,RQCMS', '又一个RQCMS', '1234567890', 0, '服务器检修中,稍后开放', 10, 'articleid', 0, 10, 10, 0, 'dateline', 1, 0, 10, 10, 3000, 20, 10, 1, 10, 2, 2, 0, 2, '200x200', 1, 0, 150, 4, 10, 5, '8', 'Y-m-d', 'Y-m-d',0, 'admin', 0, '', 0,'', 0, 0, 3600, '', 1, 20, 3600,1,'aid',20)";
 			$DB->query($sql);
 			$insertid=$DB->insert_id();
 			foreach($files as $k)
@@ -80,9 +81,10 @@ if(RQ_POST)
 			if(!$result) redirect('不存在的站点','admin.php?file=special');
 			$hostname=$_POST['setting']['name'];
 			$hosturl=$_POST['setting']['host'];
+			$host2=$_POST['setting']['host2'];
 			$url_html=$_POST['setting']['url_html'];
 			$url_ext=$_POST['setting']['url_ext'];
-			$DB->query('update '.DB_PREFIX."host set `host`='$hosturl',`name`='$hostname',`url_html`=$url_html,`url_ext`='$url_ext' where hid=$hid");
+			$DB->query('update '.DB_PREFIX."host set `host`='$hosturl',`host2`='$host2',`name`='$hostname',`url_html`=$url_html,`url_ext`='$url_ext' where hid=$hid");
 			foreach($files as $k)
 			{
 				$filename=$_POST['maps'][$k];

@@ -33,8 +33,12 @@ if($action=='add'||$action=='edit') {print <<<EOT
                     <td><input class="formfield" type="text" name="setting[name]" size="35" maxlength="50" value="{$setting['name']}"></td>
                   </tr>
 				  <tr class="tablecell">
-					 <td width="200"><b>网站地址:</b></td>
+					 <td width="200"><b>网站域名:</b></td>
                     <td><input class="formfield" type="text" name="setting[host]" size="35" maxlength="50" value="{$setting['host']}">&nbsp;示例如&nbsp;www.rqcms.com</td>
+                  </tr>
+				  <tr class="tablecell">
+					 <td width="200"><b>网站别名:</b></td>
+                    <td><input class="formfield" type="text" name="setting[host2]" size="35" maxlength="50" value="{$setting['host2']}">&nbsp;多个域名间以,号分隔</td>
                   </tr>
 				    <tr class="tablecell">
 					 <td width="200"><b>网址格式:</b></td>

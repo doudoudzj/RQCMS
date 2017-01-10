@@ -9,12 +9,12 @@ RewriteBase /
 RewriteRule ^/$ /index.php [L]
 RewriteRule ^$ /index.php [L]
 
-#禁止访问除根目录下的其它php,sql,file文件
-RewriteRule ^[^/]*?/.*?\.(php|sql|file).*?$ /index.php [L]
-
 #没有找到的文件或是目录均用index.php来处理
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.php [L]
+RewriteRule ^.*$ /index.php [L]
+
+#禁止访问除根目录下的其它php,sql,file文件
+RewriteRule ^[^/]*?/.*?\.(php|sql|file).*?$ /index.php [L]
 
 </IfModule>

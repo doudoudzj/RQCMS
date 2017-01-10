@@ -1,22 +1,23 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
-print <<<EOT
+$imgurl=mkUrl('captcha.php','');
+?>
 
 <h2 class="title">注册</h2>
 
-EOT;
-if ($options['closereg']) {print <<<EOT
+<?php
+if ($options['closereg']) {?>
 
 <p>对不起, 目前系统禁止新用户注册. 请返回...</p>
 
-EOT;
-} else {print <<<EOT
+<?php
+} else {?>
 
 <p>注册后, 您的用户名得到保护, 别人无法使用您的名字发表任何评论, <br />
   如果填写了备选信息, 系统在您发表评论时, 自动填写.</p>
 <form action="profile.php" method="post" onsubmit="return checkloginform();">
   <input type="hidden" name="action" value="register" />
-  <input type="hidden" name="formhash" value="$formhash" />
+  <input type="hidden" name="formhash" value="<?php echo $formhash;?>" />
   <div class="formbox">
   <p>
     <label for="username">用户名(*):<br />
@@ -39,17 +40,17 @@ EOT;
     </label>
   </p>
   
-EOT;
-if ($options['seccode_enable']) {print <<<EOT
+<?php
+if ($options['seccode_enable']) {?>
 
   <p>
     <label for="clientcode">验证码(*):<br />
     <input name="clientcode" id="clientcode" value="" tabindex="5" class="formfield" size="6" maxlength="6" />
-    <img id="seccode" class="codeimg" src="include/seccode.php" alt="单击图片换张图片" border="0" onclick="this.src='include/seccode.php?update=' + Math.random()" /></label>(请将后三位数字倒序输入)
+    <img id="seccode" class="codeimg" src="<?php echo $imgurl;?>" alt="单击图片换张图片" border="0" onclick="this.src='<?php echo $imgurl;?>?' + Math.random()" /></label>(请将后三位数字倒序输入)
   </p>
   
-EOT;
-}print <<<EOT
+<?php
+}?>
 
   <p>
     <label for="submit">
@@ -59,6 +60,6 @@ EOT;
   </div>
 </form>
 
-EOT;
+<?php
 }
 ?>

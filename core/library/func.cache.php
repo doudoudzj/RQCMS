@@ -8,6 +8,14 @@ function hosts_recache()
 	while ($arrhosts = $DB->fetch_array($hosts)) 
 	{
 		$contents[$arrhosts['host']]=$arrhosts;
+		if(isset($arrhosts['host2'])&&$arrhosts['host2']!='')
+		{
+			$hostarr=explode(',',$arrhosts['host2']);
+			foreach($hostarr as $ha)
+			{
+				if($ha&&!isset($contents[$ha])) $contents[$ha]=$arrhosts;
+			}
+		}
 	}
 	writeCache('hosts',$contents);
 }

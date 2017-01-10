@@ -1,20 +1,19 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
-print <<<EOT
-  <div class=foot>
-    Copyright © 2010-2012 <a href="http://{$constant['RQ_HOST']}">{$host['name']}</a> All Rights Reserved. Powered by <a href="{$constant['RQ_WEBSITE']}" 
-target=_blank><B>{$constant['RQ_AppName']}&nbsp;{$constant['RQ_VERSION']}</B> </a><br />
-EOT;
-print <<<EOT
-    <a href="http://validator.w3.org/check?uri=referer" target="_blank">XHTML 1.0</a>. <a href="profile.php?action=clearcookies">清除Cookies</a> 
-EOT;
-if($host['icp']){print <<<EOT
-<a href="http://www.miibeian.gov.cn/" target="_blank">$host[icp]</a>
-EOT;
-}print <<<EOT
+$clearurl=mkUrl('profile.php','clearcookies');
+?>
+<div class=foot>
+    Copyright © 2010-2012 <a href="http://<?php echo $constant['RQ_HOST'];?>"><?php echo $host['name'];?></a> All Rights Reserved. Powered by <a href="{$constant['RQ_WEBSITE']}" 
+target=_blank><B><?php echo $constant['RQ_AppName'];?>&nbsp;<?php echo $constant['RQ_VERSION'];?></B> </a><br />
+    <a href="http://validator.w3.org/check?uri=referer" target="_blank">XHTML 1.0</a>. <a href="<?php echo $clearurl;?>">清除Cookies</a> 
+<?php
+if($host['icp']){ 
+?>
+<a href="http://www.miibeian.gov.cn/" target="_blank"><?php echo $host['icp'];?>;</a>
+<?php
+}
+?>
   </div>
 </div>
 </body>
 </html>
-EOT;
-?>

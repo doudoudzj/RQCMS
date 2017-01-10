@@ -23,6 +23,7 @@ function page_html_view()
 		print <<<EOT
 <form action="$urllink&do=$do" method="post">
 <input type="hidden" value="page" name="plugin">
+<input type="hidden" value="$article[pid]" name="pid">
  <tr class="tdbheader">
       <td colspan="2">$tdtitle</td>
     </tr>
@@ -134,7 +135,8 @@ function page_content_save()
 	}
 	else if($do=='mod')
 	{
-		$DB->query('update '.DB_PREFIX."page set `hostid`= '$hostid', `userid`='$userid',`username`='$username',`title`='$title',`keywords`='$keywords',`url`='$url',`excerpt`='$excerpt',`content`='$content',`dateline`='$timestamp',`modified`='$timestamp',`visible`=1");
+		$pid=$_POST['pid'];
+		$DB->query('update '.DB_PREFIX."page set `hostid`= '$hostid', `userid`='$userid',`username`='$username',`title`='$title',`keywords`='$keywords',`url`='$url',`excerpt`='$excerpt',`content`='$content',`dateline`='$timestamp',`modified`='$timestamp',`visible`=1 where pid=$pid");
 		redirect('单页编辑成功',$urllink);
 	}
 	else if ($do=='del'){

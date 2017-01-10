@@ -1,6 +1,7 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
-print <<<EOT
+$imgurl=mkUrl('captcha.php','');
+?>
 <div id=main>
 <div id=fullbox>
 <div class=full>
@@ -21,17 +22,16 @@ print <<<EOT
 	</label>
   </p>
 
-EOT;
-if ($options['seccode_enable']) {print <<<EOT
-
+<?php
+if ($options['seccode_enable']) {?>
   <p>
     <label for="clientcode">验证码(*):
-	<input name="clientcode" id="clientcode" value="" tabindex="3" class="formfield" size="6" maxlength="6" /> <img id="seccode" class="codeimg" src="include/seccode.php" alt="单击图片换张图片" border="0" onclick="this.src='include/seccode.php?update=' + Math.random()" />(不要输入第二个数字)
+	<input name="clientcode" id="clientcode" value="" tabindex="3" class="formfield" size="6" maxlength="6" /> <img id="seccode" class="codeimg" src="<?php echo $imgurl;?>" alt="单击图片换张图片" border="0" onclick="this.src='<?php echo $imgurl;?>?' + Math.random()" />
 	</label>
   </p>
 
-EOT;
-}print <<<EOT
+<?php
+}?>
 
   <p>
     <button type="submit" class="formbutton">确定</button>
@@ -42,5 +42,5 @@ EOT;
 </div>
 </div>
 
-EOT;
+<?php
 ?>

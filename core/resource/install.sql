@@ -130,6 +130,7 @@ CREATE TABLE `rqcms_host` (
   `hid` tinyint(3) NOT NULL AUTO_INCREMENT COMMENT '站点id',
   `name` varchar(50) NOT NULL,
   `host` varchar(50) NOT NULL,
+  `host2` varchar(100) NOT NULL,
   `gzipcompress` tinyint(1) NOT NULL,
   `theme` varchar(15) NOT NULL,
   `password` varchar(10) NOT NULL,

@@ -16,91 +16,92 @@ if($latestarray)
 }
 
 include RQ_DATA."/themes/$theme/header.php";
-print <<<EOT
+?>
+
   <div id=main>
     <div id=left>
       <h3>最新文章</h3>
       <div class=leftbox_index>
         <div id=focus><dl><dt>
-EOT;
+<?php
 foreach($picscache as $k=>$v){
-print <<<EOT
-<a href="{$v['url']}" title="{$v['title']}">$k</a>
-EOT;
-}print <<<EOT
+?>
+<a href="<?php echo $v['url']; ?>" title="<?php echo $v['title']; ?>">$k</a>
+<?php
+}?>
 <dd>
-EOT;
-foreach($picscache as $k=>$v){print <<<EOT
-<img src="{$v['aurl']}" id="pic{$v['aid']}" />
-EOT;
-}print <<<EOT
+<?php
+foreach($picscache as $k=>$v){?>
+<img src="<?php echo $v['aurl']; ?>" id="pic<?php echo $v['aid']; ?>" />
+<?php
+}?>
 </dd></dl></div>
         </div>
         <div id=focist>
           <ul>
-EOT;
+<?php
 foreach($top10cache AS $data){
-print <<<EOT
-            <li><a href="{$data['aurl']}" title="{$data['title']}">{$data['title']}</a></li>
-EOT;
-}print <<<EOT
+?>
+            <li><a href="<?php echo $data['aurl']; ?>" title="<?php echo $data['title']; ?>"><?php echo $data['title'];?></a></li>
+<?php
+}?>
           </ul>
         </div>
-EOT;
+<?php
 foreach($cateArr as $cateid=>$cname){
 if(isset($listcache[$cateid])){//隐藏的栏目不显示
-print <<<EOT
+?>
       <div class=box>
-        <h3><a href="{$cname['curl']}">{$cname['name']}</a></h3>
+        <h3><a href="<?php echo $cname['curl']; ?>"><?php echo $cname['name'];;?></a></h3>
         <ul>
-EOT;
+<?php
 $value=$listcache[$cateid];
 if(!empty($value))
 {
 foreach($value AS $k=>$v){
 $data=$latestarray['article'][$v];
-print <<<EOT
-           <li><a href="{$data['aurl']}" title="{$data['title']}">{$data['title']}</a></li>
-EOT;
-}}print <<<EOT
+?>
+           <li><a href="<?php echo $data['aurl']; ?>" title="<?php echo $data['title']; ?>"><?php echo $data['title'];;?></a></li>
+<?php
+}}?>
         </ul>
       </div>
-EOT;
+<?php
 }}
-print <<<EOT
+?>
       <div id=oneline></div>
     </div>
     <div id=right>
       <div class=rightbox>
         <h3>热门文章</h3>
         <ul>
-EOT;
-foreach($hotcache as $data){ print <<<EOT
-          <li><a href="{$data['aurl']}" title="{$data['title']}">{$data['title']}</a></li>
-EOT;
-}print <<<EOT
+<?php
+foreach($hotcache as $data){ ?>
+          <li><a href="<?php echo $data['aurl']; ?>" title="<?php echo $data['title']; ?>"><?php echo $data['title'];;?></a></li>
+<?php
+}?>
         </ul>
       </div>
       <div class=rightbox>
         <h3>推荐文章</h3>
         <ul>
-EOT;
+<?php
 foreach($stickcache AS $data){
-print <<<EOT
-          <li><a href="{$data['aurl']}" title="{$data['title']}">{$data['title']}</a></li>
-EOT;
-}print <<<EOT
+?>
+          <li><a href="<?php echo $data['aurl']; ?>" title="<?php echo $data['title']; ?>"><?php echo $data['title'];;?></a></li>
+<?php
+}?>
         </ul>
       </div>
       <div class=rightbox>
         <h3>最新评论</h3>
         <ul>
-EOT;
+<?php
 foreach($commentdata AS $data){
-print <<<EOT
-         <li><a href="{$data['url']}">{$data['content']}</a></li>
-EOT;
-}print <<<EOT
+?>
+         <li><a href="<?php echo $data['url']; ?>"><?php echo $data['content'];?></a></li>
+<?php
+}?>
         </ul>
       </div>
     </div>
@@ -108,15 +109,15 @@ EOT;
   <div class=links>
 	<h3>友情链接:</h3>
     <ul>
-EOT;
+<?php
 if($linkarr){
 foreach($linkarr AS $link){
-print <<<EOT
-      <li><a href="$link[url]" target="_blank" title="$link[note]">$link[name]</a></li>
-EOT;
-}}print <<<EOT
+?>
+      <li><a href="<?php echo $link['url'];?>" target="_blank" title="<?php echo $link['note'];?>"><?php echo $link['name'];?></a></li>
+<?php
+}}?>
     </ul>
   </div>
-EOT;
+<?php
 include RQ_DATA."/themes/$theme/footer.php";
 ?>

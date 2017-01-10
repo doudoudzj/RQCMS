@@ -37,33 +37,36 @@ if(strpos($article['content'],'[page]'))
 	}
 }
 
-//隐藏变量,方便那些做模板可以单独显示月份和号数的的朋友.
-
-if (!empty($article['readpassword']) &&(isset($_POST['readpassword'])&&$_POST['readpassword']!=$article['readpassword'])&& (isset($_COOKIE['readpassword_'.$aid])&& $_COOKIE['readpassword_'.$aid] != $article['readpassword']) && $groupid<3) 
+//加密处理
+$article['allowread'] = true;
+if(!empty($article['password']))
 {
-	$article['allowread'] = false;
+	if(isset($_COOKIE['readpassword_'.$aid])&& $_COOKIE['readpassword_'.$aid] == $article['password']) $article['allowread'] = true;
+	else if(isset($_POST['readpassword'])&&$_POST['readpassword']==$article['password'])
+	{
+		$article['allowread'] = true;
+		setcookie('readpassword_'.$aid,$article['password']);
+	}
+	else $article['allowread'] = false;
 }
-else 
-{
-	$article['allowread'] = true;
-	$DB->unbuffered_query("UPDATE ".DB_PREFIX."article SET views=views+1 WHERE aid=$aid");
 
-	//处理PHP高亮
-	$article['content'] = preg_replace("/\s*\[php\](.+?)\[\/php\]\s*/ies", "phphighlite('\\1')", $article['content']);
-	if($article['cateid']=='0')
-	{
-		$article['cname']=$article['curl']='';
-	}
-	else
-	{
-		$article['cname'] = $cateArr[$article['cateid']]['name'];
-	}
-	// 评论	
-	$commentdb=array();
-	if ($article['comments'])
-	{
-		$commentdb=getComment($aid,$catepage,$host['article_comment_num']);
-	}
+$DB->unbuffered_query("UPDATE ".DB_PREFIX."article SET views=views+1 WHERE aid=$aid");
+
+//处理PHP高亮
+$article['content'] = preg_replace("/\s*\[php\](.+?)\[\/php\]\s*/ies", "phphighlite('\\1')", $article['content']);
+if($article['cateid']=='0')
+{
+	$article['cname']=$article['curl']='';
+}
+else
+{
+	$article['cname'] = $cateArr[$article['cateid']]['name'];
+}
+// 评论	
+$commentdb=array();
+if ($article['comments'])
+{
+	$commentdb=getComment($aid,$catepage,$host['article_comment_num']);
 }
 
 $cmcontent=isset($_COOKIE['cmcontent'])?$_COOKIE['cmcontent']:'';

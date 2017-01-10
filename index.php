@@ -1,6 +1,6 @@
 <?php
 /**
- * RQCMS 1.0   A simple,personal,multi-site cms 
+ * RQCMS 1.2   A simple,personal,multi-site cms 
  *
  * @copyright  Copyright (c) 2010-2012 RQ204
  * @license    GNU General Public License 2.0
@@ -8,8 +8,8 @@
  */
  //版权相关设置
 define('RQ_AppName','RQCMS');
-define('RQ_VERSION','1.11');
-define('RQ_RELEASE','20121008');
+define('RQ_VERSION','1.2');
+define('RQ_RELEASE','20121121');
 define('RQ_AUTHOR','RQ204');
 define('RQ_WEBSITE','http://www.rqcms.com');
 define('RQ_EMAIL','rq204@qq.com');
@@ -22,13 +22,6 @@ define('RQ_HOST',$_SERVER['HTTP_HOST']);
 define('RQ_POST',$_SERVER['REQUEST_METHOD'] == 'GET' ? false : true);
 define('RQ_HTTP',(isset($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'],'off')!=0) ? 'https://' : 'http://');
 define('RQ_ISIE',isset($_SERVER['HTTP_USER_AGENT'])&&strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE')); 
-foreach(array('REDIRECT_REDIRECT_SCRIPT_URL','REDIRECT_SCRIPT_URL','SCRIPT_URL','REDIRECT_URL','HTTP_X_REWRITE_URL','REQUEST_URI','SCRIPT_NAME') as $rqfile)
-{
-	if(isset($_SERVER[$rqfile]))
-	{	
-		define('REQUEST_URI',substr($_SERVER[$rqfile],1));break;
-	}
-}
 
 //加载公共类和配置文件
 include RQ_CORE.'/library/class.mysql.php';
@@ -37,6 +30,29 @@ include RQ_CORE.'/library/func.agile.php';
 include RQ_CORE.'/library/func.cache.php';
 include RQ_CORE.'/library/func.data.php';
 include RQ_DATA.'/config.php';
+
+//获取请求的网址，处理部分服务器对重写的网址没有GET参数的解决办法
+if(isset($_SERVER['SERVER_SOFTWARE'])&&strpos($_SERVER['SERVER_SOFTWARE'],'IIS'))//IIS,如 Microsoft-IIS/6.0
+{
+	if(!isset($_SERVER['HTTP_X_REWRITE_URL'])) exit('this iis server is not support rqcms!');
+	$def_request_url=getRequestFile($_SERVER['HTTP_X_REWRITE_URL']);
+	define('REQUEST_URI',$def_request_url);
+	if(empty($_GET)&&strpos($_SERVER['HTTP_X_REWRITE_URL'],'?')) $_GET=getGetArr($_SERVER['HTTP_X_REWRITE_URL']);
+}
+else
+{
+	foreach(array('REDIRECT_REDIRECT_SCRIPT_URL','REDIRECT_SCRIPT_URL','SCRIPT_URL','REDIRECT_URL','HTTP_X_REWRITE_URL','REQUEST_URI','SCRIPT_NAME') as $rqfile)
+	{
+		if(isset($_SERVER[$rqfile]))
+		{	
+			define('REQUEST_URI',substr($_SERVER[$rqfile],1));break;
+		}
+	}
+	if(!defined('REQUEST_URI')) exit('this http server is not support rqcms!');
+	if(empty($_GET)&&strpos($_SERVER['REQUEST_URI'],'?')>1) $_GET=getGetArr($_SERVER['REQUEST_URI']);
+}
+
+if(empty($_POST)&&isset($HTTP_RAW_POST_DATA)) $_POST=$HTTP_RAW_POST_DATA;
 
 //禁止自动转反斜杠
 if(get_magic_quotes_runtime()) set_magic_quotes_runtime(false);
@@ -59,18 +75,6 @@ $hosturl=RQ_HTTP.RQ_HOST;
 //时区的设置
 date_default_timezone_set('Asia/Shanghai');
 $timestamp=time();
-
-
-//处理部分服务器对重写的网址没有GET参数的解决办法,如kangle服务器
-if(empty($_GET)&&strpos($_SERVER['REQUEST_URI'],'?')>1)
-{
-	foreach(explode('&',substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'],'?')+1)) as $tget)
-	{
-		$gets=explode('=',$tget);
-		$_GET[$gets[0]]=isset($gets[1])?$gets[1]:'';
-	}
-}
-if(empty($_POST)&&isset($HTTP_RAW_POST_DATA)) $_POST=$HTTP_RAW_POST_DATA;
 
 //读取缓存数据,加载插件，注意，大写开头的变量是所有站点可用，小写开头的变量是当前站点可用
 $HostArr = array();//站点数组,如果为多个,则需要判断是否存在的站点

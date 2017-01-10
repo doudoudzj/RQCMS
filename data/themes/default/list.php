@@ -1,22 +1,20 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
-if ($total) {print <<<EOT
+if ($total) {?>
         <ul id=list>
-EOT;
+<?php
 foreach($articledb as $key => $article){
-print <<<EOT
-          <li><span class=postdate>$article[dateline]</span> <a href="$article[aurl]" title="$article[excerpt]">$article[title]</a> </li>
-EOT;
-}print <<<EOT
+?>
+          <li><span class=postdate><?php echo $article['dateline'];?></span> <a href="<?php echo $article['aurl'];;?>" title="<?php echo $article['excerpt'];?>"><?php echo $article['title'];?></a> </li>
+<?php
+}?>
         </ul>
-EOT;
+<?php
 if($multipage){
-print <<<EOT
-        $multipage
-EOT;
+echo $multipage;;
 }
-} else {print <<<EOT
+} else {?>
 <p><strong>没有任何文章</strong></p>
-EOT;
+<?php
 }
 ?>

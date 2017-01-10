@@ -421,3 +421,29 @@ function implode_ids($array){
 function getFileSuffix($fileName) { 
 	return strtolower(substr(strrchr($fileName, "."),1));
 }
+
+function getGetArr($string)
+{
+	$getArr=array();
+	if(strpos($string,'?')>1)
+	{
+		$string=explode('?',$string);
+		foreach(explode('&',$string[1]) as $tget)
+		{
+			$gets=explode('=',$tget);
+			$getArr[$gets[0]]=isset($gets[1])?$gets[1]:'';
+		}
+	}
+	return $getArr;
+}
+
+function getRequestFile($string)
+{
+	$def_request_url=substr($string,1);
+	if(strpos($def_request_url,'?'))
+	{
+		$var_get_arr=explode('?',$def_request_url);
+		$def_request_url=$var_get_arr[0];
+	}
+	return $def_request_url;
+}
