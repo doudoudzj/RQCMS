@@ -84,12 +84,21 @@ function comments_recache()
 function rss_recache()
 {
 	global $DB,$host,$hostid;
-	$rquery= $DB->query('SELECT * FROM `'.DB_PREFIX.'article` where hostid='.$hostid.' ORDER BY aid DESC limit '.$host['rss_num']);
+	$rquery= $DB->query('SELECT aid FROM `'.DB_PREFIX.'article` where hostid='.$hostid.' ORDER BY aid DESC limit '.$host['rss_num']);
+	$aids=array();
 	$arrfiles=array();
 	while($rss=$DB->fetch_array($rquery))
 	{
-		unset($rss['content']);
-		$arrfiles[]=showArticle($rss);
+		$aids[]=$rss['aid'];
+	}
+	if(count($aids)>0)
+	{
+		$aid=implode_ids($aids);
+		$rquery= $DB->query('SELECT * FROM `'.DB_PREFIX."article` where aid in ($aid)");
+		while($rss=$DB->fetch_array($rquery))
+		{
+			$arrfiles[]=showArticle($rss);
+		}
 	}
 	writeCache('rss_'.$host['host'],$arrfiles);
 }
@@ -112,7 +121,7 @@ function stick_recache()
 function cates_recache()
 {
 	global $DB,$host,$hostid;
-	$cquery= $DB->query('SELECT * FROM `'.DB_PREFIX."category` where hostid='$hostid' order by displayorder desc");
+	$cquery= $DB->query('SELECT * FROM `'.DB_PREFIX."category` where hostid='$hostid' order by displayorder asc");
 	$arrcates=array();
 	while($cate=$DB->fetch_array($cquery))
 	{

@@ -1,4 +1,4 @@
-#关于的apache mod_rewrite的设置可以参考资料：http://lamp.linux.gov.cn/Apache/ApacheMenu/mod/mod_rewrite.html
+#关于的apache mod_rewrite的设置可以参考资料：http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html
 <IfModule mod_rewrite.c>
 
 #设置了目录级重写的基准URL
@@ -16,9 +16,5 @@ RewriteRule ^[^/]*?/.*?\.(php|sql|file).*?$ /index.php [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
-
-#像litespeed这样的服务器设置上传不容易,所以直接指定大小
-php_value upload_max_filesize 128M
-php_value post_max_size 64M
 
 </IfModule>

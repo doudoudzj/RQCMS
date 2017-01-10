@@ -157,7 +157,7 @@ if(count($attachdb) > 0){print <<<EOT
       <td>
 EOT;
 foreach($attachdb as $key => $attach){print <<<EOT
-<input type="checkbox" name="keep[]" value="$attach[aid]" checked> 保留 <a href="../attachment.php?id=$attach[aid]" target="_blank"><b>$attach[filename]</b></a> ($attach[dateline], $attach[filesize]) <b> <a href="###" onclick="addattach('$attach[aid]')">插入文章</a></b><br />
+<input type="checkbox" name="keep[]" value="$attach[aid]" checked> 保留 <a href="../attachment.php?aid=$attach[aid]" target="_blank"><b>$attach[filename]</b></a> ($attach[dateline], $attach[filesize]) <b> <a href="###" onclick="addattach('$attach[aid]')">插入文章</a></b><br />
 EOT;
 }print <<<EOT
 </td>

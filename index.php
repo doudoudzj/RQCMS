@@ -9,7 +9,7 @@
  //版权相关设置
 define('RQ_AppName','RQCMS');
 define('RQ_VERSION','0.99');
-define('RQ_RELEASE','20120701');
+define('RQ_RELEASE','20120708');
 define('RQ_AUTHOR','RQ204');
 define('RQ_WEBSITE','http://www.rqcms.com');
 define('RQ_EMAIL','rq204@qq.com');
@@ -21,12 +21,12 @@ define('RQ_DATA',RQ_ROOT.'/data');
 define('RQ_HOST',$_SERVER['HTTP_HOST']);
 define('RQ_POST',$_SERVER['REQUEST_METHOD'] == 'GET' ? false : true);
 define('RQ_HTTP',(isset($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'],'off')!=0) ? 'https://' : 'http://');
-define('RQ_ISIE',strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE')); 
-foreach(array('REDIRECT_URL','HTTP_X_REWRITE_URL','REQUEST_URI','SCRIPT_NAME') as $rqfile)
+define('RQ_ISIE',isset($_SERVER['HTTP_USER_AGENT'])&&strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE')); 
+foreach(array('REDIRECT_REDIRECT_SCRIPT_URL','REDIRECT_SCRIPT_URL','SCRIPT_URL','REDIRECT_URL','HTTP_X_REWRITE_URL','REQUEST_URI','SCRIPT_NAME') as $rqfile)
 {
 	if(isset($_SERVER[$rqfile]))
 	{	
-		define('RQ_FILE',($_SERVER[$rqfile]=='/'||$_SERVER[$rqfile]=='/?')?'index.php':ltrim(strpos($_SERVER[$rqfile],'?')>1?substr($_SERVER[$rqfile],0,strpos($_SERVER[$rqfile],'?')):$_SERVER[$rqfile],'/'));break;
+		define('RQ_FILE',($_SERVER[$rqfile]=='/'||$_SERVER[$rqfile]=='/?')?'index.php':ltrim(strpos($_SERVER[$rqfile],'?')>1?substr($_SERVER[$rqfile],0,strpos($_SERVER[$rqfile],'?')):$_SERVER[$rqfile],'/'));define('REQUEST_URI',$_SERVER[$rqfile]);break;
 	}
 }
 
@@ -121,7 +121,7 @@ $timestamp=time();
 
 //IP地址和User-Agent
 $onlineip=getIp();
-$useragent=addslashesDeep($_SERVER['HTTP_USER_AGENT']);
+$useragent=isset($_SERVER['HTTP_USER_AGENT'])?addslashesDeep($_SERVER['HTTP_USER_AGENT']):'';
 
 //设置运行的文件
 if(!$Files||!is_array($Files))

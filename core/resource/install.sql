@@ -145,7 +145,7 @@ CREATE TABLE `rqcms_host` (
   `friend_url` varchar(10) NOT NULL,
   `title_limit` tinyint(3) NOT NULL,
   `tags_shownum` smallint(4) NOT NULL,
-  `listcachenum` tinyint(3) NOT NULL,
+  `listcachenum` tinyint(3) NOT NULL default 20,
   `related_shownum` tinyint(3) NOT NULL,
   `related_title_limit` tinyint(3) NOT NULL,
   `related_order` varchar(10) NOT NULL,

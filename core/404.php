@@ -19,6 +19,14 @@ EOT;
 	exit();
 }
 
+//robots.txt
+if(RQ_FILE=='robots.txt')
+{
+	header('Content-Type: text/plain; charset=UTF-8');
+	header('HTTP/1.0 200 OK');
+	exit("User-agent: *\r\nAllow: /");
+}
+
 //先检查文件是否存在,然后检查缓存文件
 $cachefile=RQ_DATA.'/cache/file_'.$host['host'].'.php';
 $themefiles=@include $cachefile;
@@ -93,7 +101,7 @@ if(!file_exists($tempView))
 <H1>Not Found</H1>
 The requested URL <?php echo RQ_FILE;?> was not found on this server.<P>
 <HR>
-<ADDRESS>Web Server at <?php echo RQ_HOST?> Port <?php echo $_SERVER["SERVER_PORT"];?></ADDRESS>
+<ADDRESS>Web Server at <?php echo RQ_HOST;?> Port <?php echo $_SERVER["SERVER_PORT"];?></ADDRESS>
 </BODY></HTML>
 <?php
 exit();

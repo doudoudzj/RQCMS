@@ -58,13 +58,17 @@ $safemode = getphpcfg ('safe_mode');
 $gd_version = gd_version ();
 $gd_version = $gd_version ? '版本:' . $gd_version : '不支持';
 // //查询数据信息
-// $hiddenarttatol = $DB->num_rows($DB->query("SELECT articleid FROM ".DB_PREFIX."articles WHERE visible='0'"));
-// $hiddencomtatol = $DB->num_rows($DB->query("SELECT commentid FROM ".DB_PREFIX."comments WHERE visible='0'"));
-// $hiddentracktatol = $DB->num_rows($DB->query("SELECT trackbackid FROM ".DB_PREFIX."trackbacks WHERE visible='0'"));
 $server ['datetime'] = date ( 'Y-m-d H:i:s', time () );
 $server ['software'] = $_SERVER ['SERVER_SOFTWARE'];
+$server['mysql']=$DB->version();
 if (function_exists ( 'memory_get_usage' )) {
 	$server ['memory_info'] = get_real_size ( memory_get_usage () );
 }
+$aarr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."article WHERE hostid=$hostid");
+$atarr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."attachment WHERE hostid=$hostid");
+$carr=$DB->fetch_first("SELECT count(*) FROM ".DB_PREFIX."comment WHERE hostid=$hostid");
 
+$server['article']=$aarr['count(*)'];
+$server['attach']=$atarr['count(*)'];
+$server['comment']= $carr['count(*)'];
 ?>

@@ -13,7 +13,7 @@ function getAllComment($page)
 	$pagenum=$host['article_comment_num'];
 	$start_limit = ($page - 1) * $pagenum;
 	$cmtorder=$host['comment_order'] ? 'ASC' : 'DESC';
-	$sql="SELECT c.dateline as commentdate ,c.username,c.userid,c.content,a.dateline,a.modified,a.aid,a.url,a.oid,a.attachments,a.comments,a.title FROM ".DB_PREFIX."comment c,".DB_PREFIX."article a WHERE c.visible='1' and c.articleid=a.aid ORDER BY cid desc limit $start_limit,$pagenum";
+	$sql="SELECT c.dateline as commentdate ,c.username,c.userid,c.content,a.dateline,a.modified,a.aid,a.url,a.oid,a.attachments,a.comments,a.title FROM ".DB_PREFIX."comment c,".DB_PREFIX."article a WHERE c.visible='1' and c.articleid=a.aid and a.hostid=$hostid ORDER BY cid desc limit $start_limit,$pagenum";
 	$commentdb=array();
 	$query=$DB->query($sql);
 	while($comment=$DB->fetch_array($query))

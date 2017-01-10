@@ -154,18 +154,10 @@ else
 			$nsessionid=urlencode($sessionid);
 			$info=$DB->fetch_first('Select * from '.DB_PREFIX.'host where hid='.$hid);
 			$rhost=$info['host'];
+			$map=$DB->fetch_first('Select * from '.DB_PREFIX."filemap where hostid=$hid and `original`='admin.php'");
 			if($info)
-			{	
-				$admin='admin.php';
-				foreach($Files as $file=>$args)
-				{
-					if(is_array($args)&&$args[0]=='admin.php')
-					{
-						$admin=$file;
-						break;
-					}
-				}
-				redirect('正在转向转站点'.$info['name'],RQ_HTTP."{$rhost}/{$admin}?sessionid={$nsessionid}");
+			{
+				redirect('正在转向转站点'.$info['name'],RQ_HTTP."{$rhost}/{$map['filename']}?sessionid={$nsessionid}");
 				break;
 			}
 	}

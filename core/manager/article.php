@@ -51,7 +51,7 @@ if(RQ_POST)
 				$fileidarr=array();
 				foreach($attachments as $key=>$attachment)
 				{
-					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`isimage`,`hostid`) values ('$articleid','$dateline','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[thumb_height]','$attachment[isimage]','$hostid')");
+					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`isimage`,`hostid`) values ('$articleid','$dateline','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[isimage]','$hostid')");
 					$attachments[$key]['aid']=$DB->insert_id();
 					$fileidarr[$attachments[$key]['localid']]=$attachments[$key]['aid'];
 				}
@@ -96,7 +96,12 @@ if(RQ_POST)
 			
 			//附件先处理
 			$attachments=getAttach();
-			$oldattach=unserialize($old['attachments']);
+			$oldattach=array();
+			$aquery=$DB->query('select * from '.DB_PREFIX."attachment where articleid=$aid");
+			while($adb=$DB->fetch_array($aquery))
+			{
+				$oldattach[]=$adb;
+			}
 			$oldattachids=array();
 			foreach($oldattach as $k=>$v)
 			{
@@ -117,7 +122,7 @@ if(RQ_POST)
 							{
 								if($d['filename']==$v['filename'])//这里是就是更新了.
 								{
-									$DB->query("update ".DB_PREFIX."attachment set `filesize`='$attachment[filesize]',`filepath`='$attachment[filepath]',`thumb_filepath`='$attachment[thumb_filepath]',`thumb_width`='$attachment[thumb_width]',`thumb_height`='$attachment[thumb_height]' where articleid=$aid and aid=$attid and hostid=$hostid");
+									$DB->query("update ".DB_PREFIX."attachment set `filesize`='$attachment[filesize]',`filepath`='$attachment[filepath]' where articleid=$aid and aid=$attid and hostid=$hostid");
 									$oldattach[o]=$attachments[$v];
 									$oldattach[o]['aid']=$attid;
 									unset($attachments[$v]);
@@ -147,7 +152,7 @@ if(RQ_POST)
 				$fileidarr=array();
 				foreach($attachments as $attachment)
 				{
-					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`thumb_filepath`,`thumb_width`,`thumb_height`,`isimage`,`hostid`,`modified`) values ('$aid','$dateline','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[thumb_filepath]','$attachment[thumb_width]','$attachment[thumb_height]','$attachment[isimage]','$hostid','$timestamp')");
+					$DB->unbuffered_query("Insert into ".DB_PREFIX."attachment (`articleid`,`dateline`,`filename`,`filetype`,`filesize`,`filepath`,`isimage`,`hostid`,`modified`) values ('$aid','$dateline','$attachment[filename]','$attachment[filetype]','$attachment[filesize]','$attachment[filepath]','$attachment[isimage]','$hostid','$timestamp')");
 					$attachment['aid']=$DB->insert_id();
 					$fileidarr[$attachment['localid']]=$attachment['aid'];
 					unset($attachment['filepath']);
@@ -158,8 +163,8 @@ if(RQ_POST)
 					if($content!='') $content=str_replace('[localfile='.$localid.']','[attach='.$fileid.']',$content);
 				}
 			}
-			
-			$attcount=count();
+			$attach=$DB->fetch_first('select count(*) from '.DB_PREFIX."attachment where articleid=$aid");
+			$attcount=$attach['count(*)'];
 			// 插入数据部分
 			$DB->query("Update ".DB_PREFIX."article set `cateid`='$cateid',`title`='$title',`excerpt`='$excerpt',`keywords`='$keywords',`tag`='$tag',`modified`='$timestamp',`attachments`='$attcount',`closed`='$closed',`visible`='$visible',`stick`='$stick',`password`='$password',`url`='$url' where aid=$aid");
 			$DB->query("Update ".DB_PREFIX."content set `content`='$content' where `articleid`='$aid'");

@@ -52,6 +52,10 @@ print <<<EOT
                   <td width="50%">服务器解译引擎:</td>
                   <td width="50%">$server[software]</td>
                 </tr>
+				 <tr class="tablecell">
+                  <td width="50%">MySql版本:</td>
+                  <td width="50%">$server[mysql]</td>
+                </tr>
                 <tr class="tablecell">
                   <td width="50%">文件上传:</td>
                   <td width="50%">$fileupload</td>
@@ -91,15 +95,19 @@ EOT;
                 </tr>
                 <tr class="tablecell">
                   <td width="50%">站点信息:</td>
-                  <td width="50%"></td>
+                  <td width="50%">{$host['name']}</td>
                 </tr>
                 <tr class="tablecell">
                   <td width="50%">文章数量:</td>
-                  <td width="50%"></td>
+                  <td width="50%">{$server['article']}</td>
                 </tr>
                 <tr class="tablecell">
-                  <td width="50%">隐藏文章:</td>
-                  <td width="50%"></td>
+                  <td width="50%">附件数量:</td>
+                  <td width="50%">{$server['attach']}</td>
+                </tr>
+				<tr class="tablecell">
+                  <td width="50%">评论数量:</td>
+                  <td width="50%">{$server['comment']}</td>
                 </tr>
                 <tr>
                   <td class="tablebottom" colspan="2"></td>

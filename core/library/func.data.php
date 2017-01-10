@@ -214,10 +214,10 @@ function getComment($aid,$page,$pagenum)
 //得到热门评论文章todo
 function getHotComment($num,$cateid=null)
 {
-	global $DB,$host;
+	global $DB,$host,$hostid;
 	if($cateid==null) $cate='';
 	else $cate=' where cateid='.$cateid;
-	$query=$DB->query('Select * from '.DB_PREFIX."article where visible=1 order by views desc limit $num");
+	$query=$DB->query('Select * from '.DB_PREFIX."article where visible=1 and hostid=$hostid order by views desc limit $num");
 	return getArticleByAid($query);
 }
 
@@ -233,6 +233,30 @@ function getAttachById($aids)
 	}
 	return $attacharr;
 }
+
+//得到上一篇文章和下一篇文章
+function getPreNextArticle($aid)
+{
+	global $DB,$host,$hostid;
+	$data=array();
+	$preArr=$DB->fetch_first('Select max(aid) from'.DB_PREFIX."article where aid<$aid and hostid=$hostid limit 1");
+	$nextArr=$DB->fetch_first('Select min(aid) from'.DB_PREFIX."article where aid>$aid and hostid=$hostid limit 1");
+	if(empty($perArr)&&empty($nextArr)) return $data;
+	if(!empty($preArr))
+	{	
+		$preid=$preArr['max(aid)'];
+		$data['Pre']=$DB->fetch_first('Select * from '.DB_PREFIX.'article where aid=$perid');
+		$data['Pre']=showArticle($data['Pre']);
+	}
+	if(!empty($nextArr))
+	{	
+		$nextid=$nextArr['max(aid)'];
+		$data['Next']=$DB->fetch_first('Select * from '.DB_PREFIX.'article where aid=$nextid');
+		$data['Next']=showArticle($data['Next']);
+	}
+	return data;
+}
+
 
 function getArticleByAid($query)
 {
