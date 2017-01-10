@@ -1,5 +1,6 @@
 <?php
 if(!defined('RQ_ROOT')) exit('Access Denied');
+$uploadurl=mkUrl('admin.php','').'?file=upload';
 print <<<EOT
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -49,7 +50,7 @@ function pageInit()
 		_this.showDialog(jCode);
 	}}
 	};
-	editor=$('#content').xheditor({plugins:allPlugin,tools:'Cut,Copy,Paste,Pastetext,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,SelectAll,Removeformat,Align,List,Outdent,Indent,Link,Unlink,Anchor,Img,Flash,Media,Hr,Table,Code,|,Source,Preview,Print,Fullscreen,About',upLinkExt:"zip,rar,txt",upImgUrl:"admin.php?file=upload",upImgExt:"jpg,jpeg,gif,png",upFlashUrl:"admin.php?file=upload",upFlashExt:"swf",upMediaUrl:"admin.php?file=upload",upMediaExt:"avi,rmvb,mkv,mp4,wmv,wma,mid"});
+	editor=$('#content').xheditor({plugins:allPlugin,tools:'Cut,Copy,Paste,Pastetext,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,SelectAll,Removeformat,Align,List,Outdent,Indent,Link,Unlink,Anchor,Img,Flash,Media,Hr,Table,Code,|,Source,Preview,Print,Fullscreen,About',upLinkExt:"zip,rar,txt",upImgUrl:"{$uploadurl}",upImgExt:"jpg,jpeg,gif,png",upFlashUrl:"{$uploadurl}",upFlashExt:"swf",upMediaUrl:"{$uploadurl}",upMediaExt:"avi,rmvb,mkv,mp4,wmv,wma,mid"});
 }
 </script>
 

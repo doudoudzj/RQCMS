@@ -70,7 +70,7 @@ function mkUrl($file,$url,$page=0)
 			{
 				$aurl='url';
 				$purl='page';
-			    if(!empty($mapArr['arg'][$ofile]))
+			    if(!empty($mapArr['arg'][$nfile]))
 				{
 					$fs= array_flip($mapArr['arg'][$nfile]);
 					if(isset($fs['url'])) $aurl=$fs['url'];
