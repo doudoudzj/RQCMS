@@ -61,23 +61,24 @@ EOT;
 if($action == 'list'){print <<<EOT
     <tr class="tdbheader">
       <td width="45%">标题</td>
-      <td width="10%" nowrap>分类</td>
+   	  <td width="12%" nowrap>时间</td>
+	  <td width="10%" nowrap>分类</td>
       <td width="6%" nowrap>查看</td>
       <td width="7%" nowrap>回复</td>
-      <td width="13%" nowrap>附件</td>
-	   <td width="16%" nowrap>时间</td>
+      <td width="10%" nowrap>附件</td>
+	  <td width="7%" nowrap>作者</td>
       <td width="3%" nowrap><input name="chkall" value="on" type="checkbox" onclick="checkall(this.form)"></td>
     </tr>
 EOT;
 foreach($articledb as $key => $article){print <<<EOT
     <tr class="tablecell">
-      <td>
-<a href="admin.php?file=article&action=mod&aid=$article[aid]">$article[title]</a></td>
+      <td><a href="admin.php?file=article&action=mod&aid=$article[aid]">$article[title]</a></td>
+	  <td nowrap>$article[dateline]</td>
       <td nowrap><a href="admin.php?file=article&action=list&cid=$article[cateid]">$article[cname]</a></td>
 	  <td nowrap>$article[views]</td>
       <td nowrap>$article[comments]</td>
       <td nowrap>$article[attachment]</td>
-      <td nowrap>$article[dateline]</td>
+	  <td nowrap>$article[userid]</td>
       <td nowrap><input type="checkbox" name="aids[]" value="$article[aid]"></td>
     </tr>
 EOT;

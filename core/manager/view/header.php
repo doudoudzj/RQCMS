@@ -26,14 +26,14 @@ print <<<EOT
           <td class="topLinks">欢迎您 $username [<a href="admin.php?file=login&action=logout">注销身份</a>] 
 EOT;
 if($groupid==4) echo ' [<a href="admin.php?file=special">站点管理</a>]';
-}print <<<EOT
+if ($groupid) print <<<EOT
   [<a href="../index.php" target="_blank">站点首页</a>]
 </td>
         </tr>
       </table>
     </div>
 EOT;
-if (isset($adminitem) && $adminitem) {print <<<EOT
+}if (isset($adminitem) && $adminitem) {print <<<EOT
     <table width="100%" height="25" border="0" cellpadding="0" cellspacing="0">
         <tr>
           <td>&nbsp;</td>

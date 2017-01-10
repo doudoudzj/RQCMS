@@ -49,14 +49,14 @@ EOT;
     <input type="hidden" name="cid" value="$cate[cid]">
     <tr class="tdbheader">
       <td colspan="3">$subnav</td>
-    </tr>
+    </tr><!--
   <tr class="tablecell">
       <td>上级分类:</td>
       <td><select name="pid">
      <option value="0" selected>0级分类</option>
      </select>
 </td>
-    </tr>
+    </tr>-->
     <tr class="tablecell">
       <td>排序:</td>
       <td><input class="formfield" type="text" name="displayorder" size="4" maxlength="50" value="$cate[displayorder]"></td>

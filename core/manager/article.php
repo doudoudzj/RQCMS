@@ -5,7 +5,7 @@ if(empty($action)) $action='list';
 
 $uquery = '';
 if ($groupid < 3) {
-	$uquery = " AND a.uid='$uid'";
+	$uquery = " AND a.userid='$uid'";
 }
 $hidden=$DB->fetch_first("SELECT count(*) as ct FROM ".DB_PREFIX."article a WHERE a.visible=0 and a.hostid=$hostid".$uquery);
 $hiddenCount=$hidden['ct'];
@@ -380,7 +380,7 @@ else
 			$rs = $DB->fetch_first("SELECT count(*) AS articles FROM ".DB_PREFIX."article a WHERE 1 $searchsql $addquery $uquery and hostid=$hostid");
 			$tatol = $rs['articles'];
 			$multipage = multi($tatol, 30, $page, 'admin.php?file=article&action=list'.$pagelink);
-			$query = $DB->query("SELECT a.aid,a.title,a.cateid,a.dateline,a.comments,a.attachments,a.visible,a.views,a.stick,a.hostid,c.name as cname FROM ".DB_PREFIX."article a 
+			$query = $DB->query("SELECT a.aid,a.title,a.cateid,a.userid,a.dateline,a.comments,a.attachments,a.visible,a.views,a.stick,a.hostid,c.name as cname FROM ".DB_PREFIX."article a 
 			LEFT JOIN ".DB_PREFIX."category c ON c.cid=a.cateid
 			WHERE a.hostid='$hostid' $searchsql $addquery $uquery ORDER BY a.aid DESC LIMIT $start_limit, 30");
 		}
@@ -402,9 +402,10 @@ else
 			$multipage = multi($tatol, 30, $page, 'admin.php?file=article&action=list'.$pagelink);
 			
 			$articleids=implode(',',$tagarray);
-			$query=$DB->query('Select a.aid,a.title,a.cateid,a.dateline,a.comments,a.attachments,a.visible,a.views,a.stick,c.name as cname from '.DB_PREFIX."article a LEFT JOIN ".DB_PREFIX."category c ON c.cid=a.cateid where a.aid in ($articleids) and a.hostid='$hostid'");
+			$query=$DB->query('Select a.aid,a.title,a.cateid.a.userid,a.dateline,a.comments,a.attachments,a.visible,a.views,a.stick,c.name as cname from '.DB_PREFIX."article a LEFT JOIN ".DB_PREFIX."category c ON c.cid=a.cateid where a.aid in ($articleids) and a.hostid='$hostid'");
 			$subnav = 'Tags:'.$item;
 		}
+		$authors=array();
 		while ($article = $DB->fetch_array($query)) {
 				if ($article['attachments']) {
 					$article['attachments'] = count(unserialize($article['attachments']));
@@ -414,7 +415,19 @@ else
 				}
 				$article['dateline'] = date('Y-m-d H:i',$article['dateline']);
 				$articledb[] = $article;
+				$authors[]=$article['userid'];
+		}
+		if(count($authors)>0){
+			$authorids=implode_ids($authors);
+			$authquery=$DB->query('Select uid,username from `'.DB_PREFIX.'user` where `uid` in ('.$authorids.')');
+			while($authfetch=$DB->fetch_array($authquery))
+			{
+				foreach($articledb as $k=>$adb)
+				{
+					if($adb['userid']==$authfetch['uid']) $articledb[$k]['userid']=$authfetch['username'];
+				}
 			}
+		}
 		unset($article);
 		$DB->free_result($query);
 	}

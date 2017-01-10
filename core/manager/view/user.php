@@ -3,7 +3,7 @@ if(!defined('RQ_ROOT')) exit('Access Denied');
 
 print <<<EOT
 <div class="mainbody">
-<p class="p_nav"><a href="admin.php?file=user&action=add">添加用户</a> [ 降序排列: <a href="admin.php?file=user&action=list&order=username">用户名</a> | <a href="admin.php?file=user&action=list&order=logincount">登陆次数</a> | <a href="admin.php?file=user&action=list&order=regdateline">注册时间</a> ] [ 发表与否: <a href="admin.php?file=user&action=list&lastpost=already">发表过评论</a> | <a href="admin.php?file=user&action=list&lastpost=never">从未发表过评论</a> ] [ 组别: <a href="admin.php?file=user&action=list&groupid=1">管理组</a> | <a href="admin.php?file=user&action=list&groupid=2">撰写组</a> | <a href="admin.php?file=user&action=list&groupid=3">注册组</a> ]</p>
+<p class="p_nav"><a href="admin.php?file=user&action=add">添加用户</a> [ 降序排列: <a href="admin.php?file=user&action=list&order=username">用户名</a> | <a href="admin.php?file=user&action=list&order=logincount">登陆次数</a> | <a href="admin.php?file=user&action=list&order=regdateline">注册时间</a> ] [ 发表与否: <a href="admin.php?file=user&action=list&lastpost=already">发表过评论</a> | <a href="admin.php?file=user&action=list&lastpost=never">从未发表过评论</a> ] [ 组别: <a href="admin.php?file=user&action=list&groupid=3">管理组</a> | <a href="admin.php?file=user&action=list&groupid=2">撰写组</a> | <a href="admin.php?file=user&action=list&groupid=1">注册组</a> ]</p>
 <div class="box">
 <div class="alert">搜索用户</div>
 <div class="alertmsg"><form method="post" action="admin.php?file=user&action=list">
@@ -51,14 +51,13 @@ EOT;
   </tr>
 EOT;
 } elseif (in_array($action, array('add', 'mod'))){print <<<EOT
-
     <tr class="tdbheader">
       <td colspan="2"><b>必填资料</b></td>
     </tr>
     <tr class="tablecell">
       <td><b>登陆名:</b><br>
         登陆后台的登陆名</td>
-      <td><input class="formfield" type="text" name="username" size="35" value="$info[username]" style="width:150px"></td>
+      <td><input class="formfield" type="text" name="username" size="35" value="$info[username]" style="width:150px" $readonly></td>
     </tr>
     <tr class="tablecell">
       <td><b>新密码:</b><br>
@@ -73,9 +72,21 @@ EOT;
     <tr class="tablecell">
       <td><b>用户组:</b></td>
 	  <td><select name="groupid">
-          <option value="2" $groupselect[2]>管理员</option>
-          <option value="3" $groupselect[3]>撰写组</option>
-          <option value="4" $groupselect[4]>注册组</option>
+EOT;
+if($showgid!=$groupid){print <<<EOT
+	   <option value="1" $groupselect[1]>注册组</option>
+EOT;
+}if($showgid<$groupid&&$groupid>2||$showgid==2&&$groupid==2){print <<<EOT
+          <option value="2" $groupselect[2]>撰写组</option>
+EOT;
+}if($showgid<$groupid&&$groupid>3||$showgid==3&&$groupid==3){print <<<EOT
+<option value="3" $groupselect[3]>管理员</option>
+EOT;
+}if($showgid==4&&$groupid==4){print <<<EOT
+<option value="4" $groupselect[4]>创始人</option>
+EOT;
+}
+print <<<EOT
         </select></td>
     </tr>
     <tr class="tdbheader">
@@ -114,11 +125,11 @@ EOT;
     </tr>
     <tr>
       <td class="alertbox">
-	  <p><b>注意:<br />UserID为1的用户和管理员不能删除,要删除其他管理员请先把用户组改成其他组.<br />删除用户并不会删除用户发表过的评论.</b></p>
+	  <p><b>注意:<br />创始人和管理员不能删除,要删除其他管理员请先把用户组改成其他组.<br />删除用户并不会删除用户发表过的评论.</b></p>
 	  <p><ol>
 EOT;
-foreach($userdb as $key => $user){print <<<EOT
-        <li><a href="admin.php?file=user&action=mod&userid=$user[userid]">$user[username]</a><input type="hidden" name="user[]" value="$user[userid]"></li>
+foreach($userdb as $user){print <<<EOT
+        <li><a href="admin.php?file=user&action=mod&userid=$user[uid]">$user[username]</a><input type="hidden" name="user[]" value="$user[uid]"></li>
 EOT;
 }print <<<EOT
       </ol></p>

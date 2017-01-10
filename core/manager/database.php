@@ -2,7 +2,6 @@
 if(!defined('RQ_ROOT')) exit('Access Denied');
 if(!$action) $action = 'mysqlinfo';
 $backupdir = RQ_DATA.'/backup';
-if($groupid<4) redirect('当前用户无权限操作数据库','admin.php');
 
 $tables = array(
 	DB_PREFIX.'article',
